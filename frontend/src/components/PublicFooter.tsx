@@ -3,7 +3,7 @@ import { Logo } from "./Logo";
 import { Twitter, Github, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 
 const COLS = [
-  { title: "Product", links: [["AI Match", "/ai-match"], ["Jobs", "/jobs"], ["Companies", "/companies"], ["Post a job", "/employers/post-job"]] },
+  { title: "Product", links: [["AI Match", "/ai-match"], ["Jobs", "/jobs"], ["Companies", "/companies"], ["Post a job", "/employer/post-job"]] },
   { title: "For You", links: [["Sign in", "/login"], ["Sign up", "/signup"], ["Seeker dashboard", "/dashboard"], ["Employer dashboard", "/employer"]] },
   { title: "Company", links: [["About", "/about"], ["Privacy", "/privacy"], ["Terms", "/terms"]] },
 ];

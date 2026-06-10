@@ -27,7 +27,7 @@ export function CTA() {
                 <Link href="/signup" className="btn-primary rounded-full px-6 py-3.5 text-sm font-medium inline-flex items-center gap-2" data-testid="cta-signup">
                   Create my profile <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link href="/employers/post-job" className="btn-glass rounded-full px-6 py-3.5 text-sm font-medium" data-testid="cta-employer">
+                <Link href="/employer/post-job" className="btn-glass rounded-full px-6 py-3.5 text-sm font-medium" data-testid="cta-employer">
                   I'm hiring instead
                 </Link>
               </div>

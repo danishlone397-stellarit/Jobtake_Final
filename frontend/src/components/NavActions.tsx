@@ -32,7 +32,7 @@ export function NavActions({ user }: Props) {
           Sign in
         </Link>
        <Link
-  href="/employers/post-job"
+  href="/employer/post-job"
   className="bg-orange-500 hover:bg-orange-600 text-white text-[13px] font-medium px-4 py-2 rounded-full inline-flex items-center gap-1.5 transition-colors"
   data-testid="nav-post-job"
 >
