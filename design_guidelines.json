@@ -1,0 +1,121 @@
+{
+  "theme": "Light",
+  "archetype": "5 (Luxury Light - High-End Tech)",
+  "core_concept": "A visually stunning homepage combining Stripe/Linear precision with Apple-level polish. Uses a warm off-white luxury background, floating 3D glass cards, soft ambient shadows, and dynamic mesh gradients.",
+  "typography": {
+    "heading_font": "Outfit",
+    "body_font": "Satoshi",
+    "h1": "text-5xl sm:text-6xl lg:text-7xl tracking-tighter font-medium",
+    "h2": "text-3xl sm:text-4xl tracking-tight font-medium",
+    "h3": "text-xl sm:text-2xl tracking-tight font-medium",
+    "body": "text-base sm:text-lg leading-relaxed text-zinc-600",
+    "labels": "text-xs tracking-[0.2em] uppercase font-semibold text-zinc-500",
+    "instructions": "Use font-medium for headings to keep the Apple/Linear aesthetic. Highlight key terms in gradients (purple/blue/orange). DO NOT USE INTER for headings."
+  },
+  "colors": {
+    "background": "#FDFDFD",
+    "surface_glass": "bg-white/70 backdrop-blur-2xl backdrop-saturate-150",
+    "surface_solid": "bg-white",
+    "text_primary": "#09090B",
+    "text_secondary": "#52525B",
+    "accents": {
+      "purple": "#8B5CF6",
+      "blue": "#3B82F6",
+      "orange": "#F97316",
+      "gold": "#EAB308"
+    },
+    "gradients": {
+      "text_highlight": "bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-orange-500",
+      "border_glow": "bg-gradient-to-r from-purple-500/50 to-blue-500/50"
+    }
+  },
+  "layout_and_spacing": {
+    "container_padding": "px-6 md:px-12 lg:px-24",
+    "section_gap": "py-24 md:py-32",
+    "card_padding": "p-8 md:p-10",
+    "grid_strategy": "Use Bento grid (Tetris style) for category and featured sections. Massive gaps (gap-8 to gap-12). Avoid uniform symmetrical squares where possible."
+  },
+  "surface_strategies": {
+    "cards": "Crystal Glass variant. bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.06)] rounded-3xl. Must include subtle inner highlight.",
+    "buttons": "Tactile buttons. Primary: bg-zinc-900 text-white shadow-xl hover:-translate-y-1 hover:shadow-2xl hover:bg-zinc-800 transition-all rounded-full. Include a subtle inner glow.",
+    "search_bar": "Massive floating pill. bg-white/90 backdrop-blur-2xl border border-zinc-200/50 shadow-2xl p-4 flex items-center gap-4 rounded-full max-w-4xl mx-auto."
+  },
+  "interactions_and_motion": {
+    "hover": "Hover tilt interactions on all job cards (using Framer Motion whileHover={{ scale: 1.02, rotateX: 2, rotateY: 2 }}).",
+    "scroll": "Lenis smooth scrolling is MANDATORY. Elements should fade in and float up staggered using Framer Motion.",
+    "background": "Animate the mesh gradient to shift colors softly, or use floating subtle orbs via framer-motion."
+  },
+  "media": {
+    "backgrounds": [
+      {
+        "url": "https://static.prod-images.emergentagent.com/jobs/5a9f8343-d665-4fb3-a93d-8589bfd6fcdc/images/f91a98fcec1a7ab8be10bc326c7068cf743ebbc2fbdeef98a5cf620ad3eb0f5f.png",
+        "description": "Abstract 3D mesh gradient background. Place in absolute positioning behind the hero section with opacity 50-70%, mix-blend-multiply.",
+        "category": "hero_bg"
+      }
+    ],
+    "3d_icons": [
+      {
+        "url": "https://static.prod-images.emergentagent.com/jobs/5a9f8343-d665-4fb3-a93d-8589bfd6fcdc/images/b15e8c5cfb7d1ec31de40e3d0a48fa3d57328a860559d465c5b6a9d48e2cfc7f.png",
+        "description": "Engineering 3D Icon",
+        "category": "category_icon"
+      },
+      {
+        "url": "https://static.prod-images.emergentagent.com/jobs/5a9f8343-d665-4fb3-a93d-8589bfd6fcdc/images/7ced41b8da5dfd1e7b68c30d1b062f51276683cbb765e407cfb3fc4feeb827b7.png",
+        "description": "Design 3D Icon",
+        "category": "category_icon"
+      },
+      {
+        "url": "https://static.prod-images.emergentagent.com/jobs/5a9f8343-d665-4fb3-a93d-8589bfd6fcdc/images/7f9d5878e0c79986e815cf77b5a769e36a38828c241f5328b6c8f6381b59cdd6.png",
+        "description": "Marketing 3D Icon",
+        "category": "category_icon"
+      },
+      {
+        "url": "https://static.prod-images.emergentagent.com/jobs/5a9f8343-d665-4fb3-a93d-8589bfd6fcdc/images/def7c8b428e49c00c648662d8af173be135d12b3fa8c9eed1359217518940ae8.png",
+        "description": "Data Science 3D Icon",
+        "category": "category_icon"
+      },
+      {
+        "url": "https://static.prod-images.emergentagent.com/jobs/5a9f8343-d665-4fb3-a93d-8589bfd6fcdc/images/0e2c91ca9df49a6ad011009ca6789dd076976a5b258cd84d85bb1a44ab080172.png",
+        "description": "Sales/Finance 3D Icon",
+        "category": "category_icon"
+      }
+    ],
+    "employer_offices": [
+      {
+        "url": "https://images.pexels.com/photos/13219418/pexels-photo-13219418.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Premium illuminated glass office building",
+        "category": "employers"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1497366412874-3415097a27e7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzV8MHwxfHNlYXJjaHw0fHxtb2Rlcm4lMjBvZmZpY2UlMjBhcmNoaXRlY3R1cmUlMjBpbnRlcmlvcnxlbnwwfHx8fDE3ODAwNzEwMzR8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Premium room with glass divider",
+        "category": "employers"
+      }
+    ],
+    "testimonials": [
+      {
+        "url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHBvcnRyYWl0fGVufDB8fHx8MTc3OTk4OTMzNnww&ixlib=rb-4.1.0&q=85",
+        "description": "Professional male headshot",
+        "category": "testimonial_avatar"
+      },
+      {
+        "url": "https://images.pexels.com/photos/12931653/pexels-photo-12931653.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Professional female headshot",
+        "category": "testimonial_avatar"
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Use Framer Motion heavily for hover effects (scale, tilt with rotateX/Y), staggered entrances, and floating particles in the hero.",
+    "Do NOT use raw Shadcn cards. Build custom div cards using the defined Crystal Glass surface classes (bg-white/70, backdrop-blur-xl, border-white/40).",
+    "Integrate the generated 3D icons inside category cards. Do not use standard lucide icons for categories.",
+    "For the logo wall, install 'react-icons' and use SiApple, SiStripe, SiLinear, SiRaycast, SiVercel. Color them zinc-400 with hover:text-zinc-900 transition.",
+    "Ensure 'Outfit' and 'Satoshi' fonts are imported via Google Fonts or Fontsource.",
+    "Use react-countup or framer-motion for the animated stats counters.",
+    "Search bar must be fully interactive (UI only) with custom dropdowns/focus states, avoiding native browser styles.",
+    "All interactive elements MUST have data-testid attributes (e.g., data-testid='hero-search-button').",
+    "Never use plain white or plain black; always use the subtle tinted shades provided.",
+    "Ensure the hero has overlapping floating 3D job cards wrapping the main text.",
+    "Ensure React and Framer Motion code is written in .js/.jsx, not .tsx as per the environment constraints."
+  ]
+}

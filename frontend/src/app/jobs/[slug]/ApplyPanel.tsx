@@ -1,0 +1,96 @@
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { CheckCircle2, Loader2, Upload, Sparkles } from "lucide-react";
+
+export function ApplyPanel({ jobId, jobTitle, userRole, hasApplied }: {
+  jobId: string; jobTitle: string; userRole: "ADMIN" | "EMPLOYER" | "SEEKER" | null; hasApplied: boolean;
+}) {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [coverLetter, setCoverLetter] = useState("");
+  const [resume, setResume] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true); setError(null);
+    const form = new FormData();
+    form.set("jobId", jobId);
+    if (coverLetter) form.set("coverLetter", coverLetter);
+    if (resume) form.set("resume", resume);
+    const res = await fetch("/api/applications", { method: "POST", body: form });
+    const data = await res.json();
+    setLoading(false);
+    if (!res.ok) { setError(data.error || "Failed to apply"); return; }
+    setDone(true);
+    setTimeout(() => router.refresh(), 600);
+  }
+
+  if (!userRole) {
+    return (
+      <div className="glass-strong rounded-3xl p-6">
+        <div className="text-xs uppercase tracking-[0.18em] text-zinc-500 font-semibold">Apply</div>
+        <p className="mt-3 text-sm text-zinc-700">Sign in or create an account to apply to <span className="font-medium text-zinc-950">{jobTitle}</span>.</p>
+        <div className="mt-4 flex gap-2">
+          <Link href="/login" className="btn-glass rounded-full px-4 py-2 text-sm font-medium flex-1 text-center" data-testid="apply-login">Sign in</Link>
+          <Link href="/signup" className="btn-primary rounded-full px-4 py-2 text-sm font-medium flex-1 text-center" data-testid="apply-signup">Sign up</Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (userRole !== "SEEKER") {
+    return (
+      <div className="glass rounded-3xl p-6">
+        <div className="text-xs uppercase tracking-[0.18em] text-zinc-500 font-semibold">Apply</div>
+        <p className="mt-3 text-sm text-zinc-700">Only candidate accounts can apply. You're signed in as <span className="font-medium">{userRole.toLowerCase()}</span>.</p>
+      </div>
+    );
+  }
+
+  if (hasApplied || done) {
+    return (
+      <div className="glass-strong rounded-3xl p-6" data-testid="apply-success">
+        <CheckCircle2 className="h-7 w-7 text-emerald-600" />
+        <div className="mt-3 font-display text-lg font-medium text-zinc-950">Application submitted</div>
+        <p className="text-sm text-zinc-600 mt-1">We've shared your profile with the hiring team. Track progress in your dashboard.</p>
+        <Link href="/dashboard/applications" className="btn-primary rounded-full px-4 py-2 text-sm font-medium inline-flex mt-4">View applications</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="glass-strong rounded-3xl p-6" data-testid="apply-panel">
+      <div className="text-xs uppercase tracking-[0.18em] text-zinc-500 font-semibold">One-click apply</div>
+      <h3 className="font-display mt-2 text-xl font-medium text-zinc-950">Apply to {jobTitle}</h3>
+      {!open ? (
+        <button onClick={() => setOpen(true)} className="btn-primary rounded-full px-5 py-3 text-sm font-medium w-full mt-5 inline-flex items-center justify-center gap-2" data-testid="apply-open">
+          <Sparkles className="h-4 w-4" /> Apply now
+        </button>
+      ) : (
+        <form onSubmit={submit} className="mt-4 space-y-3">
+          <div>
+            <label className="label">Resume (PDF/DOCX)</label>
+            <label className="input cursor-pointer flex items-center gap-2 text-sm text-zinc-700">
+              <Upload className="h-4 w-4" />
+              {resume ? resume.name : "Upload your resume"}
+              <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={(e) => setResume(e.target.files?.[0] || null)} data-testid="apply-resume" />
+            </label>
+          </div>
+          <div>
+            <label className="label">Cover letter <span className="lowercase text-zinc-400">(optional)</span></label>
+            <textarea value={coverLetter} onChange={(e) => setCoverLetter(e.target.value)} className="input" placeholder="Why this team?" data-testid="apply-cover" />
+          </div>
+          {error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-3 py-2" data-testid="apply-error">{error}</div>}
+          <button type="submit" disabled={loading} className="btn-primary rounded-full px-5 py-3 text-sm font-medium w-full inline-flex items-center justify-center gap-2" data-testid="apply-submit">
+            {loading && <Loader2 className="h-4 w-4 animate-spin" />} Submit application
+          </button>
+        </form>
+      )}
+    </div>
+  );
+}
