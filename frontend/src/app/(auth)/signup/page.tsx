@@ -11,7 +11,7 @@ export default function SignupPage() {
   const [location, setLocation] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"SEEKER" | "EMPLOYER">("SEEKER");
+  const role: "EMPLOYER" = "EMPLOYER";
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,15 +35,6 @@ export default function SignupPage() {
     <div data-testid="signup-page">
       <h1 className="font-display text-4xl tracking-tight font-medium text-zinc-950">Create your account</h1>
       <p className="text-zinc-600 mt-2">It takes less than a minute.</p>
-
-      <div className="mt-6 grid grid-cols-2 gap-2 glass rounded-2xl p-1.5">
-        {(["SEEKER", "EMPLOYER"] as const).map((r) => (
-          <button key={r} type="button" onClick={() => setRole(r)} data-testid={`role-${r.toLowerCase()}`}
-            className={`text-sm font-medium rounded-xl py-2 transition-all ${role === r ? "btn-primary text-white" : "text-zinc-700 hover:bg-white/70"}`}>
-            {r === "SEEKER" ? "Job Seeker" : "Employer"}
-          </button>
-        ))}
-      </div>
 
       <form onSubmit={onSubmit} className="mt-6 space-y-4">
         <div>

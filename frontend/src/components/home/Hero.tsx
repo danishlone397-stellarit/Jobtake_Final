@@ -285,7 +285,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
           onClick={() => router.push("/signup")}
           className="inline-flex items-center justify-center gap-2 rounded-lg border border-emerald-600 bg-white px-4 py-2.5 text-[13px] font-semibold text-emerald-700 transition hover:bg-emerald-50"
         >
-          Create Candidate Profile
+          Candidate Registration
         </button>
       </div>
     </div>

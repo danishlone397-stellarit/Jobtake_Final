@@ -28,7 +28,7 @@ export function NavActions({ user }: Props) {
   if (!user) {
     return (
       <div className="ml-auto flex items-center gap-2">
-        <Link href="/login" className="hidden sm:inline-flex text-sm px-4 py-2 rounded-full text-zinc-700 hover:text-zinc-950 transition-colors" data-testid="nav-login">
+        <Link href="/login" className="hidden sm:inline-flex text-sm px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors" data-testid="nav-login">
           Sign in
         </Link>
        <Link
