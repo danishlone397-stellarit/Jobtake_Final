@@ -18,8 +18,8 @@ import {
   Building,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
-import bgImg from "@/assets/img/bgimg.jpg";
+import { useState, useEffect } from "react";
+import bgImg from "@/assets/img/bgimg.jpeg";
 
 const suggestions = ["Staff PM Berlin", "Remote ML Europe", "Founding designer seed", "Quant NYC"];
 
@@ -54,8 +54,6 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
   const [q, setQ] = useState("");
   const [loc, setLoc] = useState("");
   const [focused, setFocused] = useState<"q" | "loc" | null>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const sectionRef = useRef<HTMLElement>(null);
 
   function search(e: React.FormEvent) {
     e.preventDefault();
@@ -65,23 +63,9 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
     router.push(`/jobs?${p.toString()}`);
   }
 
-  useEffect(() => {
-    const handleMouse = (e: MouseEvent) => {
-      if (!sectionRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      setMousePos({
-        x: (e.clientX - rect.left) / rect.width - 0.5,
-        y: (e.clientY - rect.top) / rect.height - 0.5,
-      });
-    };
-    window.addEventListener("mousemove", handleMouse);
-    return () => window.removeEventListener("mousemove", handleMouse);
-  }, []);
-
   return (
     <section
-      ref={sectionRef}
-      className="relative pt-32 pb-24 md:pt-40 md:pb-32 overflow-hidden"
+      className="relative pt-28 pb-20 md:pt-36 md:pb-24 overflow-hidden"
       style={{
         backgroundColor: "#489696",
         backgroundImage: `url(${bgImg.src})`,
@@ -91,46 +75,10 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
       }}
       data-testid="hero-section"
     >
-      {/* Dark overlay */}
+      {/* Readability overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ background: "rgba(30, 80, 80, 0.60)", zIndex: 0 }}
-      />
-
-      {/* Gradient orb 1 */}
-      <motion.div
-        className="absolute rounded-full blur-3xl pointer-events-none"
-        style={{
-          width: 600, height: 600, top: -100, left: -150,
-          background: "radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%)",
-          zIndex: 1,
-        }}
-        animate={{ x: mousePos.x * -30, y: mousePos.y * -30 }}
-        transition={{ type: "spring", stiffness: 60, damping: 20 }}
-      />
-
-      {/* Gradient orb 2 */}
-      <motion.div
-        className="absolute rounded-full blur-3xl pointer-events-none"
-        style={{
-          width: 500, height: 500, bottom: -80, right: -100,
-          background: "radial-gradient(circle, rgba(252,198,167,0.25) 0%, transparent 70%)",
-          zIndex: 1,
-        }}
-        animate={{ x: mousePos.x * 40, y: mousePos.y * 40 }}
-        transition={{ type: "spring", stiffness: 60, damping: 20 }}
-      />
-
-      {/* Gradient orb 3 */}
-      <motion.div
-        className="absolute rounded-full blur-2xl pointer-events-none"
-        style={{
-          width: 300, height: 300, top: "40%", left: "50%",
-          background: "radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)",
-          zIndex: 1,
-        }}
-        animate={{ x: mousePos.x * 20, y: mousePos.y * 20 }}
-        transition={{ type: "spring", stiffness: 80, damping: 25 }}
+        style={{ background: "rgba(0, 0, 0, 0.28)", zIndex: 0 }}
       />
 
       {/* Grid pattern */}
@@ -156,14 +104,13 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
               background: "rgba(255,255,255,0.18)",
               border: "1px solid rgba(255,255,255,0.3)",
               color: "#fff",
-              backdropFilter: "blur(12px)",
             }}
           >
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-60 animate-ping" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
             </span>
-            AI-powered hiring · live with <Counter to={totalJobs} delay={0.5} /> roles
+            AI-powered hiring - live with <Counter to={totalJobs} delay={0.5} /> roles
           </div>
         </motion.div>
 
@@ -172,21 +119,10 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 1 }}
-          className="font-display font-medium text-center mt-7 text-5xl sm:text-6xl lg:text-[88px] leading-[0.95] tracking-[-0.04em] max-w-5xl mx-auto"
+          className="text-center mt-6 text-xl sm:text-2xl md:text-3xl font-semibold leading-snug max-w-2xl mx-auto"
           style={{ color: "#fff" }}
         >
-          The hiring layer for{" "}
-          <span className="relative inline-block">
-            extraordinary
-            <motion.span
-              className="absolute -bottom-1 left-0 h-[3px] rounded-full"
-              style={{ background: "#fcc6a7", originX: 0 }}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ delay: 1.2, duration: 0.8, ease: "easeOut" }}
-            />
-          </span>{" "}
-          careers.
+          The hiring layer for extraordinary careers.
         </motion.h1>
 
         {/* Subheading */}
@@ -194,10 +130,10 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.45, duration: 0.9 }}
-          className="mt-7 text-center text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
+          className="mt-3 text-center text-[10px] sm:text-xs font-semibold max-w-lg mx-auto leading-relaxed"
           style={{ color: "rgba(255,255,255,0.8)" }}
         >
-          Jobtake pairs senior talent with the world's most ambitious teams — using a calibrated AI that reads context, not just keywords.
+          Jobtake pairs senior talent with the world's most ambitious teams - using a calibrated AI that reads context, not just keywords.
         </motion.p>
 
         {/* Search Form */}
@@ -206,19 +142,18 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 1 }}
-          className="relative mt-12 max-w-3xl mx-auto"
+          className="relative mt-10 max-w-3xl mx-auto"
         >
           <motion.div
             className="absolute -inset-[2px] rounded-[30px]"
             animate={{ opacity: focused ? 1 : 0.5 }}
             style={{
               background: "linear-gradient(135deg, rgba(255,255,255,0.4), rgba(252,198,167,0.4))",
-              filter: "blur(12px)",
             }}
           />
           <div
             className="relative rounded-[28px] p-2 flex flex-col md:flex-row md:items-center gap-2"
-            style={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(20px)" }}
+            style={{ background: "rgba(255,255,255,0.95)" }}
           >
             <label className="flex-1 flex items-center gap-3 px-4 py-2 rounded-2xl hover:bg-zinc-50/80 transition-colors cursor-text">
               <Search className="h-4 w-4 shrink-0" style={{ color: "#489696" }} />
@@ -227,7 +162,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
                 onChange={(e) => setQ(e.target.value)}
                 onFocus={() => setFocused("q")}
                 onBlur={() => setFocused(null)}
-                placeholder="Role, skill or keyword…"
+                placeholder="Role, skill or keyword..."
                 className="bg-transparent outline-none text-[15px] w-full text-zinc-900"
                 data-testid="hero-search-input"
               />
@@ -240,7 +175,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
                 onChange={(e) => setLoc(e.target.value)}
                 onFocus={() => setFocused("loc")}
                 onBlur={() => setFocused(null)}
-                placeholder="Location · Remote · Worldwide"
+                placeholder="Location - Remote - Worldwide"
                 className="bg-transparent outline-none text-[15px] w-full text-zinc-900"
                 data-testid="hero-location-input"
               />
@@ -294,7 +229,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
     initial={{ opacity: 0, y: 40 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 1.1, delay: 0.75, ease: [0.2, 0.8, 0.2, 1] }}
-    className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(16,77,77,0.15)] backdrop-blur-xl"
+    className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(16,77,77,0.15)]"
   >
     {/* Round photo top-right */}
     <div className="absolute right-5 top-5">
@@ -347,7 +282,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
         </button>
         <button
           type="button"
-          onClick={() => router.push("/candidate-profile")}
+          onClick={() => router.push("/signup")}
           className="inline-flex items-center justify-center gap-2 rounded-lg border border-emerald-600 bg-white px-4 py-2.5 text-[13px] font-semibold text-emerald-700 transition hover:bg-emerald-50"
         >
           Create Candidate Profile
@@ -361,7 +296,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
     initial={{ opacity: 0, y: 40 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 1.1, delay: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
-    className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(28,64,140,0.15)] backdrop-blur-xl"
+    className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(28,64,140,0.15)]"
   >
     {/* Round photo top-right */}
     <div className="absolute right-5 top-5">
@@ -407,7 +342,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
       <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
         <button
           type="button"
-          onClick={() => router.push("/post-job")}
+          onClick={() => router.push("/employers/post-job")}
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-blue-700/20 transition hover:bg-blue-700"
         >
           Post a Job <ArrowUpRight className="h-3.5 w-3.5" />

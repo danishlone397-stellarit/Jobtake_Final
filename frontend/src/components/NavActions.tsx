@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-import { ChevronDown, LogOut, LayoutDashboard, User as UserIcon, Briefcase, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, ChevronDown, LogOut, LayoutDashboard, User as UserIcon, Briefcase, ShieldCheck } from "lucide-react";
 
 type Props = { user: { id: string; name: string; role: "ADMIN" | "EMPLOYER" | "SEEKER"; avatarUrl: string | null } | null };
 
@@ -36,7 +36,7 @@ export function NavActions({ user }: Props) {
   className="bg-orange-500 hover:bg-orange-600 text-white text-[13px] font-medium px-4 py-2 rounded-full inline-flex items-center gap-1.5 transition-colors"
   data-testid="nav-post-job"
 >
-  Post a job <span className="text-white/70">↗</span>
+  Post a job <ArrowUpRight className="h-3.5 w-3.5 text-white/75" />
 </Link>
       </div>
     );
