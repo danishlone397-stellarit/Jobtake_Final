@@ -179,8 +179,38 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
     transition={{ duration: 1.1, delay: 0.75, ease: [0.2, 0.8, 0.2, 1] }}
     className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(16,77,77,0.15)]"
   >
+    {/* 3D Illustration */}
+    <motion.div
+      animate={{ y: [0, -10, 0] }}
+      transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+      className="absolute right-3 top-3 pointer-events-none"
+    >
+      <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Body */}
+        <ellipse cx="60" cy="108" rx="28" ry="6" fill="#10b98133" />
+        {/* Laptop base */}
+        <rect x="22" y="72" width="76" height="6" rx="3" fill="#1e40af" />
+        <rect x="26" y="36" width="68" height="40" rx="6" fill="#3b82f6" />
+        <rect x="30" y="40" width="60" height="32" rx="4" fill="#eff6ff" />
+        {/* Screen content lines */}
+        <rect x="35" y="45" width="30" height="3" rx="1.5" fill="#93c5fd" />
+        <rect x="35" y="51" width="20" height="2" rx="1" fill="#bfdbfe" />
+        <rect x="35" y="56" width="25" height="2" rx="1" fill="#bfdbfe" />
+        <rect x="72" y="44" width="14" height="14" rx="3" fill="#10b981" />
+        <text x="76" y="55" fontSize="10" fill="white" fontWeight="bold">✓</text>
+        {/* Person */}
+        <circle cx="60" cy="22" r="12" fill="#fbbf24" />
+        <ellipse cx="60" cy="50" rx="10" ry="12" fill="#6366f1" />
+        {/* Arms */}
+        <path d="M50 42 Q40 50 42 60" stroke="#6366f1" strokeWidth="6" strokeLinecap="round" />
+        <path d="M70 42 Q80 50 78 60" stroke="#6366f1" strokeWidth="6" strokeLinecap="round" />
+        {/* Checkmark badge */}
+        <circle cx="92" cy="28" r="12" fill="#10b981" />
+        <path d="M86 28 L90 32 L98 23" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </motion.div>
 
-    <div className="relative max-w-[260px]">
+    <div className="relative max-w-[240px]">
       <div className="grid h-11 w-11 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-700 text-white shadow">
         <UserRound className="h-5 w-5" />
       </div>
@@ -233,8 +263,39 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
     transition={{ duration: 1.1, delay: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
     className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(28,64,140,0.15)]"
   >
+    {/* 3D Illustration */}
+    <motion.div
+      animate={{ y: [0, -10, 0] }}
+      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+      className="absolute right-3 top-3 pointer-events-none"
+    >
+      <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Shadow */}
+        <ellipse cx="60" cy="110" rx="30" ry="5" fill="#1e40af22" />
+        {/* Building */}
+        <rect x="20" y="40" width="80" height="65" rx="4" fill="#1e40af" />
+        <rect x="24" y="44" width="72" height="57" rx="3" fill="#3b82f6" />
+        {/* Windows */}
+        <rect x="30" y="52" width="14" height="12" rx="2" fill="#bfdbfe" />
+        <rect x="50" y="52" width="14" height="12" rx="2" fill="#bfdbfe" />
+        <rect x="70" y="52" width="14" height="12" rx="2" fill="#93c5fd" />
+        <rect x="30" y="70" width="14" height="12" rx="2" fill="#93c5fd" />
+        <rect x="50" y="70" width="14" height="12" rx="2" fill="#bfdbfe" />
+        <rect x="70" y="70" width="14" height="12" rx="2" fill="#bfdbfe" />
+        {/* Door */}
+        <rect x="48" y="88" width="18" height="17" rx="2" fill="#1e3a8a" />
+        {/* Roof accent */}
+        <rect x="14" y="36" width="92" height="8" rx="4" fill="#1e3a8a" />
+        {/* Flag */}
+        <line x1="60" y1="10" x2="60" y2="36" stroke="#f59e0b" strokeWidth="2" />
+        <path d="M60 10 L78 18 L60 26 Z" fill="#f59e0b" />
+        {/* Star badge */}
+        <circle cx="96" cy="38" r="13" fill="#f59e0b" />
+        <text x="89" y="43" fontSize="13" fill="white">★</text>
+      </svg>
+    </motion.div>
 
-    <div className="relative max-w-[260px]">
+    <div className="relative max-w-[240px]">
       <div className="grid h-11 w-11 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow">
         <Briefcase className="h-5 w-5" />
       </div>
