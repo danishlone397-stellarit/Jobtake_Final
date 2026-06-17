@@ -94,9 +94,8 @@ export function FeaturedJobs({ jobs }: { jobs: FeaturedJob[] }) {
       <div className="mx-auto max-w-7xl px-6 md:px-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
-            <div className="text-xs tracking-[0.22em] uppercase text-zinc-500 font-semibold">Hand-picked this week</div>
-            <h2 className="font-display mt-3 text-4xl md:text-5xl tracking-tight font-medium text-zinc-950 leading-[1.05] max-w-2xl">
-              Roles that won't <span className="text-black">stay open</span> for long.
+            <h2 className="font-display text-4xl md:text-5xl tracking-tight font-medium text-zinc-950 leading-[1.05] max-w-2xl">
+              🔥 Hot Jobs
             </h2>
           </div>
           <Link href="/jobs" className="btn-glass rounded-full px-5 py-3 text-sm font-medium inline-flex items-center gap-2 w-fit" data-testid="view-all-jobs">

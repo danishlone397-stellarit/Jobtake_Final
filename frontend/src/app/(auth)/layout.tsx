@@ -24,7 +24,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               <span className="h-2 w-2 rounded-full bg-brand-blue" /> Calibrated AI matching
             </div>
             <p className="font-display mt-6 text-3xl tracking-tight font-medium leading-snug text-zinc-950">
-              Join 240,000+ professionals already on <span className="text-gradient italic">Jobtake</span>.
+              Join 240,000+ professionals <span className="inline-flex items-center gap-2">already on <Logo size={28} /></span>
             </p>
           </div>
           <div className="flex items-end justify-between">

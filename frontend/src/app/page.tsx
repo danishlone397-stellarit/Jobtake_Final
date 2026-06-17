@@ -31,7 +31,7 @@ export default async function Home() {
     prisma.job.findMany({
       where: { status: "PUBLISHED", featured: true },
       orderBy: { publishedAt: "desc" },
-      take: 6,
+      take: 10,
       include: { company: { select: { name: true, logoUrl: true } }, jobSkills: { include: { skill: true } } },
     }),
     prisma.testimonial.findMany({ where: { active: true }, orderBy: { sortOrder: "asc" }, take: 6 }),

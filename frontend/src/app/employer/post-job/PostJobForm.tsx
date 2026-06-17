@@ -8,10 +8,14 @@ type Cat = { id: string; name: string };
 export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmin: boolean }) {
   const router = useRouter();
   const [form, setForm] = useState({
-    title: "", description: "", responsibilities: "", requirements: "", benefits: "",
-    location: "", workMode: "REMOTE", employmentType: "FULL_TIME", seniority: "MID",
-    salaryMin: "", salaryMax: "", salaryCurrency: "USD", categoryId: "", skills: "",
+    title: "", description: "", roleDetails: "", benefits: "",
+    location: "", industry: "", ctc: "",
+    workMode: "REMOTE", employmentType: "FULL_TIME", seniority: "MID",
+    salaryMin: "", salaryMax: "", salaryCurrency: "INR", salaryPeriod: "month",
+    categoryId: "", skills: "",
   });
+  const roleDetailsWordCount = form.roleDetails.trim() === "" ? 0 : form.roleDetails.trim().split(/\s+/).length;
+  const WORD_LIMIT = 500;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,11 +25,22 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
     e.preventDefault();
     setLoading(true); setError(null);
     const body = {
-      ...form,
+      title: form.title,
+      description: form.description,
+      responsibilities: form.roleDetails,
+      requirements: form.roleDetails,
+      benefits: form.benefits,
+      location: form.location,
+      industry: form.industry,
+      workMode: form.workMode,
+      employmentType: form.employmentType,
+      seniority: form.seniority,
       salaryMin: form.salaryMin ? parseInt(form.salaryMin, 10) : undefined,
       salaryMax: form.salaryMax ? parseInt(form.salaryMax, 10) : undefined,
-      skills: form.skills.split(",").map(s => s.trim()).filter(Boolean),
+      salaryCurrency: form.salaryCurrency,
+      salaryPeriod: form.salaryPeriod,
       categoryId: form.categoryId || undefined,
+      skills: form.skills.split(",").map(s => s.trim()).filter(Boolean),
     };
     const res = await fetch("/api/employer/jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     const data = await res.json();
@@ -41,18 +56,24 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
         <input className="input" required value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Staff Frontend Engineer" data-testid="job-title" />
       </div>
       <div>
-        <label className="label">About the role *</label>
-        <textarea className="input min-h-[140px]" required value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="What's the mission? Who is the team?" data-testid="job-description" />
+        <label className="label">About the Role *</label>
+        <textarea className="input min-h-[120px]" required value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="What's the mission? Who is the team?" data-testid="job-description" />
       </div>
-      <div className="grid md:grid-cols-2 gap-4">
-        <div>
-          <label className="label">Responsibilities</label>
-          <textarea className="input" value={form.responsibilities} onChange={(e) => set("responsibilities", e.target.value)} />
+      <div>
+        <label className="label">Roles, Responsibilities & Requirements</label>
+        <textarea
+          className={`input min-h-[160px] ${roleDetailsWordCount > WORD_LIMIT ? "border-red-400" : ""}`}
+          value={form.roleDetails}
+          onChange={(e) => set("roleDetails", e.target.value)}
+          placeholder="Describe the roles, responsibilities, and requirements for this position..."
+        />
+        <div className={`text-xs mt-1 text-right ${roleDetailsWordCount > WORD_LIMIT ? "text-red-500 font-semibold" : "text-zinc-400"}`}>
+          {roleDetailsWordCount} / {WORD_LIMIT} words
         </div>
-        <div>
-          <label className="label">Requirements</label>
-          <textarea className="input" value={form.requirements} onChange={(e) => set("requirements", e.target.value)} />
-        </div>
+      </div>
+      <div>
+        <label className="label">Skills (comma separated)</label>
+        <input className="input" value={form.skills} onChange={(e) => set("skills", e.target.value)} placeholder="React, TypeScript, GraphQL" />
       </div>
       <div>
         <label className="label">Benefits</label>
@@ -61,8 +82,18 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
       <div className="grid md:grid-cols-3 gap-4">
         <div>
           <label className="label">Location *</label>
-          <input className="input" required value={form.location} onChange={(e) => set("location", e.target.value)} placeholder="Remote · Europe" />
+          <input className="input" required value={form.location} onChange={(e) => set("location", e.target.value)} placeholder="Mumbai, India" />
         </div>
+        <div>
+          <label className="label">Industry</label>
+          <input className="input" value={form.industry} onChange={(e) => set("industry", e.target.value)} placeholder="IT, Finance, Healthcare..." />
+        </div>
+        <div>
+          <label className="label">CTC (e.g. 12 LPA)</label>
+          <input className="input" value={form.ctc} onChange={(e) => set("ctc", e.target.value)} placeholder="12 LPA" />
+        </div>
+      </div>
+      <div className="grid md:grid-cols-3 gap-4">
         <div>
           <label className="label">Work mode</label>
           <select className="input" value={form.workMode} onChange={(e) => set("workMode", e.target.value)}>
@@ -103,19 +134,22 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
           </select>
         </div>
       </div>
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-3 gap-4">
         <div>
           <label className="label">Salary min</label>
-          <input type="number" className="input" value={form.salaryMin} onChange={(e) => set("salaryMin", e.target.value)} placeholder="80000" />
+          <input type="number" className="input" value={form.salaryMin} onChange={(e) => set("salaryMin", e.target.value)} placeholder="30000" />
         </div>
         <div>
           <label className="label">Salary max</label>
-          <input type="number" className="input" value={form.salaryMax} onChange={(e) => set("salaryMax", e.target.value)} placeholder="160000" />
+          <input type="number" className="input" value={form.salaryMax} onChange={(e) => set("salaryMax", e.target.value)} placeholder="80000" />
         </div>
-      </div>
-      <div>
-        <label className="label">Skills (comma separated)</label>
-        <input className="input" value={form.skills} onChange={(e) => set("skills", e.target.value)} placeholder="React, TypeScript, GraphQL" />
+        <div>
+          <label className="label">Salary Period</label>
+          <select className="input" value={form.salaryPeriod} onChange={(e) => set("salaryPeriod", e.target.value)}>
+            <option value="month">Monthly</option>
+            <option value="year">Yearly</option>
+          </select>
+        </div>
       </div>
       {error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-3 py-2">{error}</div>}
       <div className="pt-2 flex gap-3">

@@ -54,7 +54,7 @@ export function AdminJobsTable({ jobs }: { jobs: Row[] }) {
                   {busy === j.id && <Loader2 className="h-3.5 w-3.5 animate-spin text-zinc-400" />}
                   {j.status === "PENDING" && <button onClick={() => patch(j.id, { status: "PUBLISHED" })} className="btn-primary rounded-full text-xs px-3 py-1.5" data-testid={`approve-${j.id}`}>Publish</button>}
                   {j.status === "PENDING" && <button onClick={() => patch(j.id, { status: "REJECTED" })} className="btn-glass rounded-full text-xs px-3 py-1.5">Reject</button>}
-                  <button onClick={() => patch(j.id, { featured: !j.featured })} className="btn-glass rounded-full text-xs px-3 py-1.5" data-testid={`feature-${j.id}`}>{j.featured ? "Unfeature" : "Feature"}</button>
+                  <button onClick={() => patch(j.id, { featured: !j.featured })} className={`rounded-full text-xs px-3 py-1.5 ${j.featured ? "bg-amber-100 text-amber-700 border border-amber-300" : "btn-glass"}`} data-testid={`feature-${j.id}`}>{j.featured ? "🔥 Remove Hot" : "Mark Hot"}</button>
                   <button onClick={() => remove(j.id)} className="btn-glass rounded-full text-xs px-3 py-1.5 text-red-600">Delete</button>
                 </div>
               </td>
