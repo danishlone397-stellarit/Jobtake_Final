@@ -179,19 +179,6 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
     transition={{ duration: 1.1, delay: 0.75, ease: [0.2, 0.8, 0.2, 1] }}
     className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(16,77,77,0.15)]"
   >
-    {/* Round photo top-right */}
-    <div className="absolute right-5 top-5">
-      <div className="h-[110px] w-[110px] rounded-full overflow-hidden border-4 border-white shadow-lg">
-        <img
-          src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=220&h=220&fit=crop&crop=face"
-          alt="Candidate"
-          className="h-full w-full object-cover"
-        />
-      </div>
-      <div className="absolute -bottom-1 -right-1 h-7 w-7 grid place-items-center rounded-full bg-teal-500 text-white shadow">
-        <CheckCircle2 className="h-4 w-4" />
-      </div>
-    </div>
 
     <div className="relative max-w-[260px]">
       <div className="grid h-11 w-11 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-700 text-white shadow">
@@ -246,19 +233,6 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
     transition={{ duration: 1.1, delay: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
     className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(28,64,140,0.15)]"
   >
-    {/* Round photo top-right */}
-    <div className="absolute right-5 top-5">
-      <div className="h-[110px] w-[110px] rounded-full overflow-hidden border-4 border-white shadow-lg">
-        <img
-          src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=220&h=220&fit=crop&crop=face"
-          alt="Employer"
-          className="h-full w-full object-cover"
-        />
-      </div>
-      <div className="absolute -bottom-1 -right-1 h-7 w-7 grid place-items-center rounded-full bg-blue-600 text-white shadow">
-        <CheckCircle2 className="h-4 w-4" />
-      </div>
-    </div>
 
     <div className="relative max-w-[260px]">
       <div className="grid h-11 w-11 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow">

@@ -12,7 +12,7 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
     location: "", industry: "", ctc: "",
     workMode: "REMOTE", employmentType: "FULL_TIME", seniority: "MID",
     salaryMin: "", salaryMax: "", salaryCurrency: "INR", salaryPeriod: "month",
-    categoryId: "", skills: "",
+    categoryId: "", skills: "", collarType: "WHITE",
   });
   const roleDetailsWordCount = form.roleDetails.trim() === "" ? 0 : form.roleDetails.trim().split(/\s+/).length;
   const WORD_LIMIT = 500;
@@ -41,6 +41,7 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
       salaryPeriod: form.salaryPeriod,
       categoryId: form.categoryId || undefined,
       skills: form.skills.split(",").map(s => s.trim()).filter(Boolean),
+      collarType: form.collarType,
     };
     const res = await fetch("/api/employer/jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     const data = await res.json();
@@ -54,6 +55,16 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
       <div>
         <label className="label">Title *</label>
         <input className="input" required value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Staff Frontend Engineer" data-testid="job-title" />
+      </div>
+      <div>
+        <label className="label">Job Category Type *</label>
+        <select className="input" value={form.collarType} onChange={(e) => set("collarType", e.target.value)}>
+          <option value="WHITE">🏢 White-Collar — Office / Desk roles</option>
+          <option value="BLUE">🔧 Blue-Collar — Manual labor jobs</option>
+          <option value="PINK">🌸 Pink-Collar — Service industry</option>
+          <option value="GREY">⚙️ Grey-Collar — Technical / Supervisory</option>
+          <option value="MSME">🏭 MSME — Micro, Small & Medium Enterprises</option>
+        </select>
       </div>
       <div>
         <label className="label">About the Role *</label>

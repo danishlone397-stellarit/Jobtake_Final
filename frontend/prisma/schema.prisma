@@ -323,6 +323,7 @@ model Job {
   salaryMax       Int?
   salaryCurrency  String         @default("USD")
   salaryPeriod    String         @default("year") // year | month | hour
+  collarType      String?        @default("WHITE") // WHITE | BLUE | PINK | GREY | MSME
   status          JobStatus      @default(PENDING)
   featured        Boolean        @default(false)
   urgent          Boolean        @default(false)

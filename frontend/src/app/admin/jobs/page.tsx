@@ -21,6 +21,7 @@ export default async function AdminJobs() {
       <AdminJobsTable jobs={jobs.map(j => ({
         id: j.id, title: j.title, status: j.status, featured: j.featured, location: j.location,
         company: j.company.name, applicants: j._count.applications, createdAt: j.createdAt.toISOString(),
+        collarType: (j as any).collarType ?? "WHITE",
       }))} />
     </DashboardShell>
   );

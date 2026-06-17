@@ -8,6 +8,7 @@ const Patch = z.object({
   featured: z.boolean().optional(),
   urgent: z.boolean().optional(),
   premium: z.boolean().optional(),
+  collarType: z.enum(["WHITE", "BLUE", "PINK", "GREY", "MSME"]).optional(),
 });
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

@@ -4,7 +4,15 @@ import { useState } from "react";
 import { Loader2, Star } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 
-type Row = { id: string; title: string; status: string; featured: boolean; location: string; company: string; applicants: number; createdAt: string };
+type Row = { id: string; title: string; status: string; featured: boolean; location: string; company: string; applicants: number; createdAt: string; collarType: string | null };
+
+const COLLAR_LABELS: Record<string, string> = {
+  WHITE: "🏢 White",
+  BLUE: "🔧 Blue",
+  PINK: "🌸 Pink",
+  GREY: "⚙️ Grey",
+  MSME: "🏭 MSME",
+};
 
 export function AdminJobsTable({ jobs }: { jobs: Row[] }) {
   const router = useRouter();
@@ -30,6 +38,7 @@ export function AdminJobsTable({ jobs }: { jobs: Row[] }) {
             <th className="px-4 py-3">Title</th>
             <th className="px-4 py-3">Company</th>
             <th className="px-4 py-3">Status</th>
+            <th className="px-4 py-3">Job Type</th>
             <th className="px-4 py-3">Applicants</th>
             <th className="px-4 py-3">Posted</th>
             <th className="px-4 py-3 text-right">Actions</th>
@@ -47,6 +56,15 @@ export function AdminJobsTable({ jobs }: { jobs: Row[] }) {
               </td>
               <td className="px-4 py-3 text-zinc-700">{j.company}</td>
               <td className="px-4 py-3"><span className="text-[10.5px] uppercase tracking-[0.16em] px-2.5 py-1 rounded-full bg-zinc-100 text-zinc-700">{j.status.toLowerCase()}</span></td>
+              <td className="px-4 py-3">
+                <select
+                  className="text-xs border border-zinc-200 rounded-lg px-2 py-1 bg-white"
+                  value={j.collarType || "WHITE"}
+                  onChange={(e) => patch(j.id, { collarType: e.target.value })}
+                >
+                  {Object.entries(COLLAR_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+              </td>
               <td className="px-4 py-3">{j.applicants}</td>
               <td className="px-4 py-3 text-zinc-500">{timeAgo(j.createdAt)}</td>
               <td className="px-4 py-3 text-right">

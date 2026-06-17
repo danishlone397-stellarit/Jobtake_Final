@@ -11,10 +11,19 @@ type Job = {
   workMode: "REMOTE" | "HYBRID" | "ONSITE";
   seniority: string; salaryMin: number | null; salaryMax: number | null;
   salaryCurrency: string; salaryPeriod: string;
+  collarType: string | null;
   featured: boolean; publishedAt: string | null;
   company: { name: string; slug: string; logoUrl: string | null };
   category: { name: string; slug: string } | null;
   skills: string[];
+};
+
+const COLLAR_BADGE: Record<string, { label: string; className: string }> = {
+  WHITE: { label: "🏢 White-Collar", className: "bg-blue-100 text-blue-700" },
+  BLUE:  { label: "🔧 Blue-Collar",  className: "bg-sky-100 text-sky-700" },
+  PINK:  { label: "🌸 Pink-Collar",  className: "bg-pink-100 text-pink-700" },
+  GREY:  { label: "⚙️ Grey-Collar",  className: "bg-zinc-200 text-zinc-700" },
+  MSME:  { label: "🏭 MSME",         className: "bg-orange-100 text-orange-700" },
 };
 
 type Cat = { id: string; name: string; slug: string };
@@ -28,7 +37,7 @@ const PALETTE = [
 export function JobsListClient({
   initialFilters, jobs, total, page, perPage, categories,
 }: {
-  initialFilters: { q: string; location: string; category: string; workMode: string; seniority: string };
+  initialFilters: { q: string; location: string; category: string; workMode: string; seniority: string; collarType: string };
   jobs: Job[]; total: number; page: number; perPage: number; categories: Cat[];
 }) {
   const router = useRouter();
@@ -46,7 +55,7 @@ export function JobsListClient({
   }
 
   function clear() {
-    setFilters({ q: "", location: "", category: "", workMode: "", seniority: "" });
+    setFilters({ q: "", location: "", category: "", workMode: "", seniority: "", collarType: "" });
     startT(() => router.push("/jobs"));
   }
 
@@ -91,6 +100,17 @@ export function JobsListClient({
               {["INTERN", "ENTRY", "MID", "SENIOR", "STAFF", "PRINCIPAL", "DIRECTOR", "EXECUTIVE"].map(s => <option key={s} value={s}>{s.charAt(0) + s.slice(1).toLowerCase()}</option>)}
             </select>
           </div>
+          <div>
+            <label className="label" htmlFor="f-collar">Job Type</label>
+            <select id="f-collar" className="input" value={filters.collarType} onChange={(e) => setFilters({ ...filters, collarType: e.target.value })}>
+              <option value="">All types</option>
+              <option value="WHITE">🏢 White-Collar</option>
+              <option value="BLUE">🔧 Blue-Collar</option>
+              <option value="PINK">🌸 Pink-Collar</option>
+              <option value="GREY">⚙️ Grey-Collar</option>
+              <option value="MSME">🏭 MSME</option>
+            </select>
+          </div>
           <div className="flex gap-2 pt-2">
             <button onClick={apply} className="btn-primary rounded-full px-4 py-2 text-sm font-medium flex-1" data-testid="filter-apply">Apply</button>
             <button onClick={clear} className="btn-glass rounded-full px-4 py-2 text-sm font-medium" data-testid="filter-clear">Reset</button>
@@ -121,6 +141,9 @@ export function JobsListClient({
                       <div className="flex items-center gap-2 flex-wrap">
                         <div className="text-xs text-zinc-500 font-medium">{j.company.name}</div>
                         {j.featured && <span className="text-[10px] uppercase tracking-[0.16em] px-2 py-0.5 rounded-full bg-gradient-to-r from-brand-orange/15 to-amber-500/15 text-amber-700 border border-amber-200/60">Featured</span>}
+                        {j.collarType && COLLAR_BADGE[j.collarType] && (
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${COLLAR_BADGE[j.collarType].className}`}>{COLLAR_BADGE[j.collarType].label}</span>
+                        )}
                         {j.publishedAt && <span className="text-[11px] text-zinc-400">· {timeAgo(j.publishedAt)}</span>}
                       </div>
                       <h3 className="font-display font-medium text-zinc-950 text-xl mt-1 leading-tight tracking-tight group-hover:text-brand-blue transition-colors">{j.title}</h3>

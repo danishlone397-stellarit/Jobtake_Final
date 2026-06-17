@@ -6,7 +6,7 @@ import { JobsListClient } from "./JobsListClient";
 
 export const dynamic = "force-dynamic";
 
-type SP = Promise<{ q?: string; location?: string; category?: string; workMode?: string; seniority?: string; page?: string }>;
+type SP = Promise<{ q?: string; location?: string; category?: string; workMode?: string; seniority?: string; collarType?: string; page?: string }>;
 
 export default async function JobsPage({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
@@ -15,6 +15,7 @@ export default async function JobsPage({ searchParams }: { searchParams: SP }) {
   const categorySlug = sp.category || "";
   const workMode = sp.workMode || "";
   const seniority = sp.seniority || "";
+  const collarType = sp.collarType || "";
   const page = Math.max(1, parseInt(sp.page || "1", 10));
   const perPage = 12;
 
@@ -28,6 +29,7 @@ export default async function JobsPage({ searchParams }: { searchParams: SP }) {
   if (categorySlug) where.category = { slug: categorySlug };
   if (workMode) where.workMode = workMode as Prisma.JobWhereInput["workMode"];
   if (seniority) where.seniority = seniority as Prisma.JobWhereInput["seniority"];
+  if (collarType) (where as any).collarType = { equals: collarType };
 
   const [jobs, total, categories] = await Promise.all([
     prisma.job.findMany({
@@ -57,7 +59,7 @@ export default async function JobsPage({ searchParams }: { searchParams: SP }) {
         <p className="text-zinc-600 mt-3 max-w-2xl">Refine by craft, location, seniority and work mode. Press enter to AI-search by intent.</p>
 
         <JobsListClient
-          initialFilters={{ q, location, category: categorySlug, workMode, seniority }}
+          initialFilters={{ q, location, category: categorySlug, workMode, seniority, collarType }}
           jobs={jobs.map(j => ({
             id: j.id,
             slug: j.slug,
@@ -69,6 +71,7 @@ export default async function JobsPage({ searchParams }: { searchParams: SP }) {
             salaryMax: j.salaryMax,
             salaryCurrency: j.salaryCurrency,
             salaryPeriod: j.salaryPeriod,
+            collarType: (j as any).collarType || null,
             featured: j.featured,
             publishedAt: j.publishedAt?.toISOString() || null,
             company: j.company,
