@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 
-export default function SignupPage() {
+function SignupForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const roleParam = searchParams.get("role");
@@ -68,5 +68,13 @@ export default function SignupPage() {
         Already a member? <Link href="/login" className="text-zinc-950 font-medium underline-offset-4 hover:underline">Sign in</Link>
       </p>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="animate-pulse">Loading...</div>}>
+      <SignupForm />
+    </Suspense>
   );
 }
