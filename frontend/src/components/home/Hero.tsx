@@ -69,7 +69,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
             transition={{ delay: 0.1 }}
             className="w-fit"
           >
-            <div className="text-sm font-extrabold uppercase tracking-[0.08em] text-[#12866f]">
+            <div className="text-sm font-extrabold uppercase tracking-[0.08em] text-orange-600">
               India's #1 Job Platform
             </div>
           </motion.div>
@@ -141,7 +141,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
                   type="submit"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="flex h-[46px] w-full items-center justify-center gap-2 rounded-lg bg-[#14866f] px-7 text-sm font-bold text-white transition-colors hover:bg-[#0f725f] md:w-[160px]"
+                  className="flex h-[46px] w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-7 text-sm font-bold text-white transition-colors hover:bg-blue-700 md:w-[160px]"
                   data-testid="hero-search-btn"
                 >
                   Search jobs

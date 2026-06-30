@@ -36,7 +36,6 @@ export default async function Home() {
     prisma.job.findMany({
       where: { status: "PUBLISHED" },
       orderBy: { publishedAt: "desc" },
-      take: 40,
       include: { company: { select: { name: true } } },
     }),
   ]);
@@ -51,12 +50,13 @@ export default async function Home() {
   }));
 
   const COLLAR_TYPES = ["WHITE", "BLUE", "PINK", "GREY", "MSME"] as const;
-  const collarSections: CollarSection[] = COLLAR_TYPES.map(type => ({
-    type,
-    jobs: (collarJobsRaw as any[])
-      .filter((j: any) => j.collarType === type)
-      .slice(0, 8)
-      .map(j => ({
+  const collarSections: CollarSection[] = COLLAR_TYPES.map(type => {
+    const typeJobs = (collarJobsRaw as any[]).filter((j: any) => j.collarType === type);
+    return {
+      type,
+      activeJobs: typeJobs.length,
+      companies: new Set(typeJobs.map((j: any) => j.company.name)).size,
+      jobs: typeJobs.slice(0, 8).map(j => ({
         id: j.id,
         slug: j.slug,
         title: j.title,
@@ -65,7 +65,8 @@ export default async function Home() {
         postedAgo: j.publishedAt ? timeAgo(j.publishedAt) : "recent",
         company: { name: j.company.name, initial: j.company.name[0].toUpperCase() },
       })),
-  }));
+    };
+  });
 
   const featured: FeaturedJob[] = featuredRaw.map((j, i) => ({
     id: j.id,
