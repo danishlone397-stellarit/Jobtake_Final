@@ -23,7 +23,7 @@ export function formatSalary(min?: number | null, max?: number | null, currency 
     if (n >= 1000) return `${Math.round(n / 1000)}k`;
     return `${n}`;
   };
-  const sym = currency === "USD" ? "$" : currency === "EUR" ? "€" : currency === "GBP" ? "£" : `${currency} `;
+  const sym = "₹";
   const suffix = period === "year" ? "" : `/${period}`;
   if (min && max) return `${sym}${fmt(min)} – ${sym}${fmt(max)}${suffix}`;
   if (min) return `${sym}${fmt(min)}+${suffix}`;

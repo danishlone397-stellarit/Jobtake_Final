@@ -63,20 +63,9 @@ function Tilt({ job, i }: { job: FeaturedJob; i: number }) {
               <span key={t} className="text-[11px] px-2.5 py-1 rounded-full bg-zinc-100/80 text-zinc-700 border border-zinc-200/60">{t}</span>
             ))}
           </div>
-          <div className="mt-6 flex items-center justify-between">
-            <div>
-              <div className="text-[10.5px] uppercase tracking-[0.18em] text-zinc-500">Compensation</div>
-              <div className="font-display font-medium text-zinc-950 mt-0.5">{job.salaryLabel}</div>
-            </div>
-            <div className="text-right">
-              <div className="text-[10.5px] uppercase tracking-[0.18em] text-zinc-500">AI Match</div>
-              <div className="flex items-center gap-2 mt-0.5">
-                <div className="font-display font-medium text-zinc-950">{job.matchScore}%</div>
-                <div className="h-1.5 w-14 rounded-full bg-zinc-200 overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-brand-blue via-violet-500 to-brand-orange" style={{ width: `${job.matchScore}%` }} />
-                </div>
-              </div>
-            </div>
+          <div className="mt-6">
+            <div className="text-[10.5px] uppercase tracking-[0.18em] text-zinc-500">Compensation</div>
+            <div className="font-display font-medium text-zinc-950 mt-0.5 text-lg">{job.salaryLabel}</div>
           </div>
           <div className="mt-6 pt-5 border-t border-zinc-200/60 flex items-center justify-between">
             <div className="text-xs text-zinc-500">Apply via 1-click profile</div>
