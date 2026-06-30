@@ -70,10 +70,10 @@ function JobCard({ job, i }: { job: FeaturedJob; i: number }) {
   );
 }
 
-const TABS = ["All Opportunities", "Engineering", "Product", "Design", "Data", "Marketing", "Sales", "Finance"];
-
 export function FeaturedJobs({ jobs }: { jobs: FeaturedJob[] }) {
   const [activeTab, setActiveTab] = useState("All Opportunities");
+  const tabs = ["All Opportunities", ...Array.from(new Set(jobs.map(j => j.company.category)))];
+  const visibleJobs = activeTab === "All Opportunities" ? jobs : jobs.filter(j => j.company.category === activeTab);
 
   return (
     <section className="relative py-24 md:py-32" data-testid="featured-jobs-section">
@@ -115,7 +115,7 @@ export function FeaturedJobs({ jobs }: { jobs: FeaturedJob[] }) {
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-2 flex-wrap">
-            {TABS.map(tab => (
+            {tabs.map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -132,11 +132,11 @@ export function FeaturedJobs({ jobs }: { jobs: FeaturedJob[] }) {
             View all roles <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-        {jobs.length === 0 ? (
-          <div className="text-center text-zinc-500 py-12">No featured jobs yet. Admin can mark jobs as featured from the admin panel.</div>
+        {visibleJobs.length === 0 ? (
+          <div className="text-center text-zinc-500 py-12">No roles in this category yet.</div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-            {jobs.map((j, i) => <JobCard key={j.id} job={j} i={i} />)}
+            {visibleJobs.map((j, i) => <JobCard key={j.id} job={j} i={i} />)}
           </div>
         )}
       </div>
