@@ -23,7 +23,7 @@ export function LogoWall() {
     <section className="relative py-0 md:py-1" data-testid="logo-wall">
       <div className="mx-auto max-w-7xl px-6 md:px-12">
         <p className="text-center text-xs tracking-[0.22em] uppercase text-zinc-500 font-semibold mb-10">
-          Trusted by 1000+ enterprises and 7 lakhs+ MSMEs for hiring
+          Just Justify PAN India Industrial
         </p>
         <div className="relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_15%,#000_85%,transparent)]">
           <motion.div

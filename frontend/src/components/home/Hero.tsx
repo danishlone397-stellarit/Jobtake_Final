@@ -81,7 +81,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
             transition={{ delay: 0.2, duration: 1 }}
             className="mt-6 max-w-4xl text-4xl font-black leading-[1.05] text-black sm:text-5xl md:text-6xl"
           >
-            Your job search ends here
+            Connecting People. Creating Opportunities
           </motion.h1>
 
           {/* Subheading */}
@@ -152,7 +152,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
 
           {/* Suggestion chips */}
           <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-600">
-            <span className="font-bold uppercase tracking-[0.18em] text-[#12866f]">Try</span>
+            <span className="font-bold uppercase tracking-[0.18em] text-orange-600">Try</span>
             {suggestions.map((s, i) => (
               <motion.button
                 key={s}
