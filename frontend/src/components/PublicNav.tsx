@@ -12,7 +12,7 @@ export async function PublicNav() {
         data-testid="primary-nav"
       >
         <Logo size={44} />
-        <ul className="hidden md:flex items-center gap-1 text-sm text-zinc-700 ml-2">
+        <ul className="hidden md:flex items-center gap-1 text-sm font-bold text-black ml-2">
           <li><Link href="/jobs" className="px-3 py-1.5 rounded-full hover:bg-white/70 transition-colors">Jobs</Link></li>
           <li><Link href="/companies" className="px-3 py-1.5 rounded-full hover:bg-white/70 transition-colors">Companies</Link></li>
           <li><Link href="/employers" className="px-3 py-1.5 rounded-full hover:bg-white/70 transition-colors">For Employers</Link></li>

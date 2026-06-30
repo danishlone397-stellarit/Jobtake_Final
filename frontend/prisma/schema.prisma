@@ -1,6 +1,3 @@
-// Jobtake — Production-grade PostgreSQL schema
-// Normalized, with FKs, indexes, constraints, enums.
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,9 +7,394 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ============================================================
-// USERS & AUTH
-// ============================================================
+model User {
+  id               String            @id @default(cuid())
+  email            String            @unique
+  passwordHash     String
+  name             String
+  role             Role              @default(SEEKER)
+  status           UserStatus        @default(ACTIVE)
+  avatarUrl        String?
+  headline         String?
+  bio              String?
+  location         String?
+  phone            String?
+  websiteUrl       String?
+  linkedinUrl      String?
+  githubUrl        String?
+  yearsExperience  Int?
+  openToWork       Boolean           @default(true)
+  profileVisible   Boolean           @default(true)
+  emailVerified    DateTime?
+  lastLoginAt      DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  applications     Application[]
+  applicationNotes ApplicationNote[]
+  auditLogs        AuditLog[]
+  certifications   Certification[]
+  ownedCompanies   Company[]         @relation("CompanyOwner")
+  companyMembers   CompanyMember[]
+  educations       Education[]
+  experiences      Experience[]
+  postedJobs       Job[]             @relation("JobPostedBy")
+  notifications    Notification[]
+  resumes          Resume[]
+  savedJobs        SavedJob[]
+  sessions         Session[]
+  userSkills       UserSkill[]
+
+  @@index([role])
+  @@index([status])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  userAgent String?
+  ipAddress String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Experience {
+  id          String    @id @default(cuid())
+  userId      String
+  title       String
+  company     String
+  location    String?
+  startDate   DateTime
+  endDate     DateTime?
+  current     Boolean   @default(false)
+  description String?
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Education {
+  id          String   @id @default(cuid())
+  userId      String
+  school      String
+  degree      String
+  field       String?
+  startYear   Int
+  endYear     Int?
+  description String?
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Certification {
+  id            String    @id @default(cuid())
+  userId        String
+  name          String
+  issuer        String
+  issuedAt      DateTime?
+  credentialUrl String?
+  createdAt     DateTime  @default(now())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Resume {
+  id           String        @id @default(cuid())
+  userId       String
+  fileName     String
+  fileUrl      String
+  fileSize     Int
+  isPrimary    Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  applications Application[]
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Skill {
+  id         String      @id @default(cuid())
+  name       String      @unique
+  slug       String      @unique
+  createdAt  DateTime    @default(now())
+  jobSkills  JobSkill[]
+  userSkills UserSkill[]
+}
+
+model UserSkill {
+  userId  String
+  skillId String
+  level   Int    @default(3)
+  skill   Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, skillId])
+  @@index([skillId])
+}
+
+model JobSkill {
+  jobId   String
+  skillId String
+  job     Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  skill   Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([jobId, skillId])
+  @@index([skillId])
+}
+
+model Company {
+  id           String           @id @default(cuid())
+  ownerId      String
+  name         String
+  slug         String           @unique
+  tagline      String?
+  description  String?
+  website      String?
+  logoUrl      String?
+  bannerUrl    String?
+  industry     String?
+  size         String?
+  founded      Int?
+  headquarters String?
+  status       CompanyStatus    @default(PENDING)
+  verified     Boolean          @default(false)
+  featured     Boolean          @default(false)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  owner        User             @relation("CompanyOwner", fields: [ownerId], references: [id])
+  benefits     CompanyBenefit[]
+  members      CompanyMember[]
+  jobs         Job[]
+
+  @@index([status])
+  @@index([slug])
+  @@index([featured])
+}
+
+model CompanyMember {
+  id        String   @id @default(cuid())
+  companyId String
+  userId    String
+  role      String   @default("recruiter")
+  createdAt DateTime @default(now())
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, userId])
+  @@index([userId])
+}
+
+model CompanyBenefit {
+  id        String  @id @default(cuid())
+  companyId String
+  label     String
+  icon      String?
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  iconUrl     String?
+  accent      String?  @default("from-violet-500/30 to-blue-500/30")
+  description String?
+  sortOrder   Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  jobs        Job[]
+
+  @@index([active, sortOrder])
+}
+
+model Job {
+  id               String         @id @default(cuid())
+  companyId        String
+  postedById       String
+  categoryId       String?
+  title            String
+  slug             String         @unique
+  description      String
+  responsibilities String?
+  requirements     String?
+  benefits         String?
+  location         String
+  workMode         WorkMode       @default(REMOTE)
+  employmentType   EmploymentType @default(FULL_TIME)
+  seniority        SeniorityLevel @default(MID)
+  salaryMin        Int?
+  salaryMax        Int?
+  salaryCurrency   String         @default("USD")
+  salaryPeriod     String         @default("year")
+  collarType       String?        @default("WHITE")
+  status           JobStatus      @default(PENDING)
+  featured         Boolean        @default(false)
+  urgent           Boolean        @default(false)
+  premium          Boolean        @default(false)
+  applicantsCount  Int            @default(0)
+  viewsCount       Int            @default(0)
+  publishedAt      DateTime?
+  closesAt         DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  applications     Application[]
+  category         Category?      @relation(fields: [categoryId], references: [id])
+  company          Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  postedBy         User           @relation("JobPostedBy", fields: [postedById], references: [id])
+  jobSkills        JobSkill[]
+  savedBy          SavedJob[]
+
+  @@index([status, publishedAt])
+  @@index([featured])
+  @@index([companyId])
+  @@index([categoryId])
+  @@index([workMode])
+  @@index([seniority])
+}
+
+model Application {
+  id          String             @id @default(cuid())
+  jobId       String
+  userId      String
+  resumeId    String?
+  coverLetter String?
+  stage       ApplicationStage   @default(APPLIED)
+  rating      Int?
+  matchScore  Int?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  job         Job                @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  resume      Resume?            @relation(fields: [resumeId], references: [id])
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events      ApplicationEvent[]
+  notes       ApplicationNote[]
+
+  @@unique([jobId, userId])
+  @@index([userId])
+  @@index([jobId, stage])
+  @@index([stage])
+}
+
+model ApplicationNote {
+  id            String      @id @default(cuid())
+  applicationId String
+  authorId      String
+  body          String
+  createdAt     DateTime    @default(now())
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  author        User        @relation(fields: [authorId], references: [id])
+
+  @@index([applicationId])
+}
+
+model ApplicationEvent {
+  id            String            @id @default(cuid())
+  applicationId String
+  fromStage     ApplicationStage?
+  toStage       ApplicationStage
+  comment       String?
+  createdAt     DateTime          @default(now())
+  application   Application       @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+}
+
+model SavedJob {
+  id        String   @id @default(cuid())
+  userId    String
+  jobId     String
+  createdAt DateTime @default(now())
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@index([userId])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  kind      NotificationKind
+  title     String
+  body      String?
+  linkUrl   String?
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@index([createdAt])
+}
+
+model SiteSetting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+}
+
+model HomepageStat {
+  id        String  @id @default(cuid())
+  label     String
+  value     String
+  suffix    String?
+  iconKey   String?
+  accent    String  @default("from-violet-500 to-blue-500")
+  sortOrder Int     @default(0)
+  active    Boolean @default(true)
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  quote     String
+  avatarUrl String?
+  accent    String   @default("from-violet-400 to-blue-500")
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Asset {
+  id           String   @id @default(cuid())
+  kind         String
+  fileName     String
+  fileUrl      String
+  fileSize     Int
+  uploadedById String?
+  createdAt    DateTime @default(now())
+
+  @@index([kind])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String?
+  entityId  String?
+  metadata  String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@index([action])
+  @@index([entity, entityId])
+  @@index([userId])
+  @@index([createdAt])
+}
 
 enum Role {
   ADMIN
@@ -26,250 +408,11 @@ enum UserStatus {
   PENDING
 }
 
-model User {
-  id              String      @id @default(cuid())
-  email           String      @unique
-  passwordHash    String
-  name            String
-  role            Role        @default(SEEKER)
-  status          UserStatus  @default(ACTIVE)
-  avatarUrl       String?
-  headline        String?
-  bio             String?
-  location        String?
-  phone           String?
-  websiteUrl      String?
-  linkedinUrl     String?
-  githubUrl       String?
-  yearsExperience Int?
-  openToWork      Boolean     @default(true)
-  profileVisible  Boolean     @default(true)
-  emailVerified   DateTime?
-  lastLoginAt     DateTime?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-
-  // Seeker side
-  resumes         Resume[]
-  applications    Application[]
-  savedJobs       SavedJob[]
-  experiences     Experience[]
-  educations      Education[]
-  certifications  Certification[]
-  userSkills      UserSkill[]
-
-  // Employer side
-  ownedCompanies  Company[]    @relation("CompanyOwner")
-  companyMembers  CompanyMember[]
-  postedJobs      Job[]        @relation("JobPostedBy")
-  applicationNotes ApplicationNote[]
-
-  // Admin & generic
-  auditLogs       AuditLog[]
-  notifications   Notification[]
-  sessions        Session[]
-
-  @@index([role])
-  @@index([status])
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tokenHash    String   @unique
-  userAgent    String?
-  ipAddress    String?
-  expiresAt    DateTime
-  createdAt    DateTime @default(now())
-
-  @@index([userId])
-  @@index([expiresAt])
-}
-
-// ============================================================
-// SEEKER PROFILE COMPONENTS
-// ============================================================
-
-model Experience {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title       String
-  company     String
-  location    String?
-  startDate   DateTime
-  endDate     DateTime?
-  current     Boolean  @default(false)
-  description String?
-  createdAt   DateTime @default(now())
-
-  @@index([userId])
-}
-
-model Education {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  school      String
-  degree      String
-  field       String?
-  startYear   Int
-  endYear     Int?
-  description String?
-  createdAt   DateTime @default(now())
-
-  @@index([userId])
-}
-
-model Certification {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name        String
-  issuer      String
-  issuedAt    DateTime?
-  credentialUrl String?
-  createdAt   DateTime @default(now())
-
-  @@index([userId])
-}
-
-model Resume {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  fileName    String
-  fileUrl     String
-  fileSize    Int
-  isPrimary   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  applications Application[]
-
-  @@index([userId])
-}
-
-// ============================================================
-// SKILLS (many-to-many)
-// ============================================================
-
-model Skill {
-  id        String     @id @default(cuid())
-  name      String     @unique
-  slug      String     @unique
-  createdAt DateTime   @default(now())
-
-  userSkills UserSkill[]
-  jobSkills  JobSkill[]
-}
-
-model UserSkill {
-  userId   String
-  skillId  String
-  level    Int    @default(3) // 1..5
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  skill    Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
-
-  @@id([userId, skillId])
-  @@index([skillId])
-}
-
-model JobSkill {
-  jobId    String
-  skillId  String
-  job      Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  skill    Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
-
-  @@id([jobId, skillId])
-  @@index([skillId])
-}
-
-// ============================================================
-// COMPANIES
-// ============================================================
-
 enum CompanyStatus {
   ACTIVE
   PENDING
   SUSPENDED
 }
-
-model Company {
-  id          String        @id @default(cuid())
-  ownerId     String
-  owner       User          @relation("CompanyOwner", fields: [ownerId], references: [id])
-  name        String
-  slug        String        @unique
-  tagline     String?
-  description String?       @db.Text
-  website     String?
-  logoUrl     String?
-  bannerUrl   String?
-  industry    String?
-  size        String?       // 1-10, 11-50, 51-200, 201-500, 501-1000, 1000+
-  founded     Int?
-  headquarters String?
-  status      CompanyStatus @default(PENDING)
-  verified    Boolean       @default(false)
-  featured    Boolean       @default(false)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-
-  members     CompanyMember[]
-  jobs        Job[]
-  benefits    CompanyBenefit[]
-
-  @@index([status])
-  @@index([slug])
-  @@index([featured])
-}
-
-model CompanyMember {
-  id        String   @id @default(cuid())
-  companyId String
-  userId    String
-  role      String   @default("recruiter") // owner | admin | recruiter
-  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-
-  @@unique([companyId, userId])
-  @@index([userId])
-}
-
-model CompanyBenefit {
-  id        String   @id @default(cuid())
-  companyId String
-  label     String
-  icon      String?
-  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  @@index([companyId])
-}
-
-// ============================================================
-// CATEGORIES
-// ============================================================
-
-model Category {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  slug        String   @unique
-  iconUrl     String?
-  accent      String?  @default("from-violet-500/30 to-blue-500/30")
-  description String?
-  sortOrder   Int      @default(0)
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-
-  jobs        Job[]
-
-  @@index([active, sortOrder])
-}
-
-// ============================================================
-// JOBS
-// ============================================================
 
 enum EmploymentType {
   FULL_TIME
@@ -304,56 +447,6 @@ enum JobStatus {
   REJECTED
 }
 
-model Job {
-  id              String         @id @default(cuid())
-  companyId       String
-  postedById      String
-  categoryId      String?
-  title           String
-  slug            String         @unique
-  description     String         @db.Text
-  responsibilities String?       @db.Text
-  requirements    String?        @db.Text
-  benefits        String?        @db.Text
-  location        String
-  workMode        WorkMode       @default(REMOTE)
-  employmentType  EmploymentType @default(FULL_TIME)
-  seniority       SeniorityLevel @default(MID)
-  salaryMin       Int?
-  salaryMax       Int?
-  salaryCurrency  String         @default("USD")
-  salaryPeriod    String         @default("year") // year | month | hour
-  collarType      String?        @default("WHITE") // WHITE | BLUE | PINK | GREY | MSME
-  status          JobStatus      @default(PENDING)
-  featured        Boolean        @default(false)
-  urgent          Boolean        @default(false)
-  premium         Boolean        @default(false)
-  applicantsCount Int            @default(0)
-  viewsCount      Int            @default(0)
-  publishedAt     DateTime?
-  closesAt        DateTime?
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-
-  company         Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  postedBy        User           @relation("JobPostedBy", fields: [postedById], references: [id])
-  category        Category?      @relation(fields: [categoryId], references: [id])
-  applications    Application[]
-  savedBy         SavedJob[]
-  jobSkills       JobSkill[]
-
-  @@index([status, publishedAt])
-  @@index([featured])
-  @@index([companyId])
-  @@index([categoryId])
-  @@index([workMode])
-  @@index([seniority])
-}
-
-// ============================================================
-// APPLICATIONS / PIPELINE
-// ============================================================
-
 enum ApplicationStage {
   APPLIED
   SCREENING
@@ -364,73 +457,6 @@ enum ApplicationStage {
   WITHDRAWN
 }
 
-model Application {
-  id           String           @id @default(cuid())
-  jobId        String
-  userId       String
-  resumeId     String?
-  coverLetter  String?          @db.Text
-  stage        ApplicationStage @default(APPLIED)
-  rating       Int?             // 1..5 by recruiter
-  matchScore   Int?             // AI score 0..100
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-
-  job          Job              @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  resume       Resume?          @relation(fields: [resumeId], references: [id])
-  notes        ApplicationNote[]
-  events       ApplicationEvent[]
-
-  @@unique([jobId, userId])
-  @@index([userId])
-  @@index([jobId, stage])
-  @@index([stage])
-}
-
-model ApplicationNote {
-  id            String      @id @default(cuid())
-  applicationId String
-  authorId      String
-  body          String      @db.Text
-  createdAt     DateTime    @default(now())
-
-  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  author        User        @relation(fields: [authorId], references: [id])
-
-  @@index([applicationId])
-}
-
-model ApplicationEvent {
-  id            String           @id @default(cuid())
-  applicationId String
-  fromStage     ApplicationStage?
-  toStage       ApplicationStage
-  comment       String?
-  createdAt     DateTime         @default(now())
-
-  application   Application      @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-
-  @@index([applicationId])
-}
-
-model SavedJob {
-  id        String   @id @default(cuid())
-  userId    String
-  jobId     String
-  createdAt DateTime @default(now())
-
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, jobId])
-  @@index([userId])
-}
-
-// ============================================================
-// NOTIFICATIONS
-// ============================================================
-
 enum NotificationKind {
   APPLICATION_RECEIVED
   APPLICATION_STAGE_CHANGED
@@ -439,89 +465,4 @@ enum NotificationKind {
   COMPANY_APPROVED
   NEW_MATCH
   SYSTEM
-}
-
-model Notification {
-  id        String           @id @default(cuid())
-  userId    String
-  kind      NotificationKind
-  title     String
-  body      String?
-  linkUrl   String?
-  readAt    DateTime?
-  createdAt DateTime         @default(now())
-
-  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, readAt])
-  @@index([createdAt])
-}
-
-// ============================================================
-// CMS / HOMEPAGE CONTENT
-// ============================================================
-
-model SiteSetting {
-  id            String   @id @default(cuid())
-  key           String   @unique
-  value         String   @db.Text
-  description   String?
-  updatedAt     DateTime @updatedAt
-}
-
-model HomepageStat {
-  id        String   @id @default(cuid())
-  label     String
-  value     String   // "2.4M" or "184320"
-  suffix    String?
-  iconKey   String?  // users | jobs | building | trophy
-  accent    String   @default("from-violet-500 to-blue-500")
-  sortOrder Int      @default(0)
-  active    Boolean  @default(true)
-}
-
-model Testimonial {
-  id        String   @id @default(cuid())
-  name      String
-  role      String
-  quote     String   @db.Text
-  avatarUrl String?
-  accent    String   @default("from-violet-400 to-blue-500")
-  sortOrder Int      @default(0)
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-}
-
-model Asset {
-  id        String   @id @default(cuid())
-  kind      String   // logo | banner | hero | icon | resume | avatar
-  fileName  String
-  fileUrl   String
-  fileSize  Int
-  uploadedById String?
-  createdAt DateTime @default(now())
-
-  @@index([kind])
-}
-
-// ============================================================
-// AUDIT LOG
-// ============================================================
-
-model AuditLog {
-  id        String   @id @default(cuid())
-  userId    String?
-  action    String
-  entity    String?
-  entityId  String?
-  metadata  String?  @db.Text
-  ipAddress String?
-  createdAt DateTime @default(now())
-
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([action])
-  @@index([entity, entityId])
-  @@index([userId])
-  @@index([createdAt])
 }

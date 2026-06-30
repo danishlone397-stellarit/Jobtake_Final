@@ -3,11 +3,9 @@ import { PublicNav } from "@/components/PublicNav";
 import { PublicFooter } from "@/components/PublicFooter";
 import Hero from "@/components/home/Hero";
 import { LogoWall } from "@/components/home/LogoWall";
-import { Stats } from "@/components/home/Stats";
 import { Categories } from "@/components/home/Categories";
 import { FeaturedJobs, type FeaturedJob } from "@/components/home/FeaturedJobs";
 import { AIMatching } from "@/components/home/AIMatching";
-import { Testimonials } from "@/components/home/Testimonials";
 import { CTA } from "@/components/home/CTA";
 import { CollarSections, type CollarSection } from "@/components/home/CollarSections";
 import { formatSalary, timeAgo } from "@/lib/utils";
@@ -22,8 +20,7 @@ const LOGO_PALETTE = [
 ];
 
 export default async function Home() {
-  const [stats, categoriesRaw, featuredRaw, testimonials, totalJobs, collarJobsRaw] = await Promise.all([
-    prisma.homepageStat.findMany({ where: { active: true }, orderBy: { sortOrder: "asc" } }),
+  const [categoriesRaw, featuredRaw, totalJobs, collarJobsRaw] = await Promise.all([
     prisma.category.findMany({
       where: { active: true },
       orderBy: { sortOrder: "asc" },
@@ -35,7 +32,6 @@ export default async function Home() {
       take: 10,
       include: { company: { select: { name: true, logoUrl: true } }, jobSkills: { include: { skill: true } } },
     }),
-    prisma.testimonial.findMany({ where: { active: true }, orderBy: { sortOrder: "asc" }, take: 6 }),
     prisma.job.count({ where: { status: "PUBLISHED" } }),
     prisma.job.findMany({
       where: { status: "PUBLISHED" },
@@ -93,12 +89,10 @@ export default async function Home() {
       <PublicNav />
       <Hero totalJobs={totalJobs} />
       <LogoWall />
-      <Stats stats={stats.map((s) => ({ id: s.id, label: s.label, value: s.value, suffix: s.suffix, iconKey: s.iconKey, accent: s.accent }))} />
       <Categories categories={categories} />
       <FeaturedJobs jobs={featured} />
       <CollarSections sections={collarSections} />
       <AIMatching />
-      <Testimonials items={testimonials.map((t) => ({ id: t.id, name: t.name, role: t.role, quote: t.quote, avatarUrl: t.avatarUrl, accent: t.accent }))} />
       <CTA />
       <PublicFooter />
     </main>

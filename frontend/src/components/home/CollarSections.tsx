@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { ArrowRight, MapPin, Clock } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
 export type CollarJob = {
@@ -19,133 +19,58 @@ export type CollarSection = {
 };
 
 const COLLAR_META = {
-  WHITE: {
-    label: "White-Collar Jobs",
-    desc: "Office-based desk roles",
-    emoji: "🏢",
-    color: "from-blue-500 to-indigo-600",
-    bg: "bg-blue-50",
-    border: "border-blue-200",
-    badge: "bg-blue-100 text-blue-700",
-    btn: "bg-blue-600 hover:bg-blue-700",
-  },
-  BLUE: {
-    label: "Blue-Collar Jobs",
-    desc: "Manual labor jobs",
-    emoji: "🔧",
-    color: "from-sky-500 to-blue-700",
-    bg: "bg-sky-50",
-    border: "border-sky-200",
-    badge: "bg-sky-100 text-sky-700",
-    btn: "bg-sky-600 hover:bg-sky-700",
-  },
-  PINK: {
-    label: "Pink-Collar Jobs",
-    desc: "Service industry positions",
-    emoji: "🌸",
-    color: "from-pink-500 to-rose-500",
-    bg: "bg-pink-50",
-    border: "border-pink-200",
-    badge: "bg-pink-100 text-pink-700",
-    btn: "bg-pink-500 hover:bg-pink-600",
-  },
-  GREY: {
-    label: "Grey-Collar Jobs",
-    desc: "Technical and supervisory roles",
-    emoji: "⚙️",
-    color: "from-zinc-500 to-slate-700",
-    bg: "bg-zinc-50",
-    border: "border-zinc-300",
-    badge: "bg-zinc-200 text-zinc-700",
-    btn: "bg-zinc-600 hover:bg-zinc-700",
-  },
-  MSME: {
-    label: "MSME Jobs",
-    desc: "Micro, Small & Medium Enterprises",
-    emoji: "🏭",
-    color: "from-orange-500 to-amber-600",
-    bg: "bg-orange-50",
-    border: "border-orange-200",
-    badge: "bg-orange-100 text-orange-700",
-    btn: "bg-orange-500 hover:bg-orange-600",
-  },
+  WHITE: { label: "White-Collar Jobs", desc: "Office-based desk roles", emoji: "🏢", accent: "from-blue-500/30 to-indigo-500/30" },
+  BLUE:  { label: "Blue-Collar Jobs",  desc: "Manual labor jobs",        emoji: "🔧", accent: "from-sky-500/30 to-blue-500/30" },
+  PINK:  { label: "Pink-Collar Jobs",  desc: "Service industry positions", emoji: "🌸", accent: "from-pink-500/30 to-rose-500/30" },
+  GREY:  { label: "Grey-Collar Jobs",  desc: "Technical and supervisory roles", emoji: "⚙️", accent: "from-zinc-500/30 to-slate-500/30" },
+  MSME:  { label: "MSME Jobs",         desc: "Micro, Small & Medium Enterprises", emoji: "🏭", accent: "from-orange-500/30 to-amber-500/30" },
 };
 
-function JobCard({ job, meta }: { job: CollarJob; meta: typeof COLLAR_META["WHITE"] }) {
-  return (
-    <Link href={`/jobs/${job.slug}`}>
-      <div className={`rounded-2xl border ${meta.border} bg-white p-4 hover:shadow-md transition-shadow cursor-pointer`}>
-        <div className="flex items-center gap-3 mb-3">
-          <div className={`h-9 w-9 rounded-xl bg-gradient-to-br ${meta.color} grid place-items-center text-white font-bold text-sm`}>
-            {job.company.initial}
-          </div>
-          <div>
-            <div className="text-xs text-zinc-500 font-medium">{job.company.name}</div>
-            <div className="flex items-center gap-1 text-[10px] text-zinc-400"><Clock className="h-2.5 w-2.5" /> {job.postedAgo}</div>
-          </div>
-        </div>
-        <h4 className="font-semibold text-zinc-900 text-sm leading-tight">{job.title}</h4>
-        <div className="mt-1.5 flex items-center gap-1 text-xs text-zinc-500"><MapPin className="h-3 w-3" /> {job.location}</div>
-        <div className="mt-2 text-xs font-medium text-zinc-700">{job.salaryLabel}</div>
-      </div>
-    </Link>
-  );
-}
-
 export function CollarSections({ sections }: { sections: CollarSection[] }) {
-  const order: Array<"WHITE" | "BLUE" | "PINK" | "GREY" | "MSME"> = ["WHITE", "BLUE", "PINK", "GREY", "MSME"];
+  const order: Array<"WHITE" | "BLUE" | "PINK" | "MSME"> = ["WHITE", "BLUE", "PINK", "MSME"];
 
   return (
-    <div className="py-16 mx-auto max-w-7xl px-6 md:px-12 space-y-14">
-      {order.map((type, si) => {
-        const section = sections.find(s => s.type === type);
-        const meta = COLLAR_META[type];
-        const jobs = section?.jobs ?? [];
-
-        return (
-          <motion.div
-            key={type}
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: si * 0.05 }}
-          >
-            <div className={`rounded-3xl border ${meta.border} ${meta.bg} p-6 md:p-8`}>
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <div className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${meta.color} grid place-items-center text-2xl shadow`}>
+    <section className="relative py-24 md:py-32" data-testid="collar-sections">
+      <div className="mx-auto max-w-7xl px-6 md:px-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div>
+            <div className="text-xs tracking-[0.22em] uppercase text-zinc-500 font-semibold">Explore by job type</div>
+            <h2 className="font-display mt-3 text-4xl md:text-5xl tracking-tight font-medium text-zinc-950 leading-[1.05] max-w-xl">
+              Find your <span className="text-black">category.</span>
+            </h2>
+          </div>
+          <p className="text-zinc-600 max-w-md text-base">Browse roles across every job type, from desk jobs to skilled trades.</p>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
+          {order.map((type, i) => {
+            const meta = COLLAR_META[type];
+            const count = sections.find(s => s.type === type)?.jobs.length ?? 0;
+            return (
+              <motion.div key={type}
+                initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: i * 0.05, duration: 0.7 }}
+                whileHover={{ y: -6 }}
+              >
+                <Link href={`/jobs?collarType=${type}`} className="glass relative rounded-3xl p-5 md:p-6 overflow-hidden group block">
+                  <div className={`absolute -top-12 -right-12 h-40 w-40 rounded-full bg-gradient-to-br ${meta.accent} blur-2xl opacity-60 group-hover:opacity-90 transition-opacity duration-500`} />
+                  <div className="relative h-20 md:h-24 flex items-center justify-center text-5xl">
                     {meta.emoji}
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-zinc-900">{meta.label}</h3>
-                    <p className="text-sm text-zinc-500">{meta.desc}</p>
+                  <div className="relative mt-4 flex items-end justify-between">
+                    <div>
+                      <div className="font-display font-medium text-zinc-950 text-[15px]">{meta.label}</div>
+                      <div className="text-xs text-zinc-500 mt-0.5">{count.toLocaleString()} open roles</div>
+                    </div>
+                    <div className="h-8 w-8 rounded-full glass grid place-items-center group-hover:rotate-[-12deg] transition-transform">
+                      <ArrowUpRight className="h-3.5 w-3.5 text-zinc-700" />
+                    </div>
                   </div>
-                </div>
-                <Link
-                  href={`/jobs?collarType=${type}`}
-                  className={`hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-white ${meta.btn} px-4 py-2 rounded-full transition`}
-                >
-                  View all <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
-              </div>
-
-              {jobs.length === 0 ? (
-                <div className="text-center py-8 text-zinc-400 text-sm">No {meta.label} posted yet.</div>
-              ) : (
-                <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {jobs.map(job => (
-                    <JobCard key={job.id} job={job} meta={meta} />
-                  ))}
-                </div>
-              )}
-
-              <Link href={`/jobs?collarType=${type}`} className={`sm:hidden mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white ${meta.btn} px-4 py-2 rounded-full transition`}>
-                View all <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </div>
-          </motion.div>
-        );
-      })}
-    </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
 }

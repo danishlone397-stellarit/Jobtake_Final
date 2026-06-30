@@ -15,14 +15,13 @@ export function PublicFooter() {
         <div className="divider-grad mb-16" />
         <div className="grid md:grid-cols-5 gap-10">
           <div className="md:col-span-2">
-            <Logo size={34} />
+            <Logo size={54} />
             <p className="mt-5 text-sm text-zinc-600 max-w-sm leading-relaxed">
               The hiring layer for extraordinary careers. Built for senior talent and ambitious teams.
             </p>
             <div className="mt-6 rounded-2xl border border-zinc-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm">
               <div className="text-[11px] uppercase tracking-[0.22em] text-zinc-500 font-semibold">Contact</div>
               <ul className="mt-3 space-y-2 text-sm text-zinc-700">
-                <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 text-zinc-500" /><span><a href="mailto:jobtake@gmail.com" className="hover:text-zinc-950 transition-colors">Jobtake: jobtake@gmail.com</a></span></li>
                 <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 text-zinc-500" /><span>202, Mourya Center, 16, Race Course Road, Opp. BBC, Indore – 452003</span></li>
                 <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 text-zinc-500" /><span>For Employers: <a href="mailto:enquiry@jobtake.com" className="hover:text-zinc-950 transition-colors">enquiry@jobtake.com</a></span></li>
                 <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 text-zinc-500" /><span>For Employees / Resume Submission: <a href="mailto:resume@jobtake.com" className="hover:text-zinc-950 transition-colors">resume@jobtake.com</a></span></li>

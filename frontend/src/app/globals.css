@@ -6,7 +6,7 @@
 @tailwind utilities;
 
 :root {
-  --bg: #fdfcfa;
+  --bg: #ffffff;
   --ink: #09090b;
   --brand-orange: #f26a1f;
   --brand-blue: #1f3dbb;
@@ -56,11 +56,7 @@ body {
   66% { transform: translate(-25px, 25px) scale(0.97); }
 }
 .orb {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(80px);
-  will-change: transform;
-  animation: float-orb 18s ease-in-out infinite;
+  display: none;
 }
 
 @keyframes spin-slow { to { transform: rotate(360deg); } }

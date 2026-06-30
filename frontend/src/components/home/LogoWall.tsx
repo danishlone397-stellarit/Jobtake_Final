@@ -20,7 +20,7 @@ const LOGOS = [
 
 export function LogoWall() {
   return (
-    <section className="relative py-14 md:py-16" data-testid="logo-wall">
+    <section className="relative py-0 md:py-1" data-testid="logo-wall">
       <div className="mx-auto max-w-7xl px-6 md:px-12">
         <p className="text-center text-xs tracking-[0.22em] uppercase text-zinc-500 font-semibold mb-10">
           Trusted by 1000+ enterprises and 7 lakhs+ MSMEs for hiring
