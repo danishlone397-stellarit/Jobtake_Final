@@ -118,9 +118,11 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
                 <select className="w-full appearance-none bg-transparent text-[15px] text-slate-600 outline-none">
                   <option>Your experience</option>
                   <option>Fresher</option>
-                  <option>1-3 years</option>
-                  <option>3-6 years</option>
-                  <option>6+ years</option>
+                  <option>1-5 years</option>
+                  <option>5-10 years</option>
+                  <option>10-20 years</option>
+                  <option>20-30 years</option>
+                  <option>30+ years</option>
                 </select>
                 <ChevronDown className="h-4 w-4 shrink-0 text-slate-500" />
               </label>

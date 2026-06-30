@@ -94,7 +94,7 @@ export function FeaturedJobs({ jobs }: { jobs: FeaturedJob[] }) {
         {jobs.length === 0 ? (
           <div className="text-center text-zinc-500 py-12">No featured jobs yet. Admin can mark jobs as featured from the admin panel.</div>
         ) : (
-          <div className="grid grid-cols-1 gap-5 md:gap-6 max-w-2xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-5 md:gap-6">
             {jobs.map((j, i) => <Tilt key={j.id} job={j} i={i} />)}
           </div>
         )}
