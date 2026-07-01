@@ -27,7 +27,7 @@ export default function EmployerLoginPage() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Login failed"); setLoading(false); return; }
-      router.push("/employer"); router.refresh();
+      router.push("/employer/post-job"); router.refresh();
     } catch {
       setError("Network error"); setLoading(false);
     }

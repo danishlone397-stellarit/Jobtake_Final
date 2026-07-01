@@ -240,7 +240,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
         </button>
          <button
           type="button"
-          onClick={() => router.push("/employers/post-job")}
+          onClick={() => router.push("/employers/login")}
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-orange-600/20 transition hover:bg-orange-700"
         >
           Post a Job <ArrowUpRight className="h-3.5 w-3.5" />
