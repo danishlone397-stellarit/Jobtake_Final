@@ -44,7 +44,11 @@ function EmployerSignupForm() {
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, role: "EMPLOYER", phone }),
+        body: JSON.stringify({
+          name, email, password, role: "EMPLOYER", phone,
+          companyName: company, industry, gstNumber: gst,
+          registrationAs: regAs.toUpperCase(), designation, country: "India",
+        }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Signup failed"); setLoading(false); return; }
@@ -284,7 +288,10 @@ function CandidateSignupForm() {
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, role: "SEEKER", phone }),
+        body: JSON.stringify({
+          name, email, password, role: "SEEKER", phone,
+          gender, dateOfBirth: dob, expYears: expYears,
+        }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Signup failed"); setLoading(false); return; }

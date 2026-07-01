@@ -23,6 +23,8 @@ model User {
   linkedinUrl      String?
   githubUrl        String?
   yearsExperience  Int?
+  gender           String?
+  dateOfBirth      DateTime?
   openToWork       Boolean           @default(true)
   profileVisible   Boolean           @default(true)
   emailVerified    DateTime?
@@ -163,8 +165,11 @@ model Company {
   industry     String?
   size         String?
   founded      Int?
-  headquarters String?
-  status       CompanyStatus    @default(PENDING)
+  headquarters       String?
+  gstNumber          String?
+  registrationAs     String?
+  contactDesignation String?
+  status             CompanyStatus    @default(PENDING)
   verified     Boolean          @default(false)
   featured     Boolean          @default(false)
   createdAt    DateTime         @default(now())
