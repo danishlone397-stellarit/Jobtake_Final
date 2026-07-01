@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { ArrowRight, Briefcase, Building2, TrendingUp, ShieldCheck, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, Briefcase, ShieldCheck, Sparkles, Zap } from "lucide-react";
 import Link from "next/link";
 
 export type CollarJob = {
@@ -149,18 +149,6 @@ export function CollarSections({ sections }: { sections: CollarSection[] }) {
                         <Briefcase className="h-4 w-4" /> {activeJobs.toLocaleString()}+
                       </div>
                       <div className="text-[11px] text-zinc-500 mt-0.5">Active Jobs</div>
-                    </div>
-                    <div>
-                      <div className={`flex items-center gap-1.5 font-bold text-lg ${meta.text}`}>
-                        <Building2 className="h-4 w-4" /> {companies.toLocaleString()}+
-                      </div>
-                      <div className="text-[11px] text-zinc-500 mt-0.5">Companies</div>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-1.5 font-bold text-lg text-emerald-600">
-                        <TrendingUp className="h-4 w-4" /> {meta.growth}
-                      </div>
-                      <div className="text-[11px] text-zinc-500 mt-0.5">Growth This month</div>
                     </div>
                   </div>
 

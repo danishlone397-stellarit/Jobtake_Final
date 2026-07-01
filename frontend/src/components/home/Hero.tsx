@@ -20,8 +20,6 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const suggestions = ["Staff PM Berlin", "Remote ML Europe", "Founding designer seed", "Quant NYC"];
-
 const candidateActions = [
   { icon: Search, label: "Search verified jobs" },
   { icon: Sparkles, label: "AI Match for suitable roles" },
@@ -61,18 +59,6 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
       <div className="relative mx-auto max-w-7xl px-6 md:px-12" style={{ zIndex: 2 }}>
 
         <div className="max-w-5xl">
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="w-fit"
-          >
-            <div className="text-sm font-extrabold uppercase tracking-[0.08em] text-orange-600">
-              India's #1 Job Platform
-            </div>
-          </motion.div>
-
           {/* Heading */}
           <motion.h1
             initial={{ opacity: 0, y: 28 }}
@@ -149,25 +135,6 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
             </div>
           </motion.form>
 
-          {/* Suggestion chips */}
-          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-600">
-            <span className="font-bold uppercase tracking-[0.18em] text-orange-600">Try</span>
-            {suggestions.map((s, i) => (
-              <motion.button
-                key={s}
-                type="button"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 + i * 0.08 }}
-                whileHover={{ scale: 1.04 }}
-                onClick={() => { setQ(s); router.push(`/jobs?q=${encodeURIComponent(s)}`); }}
-                className="rounded-full border border-zinc-200 bg-white px-3 py-1.5 font-medium text-slate-700 shadow-sm transition-colors hover:border-[#14866f]/30 hover:text-[#14866f]"
-                data-testid={`hero-chip-${i}`}
-              >
-                {s}
-              </motion.button>
-            ))}
-          </div>
         </div>
         {/* Candidate and employer panels */}
         {/* Candidate and employer panels */}

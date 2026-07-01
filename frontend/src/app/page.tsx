@@ -3,7 +3,6 @@ import { PublicNav } from "@/components/PublicNav";
 import { PublicFooter } from "@/components/PublicFooter";
 import Hero from "@/components/home/Hero";
 import { LogoWall } from "@/components/home/LogoWall";
-import { Categories } from "@/components/home/Categories";
 import { FeaturedJobs, type FeaturedJob } from "@/components/home/FeaturedJobs";
 import { AIMatching } from "@/components/home/AIMatching";
 import { CTA } from "@/components/home/CTA";
@@ -20,12 +19,7 @@ const LOGO_PALETTE = [
 ];
 
 export default async function Home() {
-  const [categoriesRaw, featuredRaw, totalJobs, collarJobsRaw] = await Promise.all([
-    prisma.category.findMany({
-      where: { active: true },
-      orderBy: { sortOrder: "asc" },
-      include: { _count: { select: { jobs: { where: { status: "PUBLISHED" } } } } },
-    }),
+  const [featuredRaw, totalJobs, collarJobsRaw] = await Promise.all([
     prisma.job.findMany({
       where: { status: "PUBLISHED", featured: true },
       orderBy: { publishedAt: "desc" },
@@ -39,15 +33,6 @@ export default async function Home() {
       include: { company: { select: { name: true } } },
     }),
   ]);
-
-  const categories = categoriesRaw.map((c) => ({
-    id: c.id,
-    name: c.name,
-    slug: c.slug,
-    iconUrl: c.iconUrl,
-    accent: c.accent,
-    count: c._count.jobs,
-  }));
 
   const COLLAR_TYPES = ["WHITE", "BLUE", "PINK", "GREY", "MSME"] as const;
   const collarSections: CollarSection[] = COLLAR_TYPES.map(type => {
@@ -99,7 +84,6 @@ export default async function Home() {
       <PublicNav />
       <Hero totalJobs={totalJobs} />
       <LogoWall />
-      <Categories categories={categories} />
       <FeaturedJobs jobs={featured} />
       <CollarSections sections={collarSections} />
       <AIMatching />
