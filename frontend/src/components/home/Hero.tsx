@@ -267,7 +267,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
       <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
         <button
           type="button"
-          onClick={() => router.push("/employers")}
+          onClick={() => router.push("/signup?role=employer")}
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-orange-500/20 transition hover:bg-orange-600"
         >
          Employer Registration
