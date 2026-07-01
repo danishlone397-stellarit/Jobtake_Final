@@ -15,7 +15,7 @@ export async function PublicNav() {
         <ul className="hidden md:flex items-center gap-1 text-sm font-bold text-black ml-2">
           <li><Link href="/jobs" className="px-3 py-1.5 rounded-full hover:bg-white/70 transition-colors">Jobs</Link></li>
           <li><Link href="/companies" className="px-3 py-1.5 rounded-full hover:bg-white/70 transition-colors">Companies</Link></li>
-          <li><Link href="/employers" className="px-3 py-1.5 rounded-full hover:bg-white/70 transition-colors">For Employers</Link></li>
+          <li><Link href="/employers/login" className="px-3 py-1.5 rounded-full hover:bg-white/70 transition-colors">For Employers</Link></li>
           <li><Link href="/ai-match" className="px-3 py-1.5 rounded-full hover:bg-white/70 transition-colors">AI Match</Link></li>
         </ul>
         <NavActions
