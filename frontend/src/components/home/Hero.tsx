@@ -177,7 +177,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
         <button
           type="button"
           onClick={() => router.push("/jobs")}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-blue-700/20 transition hover:bg-blue-700"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-orange-500/20 transition hover:bg-orange-600"
         >
           Find Jobs <ArrowUpRight className="h-3.5 w-3.5" />
         </button>
@@ -232,7 +232,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
          <button
           type="button"
           onClick={() => router.push("/employers/login")}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-orange-600/20 transition hover:bg-orange-700"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-blue-600/20 transition hover:bg-blue-700"
         >
           Post a Job <ArrowUpRight className="h-3.5 w-3.5" />
         </button>

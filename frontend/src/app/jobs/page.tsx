@@ -51,12 +51,10 @@ export default async function JobsPage({ searchParams }: { searchParams: SP }) {
     <main className="min-h-screen">
       <PublicNav />
       <div className="pt-32 pb-20 mx-auto max-w-7xl px-6 md:px-12">
-        <div className="absolute inset-x-0 top-0 h-[420px] -z-10" />
-        <div className="text-xs tracking-[0.22em] uppercase text-zinc-500 font-semibold">All roles</div>
-        <h1 className="font-display mt-3 text-4xl md:text-5xl tracking-tight font-medium text-zinc-950" data-testid="jobs-heading">
-          {total.toLocaleString()} opportunities
+        <h1 className="text-4xl md:text-5xl font-black text-zinc-900 leading-tight" data-testid="jobs-heading">
+          Find your next <span className="text-blue-600">opportunity</span>
         </h1>
-        <p className="text-zinc-600 mt-3 max-w-2xl">Refine by craft, location, seniority and work mode. Press enter to AI-search by intent.</p>
+        <p className="text-zinc-500 mt-3 text-base">Explore top roles across industries and locations.</p>
 
         <JobsListClient
           initialFilters={{ q, location, category: categorySlug, workMode, seniority, collarType }}
