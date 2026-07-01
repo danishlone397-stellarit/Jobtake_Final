@@ -15,7 +15,6 @@ import {
   UsersRound,
   Star,
   ArrowUpRight,
-  CheckCircle2,
   Building,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -179,14 +178,14 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
     initial={{ opacity: 0, y: 40 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 1.1, delay: 0.75, ease: [0.2, 0.8, 0.2, 1] }}
-    className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(154,77,16,0.15)]"
+    className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(28,64,140,0.15)]"
   >
-    <div className="absolute right-5 top-5 grid h-16 w-16 place-items-center rounded-2xl bg-orange-500 text-white">
+    <div className="absolute right-5 top-5 grid h-16 w-16 place-items-center rounded-2xl bg-blue-600 text-white">
       <UserRound className="h-8 w-8" />
     </div>
 
     <div className="relative max-w-[240px]">
-      <h2 className="mt-3 text-xl font-semibold leading-tight text-orange-900">For Candidates</h2>
+      <h2 className="mt-3 text-xl font-semibold leading-tight text-blue-900">For Candidates</h2>
       <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">
         Find roles that match your skills, goals and experience.
       </p>
@@ -203,7 +202,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
                 index === 2 || index === 4 ? "border-b-0" : ""
               } ${index > 2 ? "md:border-b-0" : ""}`}
             >
-              <Icon className="h-4 w-4 shrink-0 text-orange-600" />
+              <Icon className="h-4 w-4 shrink-0 text-blue-600" />
               <span>{item.label}</span>
             </div>
           );
@@ -213,7 +212,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
         <button
           type="button"
           onClick={() => router.push("/signup?role=candidate")}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-orange-500/20 transition hover:bg-orange-600"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-blue-600/20 transition hover:bg-blue-700"
         >
           Candidate Registration
         </button>
@@ -234,14 +233,14 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
     initial={{ opacity: 0, y: 40 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 1.1, delay: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
-    className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(28,64,140,0.15)]"
+    className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(154,77,16,0.15)]"
   >
-    <div className="absolute right-5 top-5 grid h-16 w-16 place-items-center rounded-2xl bg-blue-600 text-white">
+    <div className="absolute right-5 top-5 grid h-16 w-16 place-items-center rounded-2xl bg-orange-500 text-white">
       <Briefcase className="h-8 w-8" />
     </div>
 
     <div className="relative max-w-[240px]">
-      <h2 className="mt-3 text-xl font-semibold leading-tight text-blue-900">For Employers</h2>
+      <h2 className="mt-3 text-xl font-semibold leading-tight text-orange-900">For Employers</h2>
       <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">
         Hire better candidates faster with AI-supported recruitment tools.
       </p>
@@ -258,7 +257,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
                 index === 2 || index === 4 ? "border-b-0" : ""
               } ${index > 2 ? "md:border-b-0" : ""}`}
             >
-              <Icon className="h-4 w-4 shrink-0 text-blue-600" />
+              <Icon className="h-4 w-4 shrink-0 text-orange-500" />
               <span>{item.label}</span>
             </div>
           );
@@ -275,7 +274,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
          <button
           type="button"
           onClick={() => router.push("/employers/post-job")}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-blue-700/20 transition hover:bg-blue-700"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-orange-600/20 transition hover:bg-orange-700"
         >
           Post a Job <ArrowUpRight className="h-3.5 w-3.5" />
         </button>
