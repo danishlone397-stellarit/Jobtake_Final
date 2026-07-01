@@ -178,9 +178,9 @@ function LoginForm() {
 
             <h2 className="text-4xl md:text-5xl font-black text-zinc-900 leading-tight">
               {isEmployer ? (
-                <>Hire smarter,<br /><span className={`underline decoration-orange-500 decoration-4 underline-offset-4 text-orange-500`}>faster.</span></>
+                <>Hire smarter,<br /><span className="text-orange-500">faster.</span></>
               ) : (
-                <>Opportunities<br />start <span className={`underline decoration-orange-500 decoration-4 underline-offset-4 text-blue-600`}>here</span></>
+                <>Opportunities<br />start <span className="text-blue-600">here</span></>
               )}
             </h2>
 

@@ -187,7 +187,7 @@ export default function EmployerLoginPage() {
             {/* Headline */}
             <h2 className="text-4xl md:text-5xl font-black text-zinc-900 leading-tight">
               Hire smarter,<br />
-              <span className="text-orange-500 underline decoration-orange-400 decoration-4 underline-offset-4">faster.</span>
+              <span className="text-orange-500">faster.</span>
             </h2>
 
             <p className="text-zinc-600 mt-4 text-base leading-relaxed">

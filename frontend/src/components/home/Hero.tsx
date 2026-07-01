@@ -66,18 +66,9 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
             transition={{ delay: 0.2, duration: 1 }}
             className="mt-6 max-w-4xl text-4xl font-black leading-[1.05] text-black sm:text-5xl md:text-6xl"
           >
-            Connecting People. Creating Opportunities
+            Connecting People.<br />Creating Opportunities
           </motion.h1>
 
-          {/* Subheading */}
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45, duration: 0.9 }}
-            className="mt-5 max-w-2xl text-lg font-medium leading-relaxed text-zinc-800 sm:text-2xl"
-          >
-            Discover 50 lakh+ career opportunities
-          </motion.p>
 
           {/* Search Form */}
           <motion.form
