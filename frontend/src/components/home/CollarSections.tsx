@@ -44,7 +44,7 @@ const COLLAR_META = {
     btn: "bg-teal-600 hover:bg-teal-700",
   },
   PINK: {
-    label: "Drivercity Jobs",
+    label: "Diversity Jobs",
     desc: "Service and care-oriented roles that make a real difference.",
     tags: "Care · Service · Support",
     emoji: "🌸",
