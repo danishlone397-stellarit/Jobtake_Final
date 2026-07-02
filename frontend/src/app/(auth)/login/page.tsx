@@ -179,21 +179,11 @@ function LoginForm() {
             <h2 className="text-4xl md:text-5xl font-black text-zinc-900 leading-tight">
               {isEmployer ? (
                 <>Hire smarter,<br />
-                  <span className="relative inline-block text-orange-500">
-                    faster.
-                    <svg aria-hidden="true" className="absolute left-0 -bottom-2 w-full overflow-visible" style={{ height: 12 }} viewBox="0 0 120 12" fill="none" preserveAspectRatio="none">
-                      <path d="M2 9C20 3 55 2 80 5.5C95 8 110 10.5 118 9" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
-                    </svg>
-                  </span>
+                  <span className="text-orange-500">faster.</span>
                 </>
               ) : (
                 <>Opportunities<br />start{" "}
-                  <span className="relative inline-block text-blue-600">
-                    here
-                    <svg aria-hidden="true" className="absolute left-0 -bottom-2 w-full overflow-visible" style={{ height: 12 }} viewBox="0 0 120 12" fill="none" preserveAspectRatio="none">
-                      <path d="M2 9C20 3 55 2 80 5.5C95 8 110 10.5 118 9" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
-                    </svg>
-                  </span>
+                  <span className="text-blue-600">here</span>
                 </>
               )}
             </h2>

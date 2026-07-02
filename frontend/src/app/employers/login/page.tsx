@@ -187,12 +187,7 @@ export default function EmployerLoginPage() {
             {/* Headline */}
             <h2 className="text-4xl md:text-5xl font-black text-zinc-900 leading-tight">
               Hire smarter,<br />
-              <span className="relative inline-block text-orange-500">
-                faster.
-                <svg aria-hidden="true" className="absolute left-0 -bottom-2 w-full overflow-visible" style={{ height: 12 }} viewBox="0 0 120 12" fill="none" preserveAspectRatio="none">
-                  <path d="M2 9C20 3 55 2 80 5.5C95 8 110 10.5 118 9" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
-                </svg>
-              </span>
+              <span className="text-orange-500">faster.</span>
             </h2>
 
             <p className="text-zinc-600 mt-6 text-base leading-relaxed">

@@ -99,7 +99,7 @@ export default function Hero() {
               </label>
               <label className="flex min-h-[62px] items-center gap-3 border-b border-zinc-200 px-4 transition-colors hover:bg-zinc-50 md:border-b-0 md:border-r">
                 <Briefcase className="h-5 w-5 shrink-0 text-slate-500" />
-                <select className="w-full appearance-none bg-transparent text-[15px] text-slate-600 outline-none">
+                <select className="w-full appearance-none bg-transparent text-[15px] text-zinc-700 outline-none">
                   <option>Your experience</option>
                   <option>Fresher</option>
                   <option>1-5 years</option>
@@ -151,7 +151,7 @@ export default function Hero() {
 
             <div className="relative max-w-[240px]">
               <h2 className="mt-3 text-xl font-semibold leading-tight text-blue-900">For Candidates</h2>
-              <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">
+              <p className="mt-1.5 text-[13px] leading-relaxed text-zinc-700">
                 Find roles that match your skills, goals and experience.
               </p>
             </div>
@@ -205,7 +205,7 @@ export default function Hero() {
 
             <div className="relative max-w-[240px]">
               <h2 className="mt-3 text-xl font-semibold leading-tight text-orange-500">For Employers</h2>
-              <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">
+              <p className="mt-1.5 text-[13px] leading-relaxed text-zinc-700">
                 Hire better candidates faster with AI-supported recruitment tools.
               </p>
             </div>

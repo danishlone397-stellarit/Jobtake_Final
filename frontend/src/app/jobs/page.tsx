@@ -54,7 +54,7 @@ export default async function JobsPage({ searchParams }: { searchParams: SP }) {
         <h1 className="text-4xl md:text-5xl font-black text-zinc-900 leading-tight" data-testid="jobs-heading">
           Find your next <span className="text-blue-600">opportunity</span>
         </h1>
-        <p className="text-zinc-500 mt-3 text-base">Explore top roles across industries and locations.</p>
+        <p className="text-zinc-700 mt-3 text-base">Explore top roles across industries and locations.</p>
 
         <JobsListClient
           initialFilters={{ q, location, category: categorySlug, workMode, seniority, collarType }}

@@ -36,7 +36,7 @@ export function AIMatching() {
                 <span className="text-blue-600">Faster.</span>
               </h1>
 
-              <p className="mt-6 text-zinc-500 text-lg leading-relaxed max-w-md">
+              <p className="mt-6 text-zinc-700 text-lg leading-relaxed max-w-md">
                 Jobtake&apos;s calibrated AI evaluates trajectory, skills, and context — not just keywords. So every match feels right, not random.
               </p>
 
@@ -59,7 +59,7 @@ export function AIMatching() {
                     </div>
                     <div>
                       <div className="font-bold text-zinc-900 text-sm">{title}</div>
-                      <div className="text-zinc-500 text-sm mt-0.5">{desc}</div>
+                      <div className="text-zinc-700 text-sm mt-0.5">{desc}</div>
                     </div>
                   </motion.div>
                 ))}
@@ -203,7 +203,7 @@ export function AIMatching() {
                   </div>
                   <div>
                     <div className="text-sm font-bold text-zinc-900">3,418 matches refined</div>
-                    <div className="text-xs text-zinc-500">in 11.4 seconds</div>
+                    <div className="text-xs text-zinc-700">in 11.4 seconds</div>
                   </div>
                 </motion.div>
 

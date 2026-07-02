@@ -40,14 +40,11 @@ export default async function CompaniesPage() {
             <h1 className="text-4xl font-black text-zinc-900 leading-[1.08]">
               <span className="whitespace-nowrap">Work with companies</span><br />
               building{" "}
-              <span className="text-blue-600 relative inline-block whitespace-nowrap">
+              <span className="text-blue-600">
                 the future.
-                <svg aria-hidden="true" className="absolute left-0 -bottom-1.5 w-full overflow-visible" style={{ height: 10 }} viewBox="0 0 200 10" fill="none" preserveAspectRatio="none">
-                  <path d="M2 7C40 2.5 100 2 145 4.5C165 6 185 8 198 7" stroke="#f97316" strokeWidth="3.5" strokeLinecap="round" strokeOpacity="0.7" />
-                </svg>
               </span>
             </h1>
-            <p className="mt-5 text-zinc-500 text-base leading-relaxed max-w-md">
+            <p className="mt-5 text-zinc-700 text-base leading-relaxed max-w-md">
               Explore verified, high-growth companies that trust Jobtake to hire senior, principal and leadership talent.
             </p>
           </div>
@@ -60,7 +57,7 @@ export default async function CompaniesPage() {
                   <Icon className={`h-5 w-5 ${color}`} />
                 </div>
                 <div className="text-sm font-bold text-zinc-900">{label}</div>
-                <div className="text-[11px] text-zinc-500 leading-snug">{desc}</div>
+                <div className="text-[11px] text-zinc-700 leading-snug">{desc}</div>
               </div>
             ))}
           </div>
@@ -78,7 +75,7 @@ export default async function CompaniesPage() {
             />
           </div>
           <div className="h-px sm:h-auto sm:w-px bg-zinc-200" />
-          <select className="text-sm text-zinc-500 px-4 py-2 outline-none bg-transparent cursor-pointer">
+          <select className="text-sm text-zinc-700 px-4 py-2 outline-none bg-transparent cursor-pointer">
             <option>All Industries</option>
             <option>Technology</option>
             <option>Finance</option>
@@ -86,7 +83,7 @@ export default async function CompaniesPage() {
             <option>Manufacturing</option>
           </select>
           <div className="hidden sm:block h-auto w-px bg-zinc-200" />
-          <select className="text-sm text-zinc-500 px-4 py-2 outline-none bg-transparent cursor-pointer">
+          <select className="text-sm text-zinc-700 px-4 py-2 outline-none bg-transparent cursor-pointer">
             <option>Company Size</option>
             <option>1–50</option>
             <option>51–200</option>
@@ -94,7 +91,7 @@ export default async function CompaniesPage() {
             <option>1000+</option>
           </select>
           <div className="hidden sm:block h-auto w-px bg-zinc-200" />
-          <select className="text-sm text-zinc-500 px-4 py-2 outline-none bg-transparent cursor-pointer">
+          <select className="text-sm text-zinc-700 px-4 py-2 outline-none bg-transparent cursor-pointer">
             <option>All Locations</option>
             <option>Remote</option>
             <option>Mumbai</option>
@@ -135,9 +132,9 @@ export default async function CompaniesPage() {
                   <BadgeCheck className="h-4 w-4 text-blue-500 shrink-0" />
                 </div>
                 {c.tagline && (
-                  <p className="text-xs text-zinc-500 mt-0.5 line-clamp-2 leading-relaxed">{c.tagline}</p>
+                  <p className="text-xs text-zinc-700 mt-0.5 line-clamp-2 leading-relaxed">{c.tagline}</p>
                 )}
-                <div className="mt-3 flex items-center gap-4 text-xs text-zinc-500">
+                <div className="mt-3 flex items-center gap-4 text-xs text-zinc-700">
                   <span className="flex items-center gap-1">
                     <Briefcase className="h-3.5 w-3.5" />
                     {c._count.jobs} Open Role{c._count.jobs === 1 ? "" : "s"}
@@ -153,23 +150,23 @@ export default async function CompaniesPage() {
           ))}
 
           {!companies.length && (
-            <div className="md:col-span-3 rounded-2xl border border-zinc-100 p-16 text-center text-zinc-500">
+            <div className="md:col-span-3 rounded-2xl border border-zinc-100 p-16 text-center text-zinc-700">
               <Building2 className="h-10 w-10 mx-auto text-zinc-300" />
               <div className="mt-4 text-lg font-bold text-zinc-900">No verified companies yet</div>
-              <p className="text-sm text-zinc-500 mt-1">Check back soon — we're growing fast.</p>
+              <p className="text-sm text-zinc-700 mt-1">Check back soon — we're growing fast.</p>
             </div>
           )}
         </div>
 
         {/* Can't find company CTA */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-4 bg-zinc-50 border border-zinc-100 rounded-2xl px-6 py-5">
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/60 border border-blue-100 rounded-2xl px-6 py-5">
           <div className="flex items-center gap-4">
             <div className="h-12 w-12 rounded-2xl border-2 border-dashed border-zinc-300 flex items-center justify-center">
               <Building2 className="h-5 w-5 text-zinc-400" />
             </div>
             <div>
               <div className="font-bold text-zinc-900">Can&apos;t find your company?</div>
-              <div className="text-sm text-zinc-500">List it on Jobtake and reach top talent.</div>
+              <div className="text-sm text-zinc-700">List it on Jobtake and reach top talent.</div>
             </div>
           </div>
           <Link

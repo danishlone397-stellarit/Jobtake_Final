@@ -38,7 +38,7 @@ function JobCard({ job, i }: { job: FeaturedJob; i: number }) {
               <div className="flex items-center gap-1 text-sm font-semibold text-zinc-900">
                 {job.company.name} <BadgeCheck className="h-3.5 w-3.5 text-blue-500" />
               </div>
-              <div className="text-xs text-zinc-500 mt-0.5">{job.company.category} · {job.company.employees}</div>
+              <div className="text-xs text-zinc-700 mt-0.5">{job.company.category} · {job.company.employees}</div>
             </div>
           </div>
           <Bookmark className="h-4 w-4 text-zinc-400 shrink-0" />
@@ -46,7 +46,7 @@ function JobCard({ job, i }: { job: FeaturedJob; i: number }) {
 
         <h3 className="font-display font-semibold text-zinc-950 text-base mt-4 leading-tight">{job.title}</h3>
 
-        <div className="mt-2.5 flex items-center gap-4 text-xs text-zinc-500">
+        <div className="mt-2.5 flex items-center gap-4 text-xs text-zinc-700">
           <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> {job.location}</span>
           <span className="inline-flex items-center gap-1"><Laptop2 className="h-3.5 w-3.5" /> {job.workMode}</span>
         </div>
@@ -86,28 +86,28 @@ export function FeaturedJobs({ jobs }: { jobs: FeaturedJob[] }) {
             <h2 className="font-display mt-3 text-4xl md:text-5xl tracking-tight font-medium text-zinc-950 leading-[1.05] max-w-2xl">
               Top Opportunities for Your Next Career Move
             </h2>
-            <p className="text-zinc-600 max-w-lg text-base mt-3">Handpicked roles from trusted employers across India. Explore opportunities that match your skills and ambitions.</p>
+            <p className="text-zinc-700 max-w-lg text-base mt-3">Handpicked roles from trusted employers across India. Explore opportunities that match your skills and ambitions.</p>
           </div>
           <div className="flex flex-col gap-3 shrink-0 bg-white rounded-2xl p-4 border border-zinc-100 shadow-sm">
             <div className="flex items-center gap-2.5">
               <div className="h-8 w-8 rounded-full bg-blue-100 grid place-items-center"><ShieldCheck className="h-4 w-4 text-blue-600" /></div>
               <div>
                 <div className="text-sm font-semibold text-zinc-900">Trusted Employers</div>
-                <div className="text-xs text-zinc-500">Verified companies hiring actively</div>
+                <div className="text-xs text-zinc-700">Verified companies hiring actively</div>
               </div>
             </div>
             <div className="flex items-center gap-2.5">
               <div className="h-8 w-8 rounded-full bg-emerald-100 grid place-items-center"><Sparkles className="h-4 w-4 text-emerald-600" /></div>
               <div>
                 <div className="text-sm font-semibold text-zinc-900">Quality Opportunities</div>
-                <div className="text-xs text-zinc-500">Relevant roles, real growth.</div>
+                <div className="text-xs text-zinc-700">Relevant roles, real growth.</div>
               </div>
             </div>
             <div className="flex items-center gap-2.5">
               <div className="h-8 w-8 rounded-full bg-purple-100 grid place-items-center"><Zap className="h-4 w-4 text-purple-600" /></div>
               <div>
                 <div className="text-sm font-semibold text-zinc-900">Updated Daily</div>
-                <div className="text-xs text-zinc-500">Stay ahead with fresh openings</div>
+                <div className="text-xs text-zinc-700">Stay ahead with fresh openings</div>
               </div>
             </div>
           </div>
@@ -120,7 +120,7 @@ export function FeaturedJobs({ jobs }: { jobs: FeaturedJob[] }) {
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors inline-flex items-center gap-1.5 ${
-                  activeTab === tab ? "bg-blue-600 text-white" : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                  activeTab === tab ? "bg-blue-600 text-white" : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200"
                 }`}
               >
                 {tab === "All Opportunities" && <LayoutGrid className="h-3.5 w-3.5" />}
@@ -133,7 +133,7 @@ export function FeaturedJobs({ jobs }: { jobs: FeaturedJob[] }) {
           </Link>
         </div>
         {visibleJobs.length === 0 ? (
-          <div className="text-center text-zinc-500 py-12">No roles in this category yet.</div>
+          <div className="text-center text-zinc-700 py-12">No roles in this category yet.</div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
             {visibleJobs.map((j, i) => <JobCard key={j.id} job={j} i={i} />)}

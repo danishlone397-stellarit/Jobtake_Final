@@ -32,13 +32,13 @@ export function ApplyPanel({ jobId, jobTitle, userRole, hasApplied }: {
 
   if (!userRole) {
     return (
-      <div className="glass-strong rounded-3xl p-6">
-        <div className="text-xs uppercase tracking-[0.18em] text-zinc-500 font-semibold">Apply</div>
-        <p className="mt-3 text-sm text-zinc-700">Sign in or create an account to apply to <span className="font-medium text-zinc-950">{jobTitle}</span>.</p>
-        <div className="mt-4 flex gap-2">
-          <Link href="/login" className="btn-glass rounded-full px-4 py-2 text-sm font-medium flex-1 text-center" data-testid="apply-login">Sign in</Link>
-          <Link href="/signup" className="btn-primary rounded-full px-4 py-2 text-sm font-medium flex-1 text-center" data-testid="apply-signup">Sign up</Link>
-        </div>
+      <div className="space-y-3" data-testid="apply-login-panel">
+        <Link href="/login" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl flex items-center justify-center transition-colors text-sm" data-testid="apply-login">
+          Sign in
+        </Link>
+        <Link href="/signup" className="w-full border border-zinc-200 hover:bg-zinc-50 text-zinc-800 font-semibold py-3 rounded-xl flex items-center justify-center transition-colors text-sm" data-testid="apply-signup">
+          Create account
+        </Link>
       </div>
     );
   }

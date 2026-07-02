@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { Sparkles, Lock, Target, Clock } from "lucide-react";
+import { motion } from "framer-motion";
 
 export function CTA() {
   const router = useRouter();
@@ -26,19 +27,7 @@ export function CTA() {
             {/* Heading */}
             <h2 className="text-5xl md:text-[3.4rem] font-black leading-[1.07] tracking-tight text-zinc-900">
               Your next role is<br />
-              <span className="relative inline-block text-blue-600">
-                one signal
-                <svg
-                  aria-hidden="true"
-                  className="absolute left-0 -bottom-1 w-full"
-                  style={{ height: 10 }}
-                  viewBox="0 0 280 10"
-                  fill="none"
-                  preserveAspectRatio="none"
-                >
-                  <path d="M30 7C65 2.5 120 2 165 4.5C195 6.5 225 8.5 248 7" stroke="#f97316" strokeWidth="3.5" strokeLinecap="round" strokeOpacity="0.65" />
-                </svg>
-              </span>
+              <span className="text-blue-600">one signal</span>
               {" "}away.
             </h2>
 
