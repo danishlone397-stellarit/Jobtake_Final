@@ -1,72 +1,212 @@
 "use client";
-import { motion } from "framer-motion";
-import { Sparkles, BrainCircuit, Target, Check } from "lucide-react";
+import { Sparkles, Timer, Target, ShieldCheck, BrainCircuit, Users, Zap, BarChart3 } from "lucide-react";
 import Link from "next/link";
+
+const COMPANY_LOGOS = [
+  { name: "Stripe", text: "stripe" },
+  { name: "Notion", text: "Notion" },
+  { name: "Razorpay", text: "Razorpay" },
+  { name: "CRED", text: "CRED" },
+  { name: "Zepto", text: "zepto" },
+  { name: "Meesho", text: "meesho" },
+];
 
 export function AIMatching() {
   return (
-    <section className="relative py-24 md:py-32 overflow-hidden" data-testid="ai-matching-section">
-      <div className="orb bg-violet-400/25 h-[400px] w-[400px] top-20 left-10" />
-      <div className="orb bg-brand-orange/20 h-[420px] w-[420px] bottom-0 right-0" style={{ animationDelay: "-8s" }} />
-      <div className="relative mx-auto max-w-7xl px-6 md:px-12">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          <div>
-            <div className="text-xs tracking-[0.22em] uppercase text-zinc-500 font-semibold">AI-native matching</div>
-            <h2 className="font-display mt-3 text-4xl md:text-5xl tracking-tight font-medium text-zinc-950 leading-[1.05]">
-              A recruiter that reads <span className="text-black">between the lines.</span>
-            </h2>
-            <p className="text-zinc-600 mt-6 text-lg leading-relaxed max-w-lg">
-              Jobtake's calibrated AI evaluates trajectory, taste, and context — not just keywords — so the matches actually feel like a fit, not a flood.
-            </p>
-            <ul className="mt-8 space-y-3 max-w-md">
-              {["Signal-graded shortlists in under 4 minutes", "Skill, taste & trajectory weighted independently", "Private — stays opt-in, never indexed externally"].map(line => (
-                <li key={line} className="flex items-start gap-3 text-zinc-700">
-                  <span className="mt-0.5 h-5 w-5 rounded-full bg-gradient-to-br from-brand-blue to-violet-500 grid place-items-center shadow-md shadow-brand-blue/30">
-                    <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                  </span>
-                  {line}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <Link href="/signup" className="btn-primary rounded-full px-5 py-3 text-sm font-medium inline-flex items-center gap-2">
-                <Sparkles className="h-4 w-4" /> Get matched
-              </Link>
-              <Link href="/jobs" className="btn-glass rounded-full px-5 py-3 text-sm font-medium">Browse jobs</Link>
+    <div className="bg-white" data-testid="ai-matching-section">
+      {/* Hero section */}
+      <section className="relative py-16 md:py-24 overflow-hidden">
+        <div className="relative mx-auto max-w-7xl px-6 md:px-12">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+            {/* Left — copy */}
+            <div>
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold px-4 py-2 rounded-full mb-8 uppercase tracking-wider">
+                <Sparkles className="h-3.5 w-3.5" />
+                AI-Native Matching
+              </div>
+
+              {/* Heading */}
+              <h1 className="text-5xl md:text-6xl font-black text-zinc-900 leading-[1.05] tracking-tight">
+                Find the Right Match.<br />
+                <span className="text-blue-600">Faster.</span>
+              </h1>
+
+              {/* Subtitle */}
+              <p className="mt-6 text-zinc-500 text-lg leading-relaxed max-w-md">
+                Jobtake&apos;s calibrated AI evaluates trajectory, skills, and context — not just keywords. So every match feels right, not random.
+              </p>
+
+              {/* Feature items */}
+              <div className="mt-8 space-y-5">
+                {[
+                  {
+                    icon: Timer,
+                    bg: "bg-blue-50",
+                    iconColor: "text-blue-600",
+                    title: "Shortlists in under 4 minutes",
+                    desc: "Signal-graded candidates, instantly.",
+                  },
+                  {
+                    icon: Target,
+                    bg: "bg-emerald-50",
+                    iconColor: "text-emerald-600",
+                    title: "Skills, taste & trajectory weighted",
+                    desc: "We evaluate what truly predicts performance.",
+                  },
+                  {
+                    icon: ShieldCheck,
+                    bg: "bg-violet-50",
+                    iconColor: "text-violet-600",
+                    title: "Private & secure",
+                    desc: "Your data stays private and never indexed.",
+                  },
+                ].map(({ icon: Icon, bg, iconColor, title, desc }) => (
+                  <div key={title} className="flex items-start gap-4">
+                    <div className={`h-11 w-11 rounded-2xl ${bg} flex items-center justify-center shrink-0`}>
+                      <Icon className={`h-5 w-5 ${iconColor}`} />
+                    </div>
+                    <div>
+                      <div className="font-bold text-zinc-900 text-sm">{title}</div>
+                      <div className="text-zinc-500 text-sm mt-0.5">{desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTAs */}
+              <div className="mt-10 flex items-center gap-4 flex-wrap">
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm shadow-lg shadow-blue-600/20"
+                >
+                  <Sparkles className="h-4 w-4" /> Get matched
+                </Link>
+                <Link
+                  href="/jobs"
+                  className="inline-flex items-center gap-2 bg-white hover:bg-zinc-50 text-zinc-800 font-bold px-6 py-3 rounded-xl border border-zinc-200 hover:border-zinc-300 transition-colors text-sm"
+                >
+                  Browse jobs →
+                </Link>
+              </div>
+
+              {/* Trust */}
+              <div className="mt-6 flex items-center gap-2 text-xs text-zinc-400">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Trusted by startups and enterprises across industries
+              </div>
             </div>
-          </div>
-          <div className="relative h-[520px]">
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 1.2 }} className="absolute inset-0 grid place-items-center">
-              <div className="absolute h-[440px] w-[440px] rounded-full border border-zinc-200/70 spin-slow" />
-              <div className="absolute h-[340px] w-[340px] rounded-full border border-zinc-300/60" />
-              <div className="absolute h-[240px] w-[240px] rounded-full border border-zinc-400/40" />
-              <div className="relative h-44 w-44 rounded-full ai-pulse bg-gradient-to-br from-brand-blue via-violet-500 to-brand-orange shadow-[inset_0_2px_0_rgba(255,255,255,0.5),0_30px_60px_-10px_rgba(31,61,187,0.5)]">
-                <div className="absolute inset-3 rounded-full bg-gradient-to-br from-white/40 to-transparent" />
-                <div className="absolute inset-0 grid place-items-center">
-                  <BrainCircuit className="h-10 w-10 text-white drop-shadow" strokeWidth={1.6} />
+
+            {/* Right — AI illustration card */}
+            <div className="relative">
+              <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm p-6 relative overflow-hidden">
+
+                {/* Top cards row */}
+                <div className="flex justify-between mb-6">
+                  {/* Senior PM card */}
+                  <div className="bg-white border border-zinc-200 rounded-2xl px-4 py-3 shadow-sm flex items-center gap-3 w-[46%]">
+                    <div className="h-9 w-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                      <BarChart3 className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-zinc-900">Senior PM</div>
+                      <div className="text-xs font-bold text-blue-600">96% match</div>
+                    </div>
+                  </div>
+                  {/* Trajectory card */}
+                  <div className="bg-white border border-zinc-200 rounded-2xl px-4 py-3 shadow-sm flex items-center gap-3 w-[46%]">
+                    <div className="h-9 w-9 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+                      <Users className="h-4 w-4 text-orange-500" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-zinc-900">Trajectory</div>
+                      <div className="text-xs font-bold text-orange-500">Director-ready</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Center — AI circle + side cards */}
+                <div className="relative flex items-center justify-center h-52 my-2">
+                  {/* Dashed ring */}
+                  <div className="absolute h-44 w-44 rounded-full border-2 border-dashed border-zinc-200" />
+                  {/* AI Circle */}
+                  <div className="h-28 w-28 rounded-full bg-gradient-to-br from-blue-500 via-violet-500 to-purple-600 flex items-center justify-center shadow-2xl shadow-violet-500/30 z-10 relative">
+                    <BrainCircuit className="h-10 w-10 text-white" strokeWidth={1.5} />
+                  </div>
+
+                  {/* Left — Taste card */}
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 bg-white border border-zinc-200 rounded-2xl px-3.5 py-2.5 shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">⭐</span>
+                      <div>
+                        <div className="text-xs font-bold text-zinc-900">Taste</div>
+                        <div className="text-xs font-bold text-orange-500">A+</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right — Culture fit card */}
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-white border border-zinc-200 rounded-2xl px-3.5 py-2.5 shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="h-8 w-8 rounded-xl bg-emerald-50 flex items-center justify-center">
+                        <Users className="h-4 w-4 text-emerald-600" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-zinc-900">Culture fit</div>
+                        <div className="text-xs font-bold text-emerald-600">High</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Matches refined card */}
+                <div className="bg-white border border-zinc-200 rounded-2xl px-4 py-3 shadow-sm flex items-center gap-3 mx-auto w-fit mt-4">
+                  <div className="h-9 w-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                    <Target className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-zinc-900">3,418 matches refined</div>
+                    <div className="text-xs text-zinc-500">in 11.4 seconds</div>
+                  </div>
+                </div>
+
+                {/* Bottom stats bar */}
+                <div className="mt-5 grid grid-cols-4 divide-x divide-zinc-100 border border-zinc-100 rounded-2xl overflow-hidden">
+                  {[
+                    { icon: Users, color: "text-blue-600", bg: "bg-blue-50", label: "Smart matches", sub: "Quality over quantity" },
+                    { icon: Zap, color: "text-orange-500", bg: "bg-orange-50", label: "Fast & efficient", sub: "Save hours every week" },
+                    { icon: ShieldCheck, color: "text-blue-600", bg: "bg-blue-50", label: "Bias-reduced", sub: "Fairer evaluations" },
+                    { icon: BarChart3, color: "text-blue-600", bg: "bg-blue-50", label: "Better hires", sub: "Built for real impact" },
+                  ].map(({ icon: Icon, color, bg, label, sub }) => (
+                    <div key={label} className="flex flex-col items-center py-3 px-2 text-center bg-white">
+                      <div className={`h-7 w-7 rounded-lg ${bg} flex items-center justify-center mb-1.5`}>
+                        <Icon className={`h-3.5 w-3.5 ${color}`} />
+                      </div>
+                      <div className="text-[11px] font-bold text-zinc-900 leading-tight">{label}</div>
+                      <div className="text-[10px] text-zinc-400 mt-0.5 leading-tight">{sub}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
-              {[
-                { label: "Senior PM · 96% match", top: "8%", left: "8%", accent: "from-violet-500 to-brand-blue" },
-                { label: "Trajectory: Director-ready", top: "20%", right: "6%", accent: "from-brand-blue to-cyan-500" },
-                { label: "Taste · A+", bottom: "16%", left: "4%", accent: "from-brand-orange to-amber-500" },
-                { label: "Culture: Linear, Vercel", bottom: "8%", right: "8%", accent: "from-fuchsia-500 to-rose-500" },
-              ].map((c, i) => (
-                <motion.div key={c.label} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 + i * 0.12 }} className="absolute glass rounded-full px-3 py-1.5 text-xs font-medium text-zinc-800 flex items-center gap-2" style={c as React.CSSProperties}>
-                  <span className={`h-2 w-2 rounded-full bg-gradient-to-br ${c.accent}`} />{c.label}
-                </motion.div>
-              ))}
-              <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 1 }} className="absolute bottom-8 left-1/2 -translate-x-1/2 glass-strong rounded-2xl px-4 py-2.5 flex items-center gap-3">
-                <Target className="h-4 w-4 text-brand-blue" />
-                <div className="text-xs">
-                  <div className="font-display font-medium text-zinc-950">3,418 matches refined</div>
-                  <div className="text-zinc-500">in 11.4 seconds</div>
-                </div>
-              </motion.div>
-            </motion.div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Companies section */}
+      <section className="py-12 border-t border-zinc-100">
+        <div className="mx-auto max-w-7xl px-6 md:px-12">
+          <p className="text-center text-sm font-medium text-zinc-500 mb-8">Companies hiring with Jobtake</p>
+          <div className="flex items-center justify-center gap-10 flex-wrap">
+            {COMPANY_LOGOS.map(({ name, text }) => (
+              <span key={name} className="text-zinc-400 font-bold text-xl tracking-tight hover:text-zinc-600 transition-colors cursor-default select-none">
+                {text}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

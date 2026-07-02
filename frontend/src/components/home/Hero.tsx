@@ -1,273 +1,148 @@
 "use client";
-import { motion } from "framer-motion";
-import {
-  Search,
-  MapPin,
-  Sparkles,
-  Briefcase,
-  Building2,
-  Zap,
-  ChevronDown,
-  UserRound,
-  ClipboardList,
-  Bell,
-  CirclePlus,
-  UsersRound,
-  Star,
-  ArrowUpRight,
-  Building,
-} from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Sparkles, Lock, Target, Clock } from "lucide-react";
 
-const candidateActions = [
-  { icon: Search, label: "Search verified jobs" },
-  { icon: Sparkles, label: "AI Match for suitable roles" },
-  { icon: UserRound, label: "Create candidate profile" },
-  { icon: ClipboardList, label: "Track applications" },
-  { icon: Bell, label: "Get job alerts" },
-];
-
-const employerActions = [
-  { icon: CirclePlus, label: "Post job openings" },
-  { icon: UsersRound, label: "Manage applicants" },
-  { icon: Star, label: "Shortlist candidates" },
-  { icon: Sparkles, label: "Use AI-assisted matching" },
-  { icon: Building, label: "Build employer profile" },
-];
-
-export default function Hero({ totalJobs }: { totalJobs: number }) {
+export default function Hero({ totalJobs: _totalJobs }: { totalJobs: number }) {
   const router = useRouter();
-  const [q, setQ] = useState("");
-  const [loc, setLoc] = useState("");
-
-  function search(e: React.FormEvent) {
-    e.preventDefault();
-    const p = new URLSearchParams();
-    if (q) p.set("q", q);
-    if (loc) p.set("location", loc);
-    router.push(`/jobs?${p.toString()}`);
-  }
 
   return (
-    <section
-      className="relative pt-28 pb-10 md:pt-36 md:pb-12 overflow-hidden bg-white"
-      data-testid="hero-section"
-    >
+    <section className="relative min-h-screen bg-white overflow-hidden flex flex-col">
+      {/* Background subtle grid */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_60%_40%,rgba(59,130,246,0.06)_0%,transparent_60%)] pointer-events-none" />
 
-      {/* Main content */}
-      <div className="relative mx-auto max-w-7xl px-6 md:px-12" style={{ zIndex: 2 }}>
+      <div className="relative flex-1 flex items-center mx-auto max-w-7xl px-6 md:px-12 w-full pt-28 pb-16">
+        <div className="grid lg:grid-cols-2 gap-12 items-center w-full">
 
-        <div className="max-w-5xl">
-          {/* Heading */}
-          <motion.h1
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 1 }}
-            className="mt-6 max-w-4xl text-4xl font-black leading-[1.05] text-black sm:text-5xl md:text-6xl"
-          >
-            Connecting People.<br />Creating Opportunities
-          </motion.h1>
+          {/* Left — copy */}
+          <div>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold px-4 py-2 rounded-full mb-8">
+              <Sparkles className="h-3.5 w-3.5" />
+              Join thousands of professionals
+            </div>
 
+            {/* Heading */}
+            <h1 className="text-5xl md:text-6xl font-black text-zinc-900 leading-[1.08] tracking-tight">
+              Your next role is<br />
+              <span className="relative inline-block text-blue-600">
+                one signal
+                <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 320 12" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                  <path d="M2 8.5C60 3.5 140 2 200 5.5C240 8 290 10 318 8.5" stroke="#f97316" strokeWidth="3.5" strokeLinecap="round"/>
+                </svg>
+              </span>{" "}away.
+            </h1>
 
-          {/* Search Form */}
-          <motion.form
-            onSubmit={search}
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 1 }}
-            className="mt-10 max-w-5xl overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)]"
-          >
-            <div className="grid md:grid-cols-[1.08fr_0.92fr_1fr_auto]">
-              <label className="flex min-h-[62px] items-center gap-3 border-b border-zinc-200 px-4 transition-colors hover:bg-zinc-50 md:border-b-0 md:border-r">
-                <Search className="h-5 w-5 shrink-0 text-slate-500" />
-                <input
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  placeholder="Search jobs by title..."
-                  className="w-full bg-transparent text-[15px] text-zinc-900 outline-none placeholder:text-slate-500"
-                  data-testid="hero-search-input"
-                />
-              </label>
-              <label className="flex min-h-[62px] items-center gap-3 border-b border-zinc-200 px-4 transition-colors hover:bg-zinc-50 md:border-b-0 md:border-r">
-                <Briefcase className="h-5 w-5 shrink-0 text-slate-500" />
-                <select className="w-full appearance-none bg-transparent text-[15px] text-slate-600 outline-none">
-                  <option>Your experience</option>
-                  <option>Fresher</option>
-                  <option>1-5 years</option>
-                  <option>5-10 years</option>
-                  <option>10-20 years</option>
-                  <option>20-30 years</option>
-                  <option>30+ years</option>
-                </select>
-                <ChevronDown className="h-4 w-4 shrink-0 text-slate-500" />
-              </label>
-              <label className="flex min-h-[62px] items-center gap-3 border-b border-zinc-200 px-4 transition-colors hover:bg-zinc-50 md:border-b-0 md:border-r">
-                <MapPin className="h-5 w-5 shrink-0 text-slate-500" />
-                <input
-                  value={loc}
-                  onChange={(e) => setLoc(e.target.value)}
-                  placeholder="Search for an area..."
-                  className="w-full bg-transparent text-[15px] text-zinc-900 outline-none placeholder:text-slate-500"
-                  data-testid="hero-location-input"
-                />
-              </label>
-              <div className="p-2">
-                <motion.button
-                  type="submit"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="flex h-[46px] w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-7 text-sm font-bold text-white transition-colors hover:bg-blue-700 md:w-[160px]"
-                  data-testid="hero-search-btn"
-                >
-                  Search jobs
-                </motion.button>
+            {/* Subtitle */}
+            <p className="mt-6 text-zinc-500 text-lg leading-relaxed max-w-md">
+              Create your free profile in minutes and let the right opportunities find you — confidentiality guaranteed.
+            </p>
+
+            {/* CTAs */}
+            <div className="mt-8 flex items-center gap-4 flex-wrap">
+              <button
+                onClick={() => router.push("/signup?role=candidate")}
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-7 py-3.5 rounded-full transition-colors text-[15px] shadow-lg shadow-blue-600/25"
+              >
+                Create my profile <span className="text-lg leading-none">→</span>
+              </button>
+              <button
+                onClick={() => router.push("/employers/login")}
+                className="inline-flex items-center gap-2 bg-white hover:bg-zinc-50 text-zinc-800 font-semibold px-7 py-3.5 rounded-full border border-zinc-200 hover:border-zinc-300 transition-colors text-[15px]"
+              >
+                I&apos;m hiring instead
+              </button>
+            </div>
+
+            {/* Trust items */}
+            <div className="mt-10 flex items-start gap-8 flex-wrap">
+              {[
+                { icon: Lock, title: "100% Private", desc: "Your data stays private and secure." },
+                { icon: Target, title: "Smart Matching", desc: "Better matches using skills, experience & preferences." },
+                { icon: Clock, title: "Quick & Easy", desc: "Create your profile in just 4 minutes." },
+              ].map(({ icon: Icon, title, desc }) => (
+                <div key={title} className="flex items-start gap-2.5 max-w-[160px]">
+                  <div className="h-8 w-8 rounded-lg bg-zinc-100 flex items-center justify-center shrink-0 mt-0.5">
+                    <Icon className="h-4 w-4 text-zinc-500" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-zinc-900">{title}</div>
+                    <div className="text-xs text-zinc-500 mt-0.5 leading-relaxed">{desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right — illustration */}
+          <div className="relative flex items-center justify-center h-[480px] lg:h-[520px]">
+            {/* Concentric rings */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="h-[420px] w-[420px] rounded-full border border-zinc-100" />
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="h-[300px] w-[300px] rounded-full border border-zinc-100" />
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="h-[180px] w-[180px] rounded-full border border-zinc-200/60" />
+            </div>
+
+            {/* Center circle with Jobtake star */}
+            <div className="h-20 w-20 rounded-full bg-blue-600 flex items-center justify-center shadow-2xl shadow-blue-600/30 z-10">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-10 w-10">
+                <path d="M24 4L28 16H40L31 23L34 36L24 29L14 36L17 23L8 16H20L24 4Z" fill="white" />
+              </svg>
+            </div>
+
+            {/* Dot accents */}
+            <div className="absolute top-[22%] left-[18%] h-3 w-3 rounded-full bg-blue-500" />
+            <div className="absolute top-[38%] right-[14%] h-2.5 w-2.5 rounded-full bg-emerald-400" />
+            <div className="absolute bottom-[30%] left-[12%] h-4 w-4 rounded-full bg-orange-400" />
+            <div className="absolute top-[60%] right-[22%] h-2 w-2 rounded-full bg-violet-400" />
+
+            {/* For Job Seekers card */}
+            <div className="absolute top-[8%] left-[4%] bg-white rounded-2xl border border-zinc-200 shadow-xl p-4 w-52">
+              <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-3">For Job Seekers</div>
+              <div className="flex items-center gap-3">
+                <div className="h-11 w-11 rounded-full bg-gradient-to-br from-blue-400 to-violet-500 flex items-center justify-center text-white font-bold text-base shrink-0">
+                  S
+                </div>
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-2 bg-zinc-100 rounded-full w-full" />
+                  <div className="h-2 bg-zinc-100 rounded-full w-3/4" />
+                </div>
+                <div className="h-5 w-5 rounded-full bg-blue-600 flex items-center justify-center shrink-0">
+                  <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                </div>
+              </div>
+              <div className="mt-3">
+                <div className="text-sm font-bold text-zinc-900">Discover roles</div>
+                <div className="text-xs text-zinc-500 mt-0.5">that match your skills and ambition.</div>
               </div>
             </div>
-          </motion.form>
+
+            {/* For Employers card */}
+            <div className="absolute bottom-[6%] right-[2%] bg-white rounded-2xl border border-zinc-200 shadow-xl p-4 w-52">
+              <div className="text-[10px] font-bold text-orange-500 uppercase tracking-wider mb-3">For Employers</div>
+              <div className="flex items-center gap-3">
+                <div className="h-11 w-11 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-white font-bold text-base shrink-0">
+                  E
+                </div>
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-2 bg-zinc-100 rounded-full w-full" />
+                  <div className="h-2 bg-zinc-100 rounded-full w-2/3" />
+                </div>
+                <div className="h-5 w-5 rounded-full bg-orange-500 flex items-center justify-center shrink-0">
+                  <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                </div>
+              </div>
+              <div className="mt-3">
+                <div className="text-sm font-bold text-zinc-900">Find the right talent</div>
+                <div className="text-xs text-zinc-500 mt-0.5">faster with curated, quality profiles.</div>
+              </div>
+            </div>
+          </div>
 
         </div>
-        {/* Candidate and employer panels */}
-        {/* Candidate and employer panels */}
-<div className="mt-10 grid gap-5 lg:grid-cols-2">
-
-  {/* FOR CANDIDATES */}
-  <motion.div
-    initial={{ opacity: 0, y: 40 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 1.1, delay: 0.75, ease: [0.2, 0.8, 0.2, 1] }}
-    className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(28,64,140,0.15)]"
-  >
-    <div className="absolute right-5 top-5 grid h-16 w-16 place-items-center rounded-2xl bg-blue-600 text-white">
-      <UserRound className="h-8 w-8" />
-    </div>
-
-    <div className="relative max-w-[240px]">
-      <h2 className="mt-3 text-xl font-semibold leading-tight text-blue-900">For Candidates</h2>
-      <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">
-        Find roles that match your skills, goals and experience.
-      </p>
-    </div>
-
-    <div className="relative mt-4 rounded-xl bg-white/80 p-3 shadow-[0_8px_30px_rgba(15,23,42,0.07)]">
-      <div className="grid gap-x-6 md:grid-cols-2">
-        {candidateActions.map((item, index) => {
-          const Icon = item.icon;
-          return (
-            <div
-              key={item.label}
-              className={`flex min-h-[34px] items-center gap-2.5 border-b border-slate-100 py-2 text-[13px] font-medium text-slate-800 ${
-                index === 2 || index === 4 ? "border-b-0" : ""
-              } ${index > 2 ? "md:border-b-0" : ""}`}
-            >
-              <Icon className="h-4 w-4 shrink-0 text-blue-600" />
-              <span>{item.label}</span>
-            </div>
-          );
-        })}
-      </div>
-      <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
-        <button
-          type="button"
-          onClick={() => router.push("/signup?role=candidate")}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-blue-600/20 transition hover:bg-blue-700"
-        >
-          Candidate Registration
-        </button>
-        <button
-          type="button"
-          onClick={() => router.push("/jobs")}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-orange-500/20 transition hover:bg-orange-600"
-        >
-          Find Jobs <ArrowUpRight className="h-3.5 w-3.5" />
-        </button>
-        
-      </div>
-    </div>
-  </motion.div>
-
-  {/* FOR EMPLOYERS */}
-  <motion.div
-    initial={{ opacity: 0, y: 40 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 1.1, delay: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
-    className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(154,77,16,0.15)]"
-  >
-    <div className="absolute right-5 top-5 grid h-16 w-16 place-items-center rounded-2xl bg-orange-500 text-white">
-      <Briefcase className="h-8 w-8" />
-    </div>
-
-    <div className="relative max-w-[240px]">
-      <h2 className="mt-3 text-xl font-semibold leading-tight text-orange-900">For Employers</h2>
-      <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">
-        Hire better candidates faster with AI-supported recruitment tools.
-      </p>
-    </div>
-
-    <div className="relative mt-4 rounded-xl bg-white/80 p-3 shadow-[0_8px_30px_rgba(15,23,42,0.07)]">
-      <div className="grid gap-x-6 md:grid-cols-2">
-        {employerActions.map((item, index) => {
-          const Icon = item.icon;
-          return (
-            <div
-              key={item.label}
-              className={`flex min-h-[34px] items-center gap-2.5 border-b border-slate-100 py-2 text-[13px] font-medium text-slate-800 ${
-                index === 2 || index === 4 ? "border-b-0" : ""
-              } ${index > 2 ? "md:border-b-0" : ""}`}
-            >
-              <Icon className="h-4 w-4 shrink-0 text-orange-500" />
-              <span>{item.label}</span>
-            </div>
-          );
-        })}
-      </div>
-      <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
-        <button
-          type="button"
-          onClick={() => router.push("/signup?role=employer")}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-orange-500/20 transition hover:bg-orange-600"
-        >
-         Employer Registration
-        </button>
-         <button
-          type="button"
-          onClick={() => router.push("/employers/login")}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-blue-600/20 transition hover:bg-blue-700"
-        >
-          Post a Job <ArrowUpRight className="h-3.5 w-3.5" />
-        </button>
-       
-      </div>
-    </div>
-  </motion.div>
-
-</div>
-        {/* Stats bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2 }}
-          className="mt-10 sm:mt-8 flex items-center justify-center gap-6 flex-wrap font-bold"
-          style={{ color: "#000000", fontSize: "16px" }}
-        >
-          {[
-            { icon: <Briefcase className="h-3.5 w-3.5" />, label: `${totalJobs.toLocaleString()}+ active roles` },
-            { icon: <Building2 className="h-3.5 w-3.5" />, label: "Verified hiring teams" },
-            { icon: <Zap className="h-3.5 w-3.5" />, label: "14-day average time-to-offer" },
-          ].map((item, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.05, color: "#14866f" }}
-              className="flex items-center gap-2 cursor-default transition-colors"
-            >
-              {item.icon} {item.label}
-              {i < 2 && (
-                <span className="h-1 w-1 rounded-full ml-4" style={{ background: "rgba(20,134,111,0.32)" }} />
-              )}
-            </motion.div>
-          ))}
-        </motion.div>
-
       </div>
     </section>
   );
