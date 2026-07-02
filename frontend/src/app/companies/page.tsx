@@ -2,7 +2,7 @@ import { PublicNav } from "@/components/PublicNav";
 import { PublicFooter } from "@/components/PublicFooter";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Building2, MapPin, BadgeCheck, ShieldCheck, Users, Star, Lock, Briefcase } from "lucide-react";
+import { Building2, BadgeCheck, ShieldCheck, Users, Star, Lock, Briefcase } from "lucide-react";
 
 const TRUST_BADGES = [
   { icon: ShieldCheck, color: "text-blue-600",   bg: "bg-blue-50",   label: "Verified",       desc: "All companies are manually verified" },
@@ -142,12 +142,6 @@ export default async function CompaniesPage() {
                     <Briefcase className="h-3.5 w-3.5" />
                     {c._count.jobs} Open Role{c._count.jobs === 1 ? "" : "s"}
                   </span>
-                  {c.location && (
-                    <span className="flex items-center gap-1">
-                      <MapPin className="h-3.5 w-3.5" />
-                      {c.location}
-                    </span>
-                  )}
                 </div>
               </div>
 
