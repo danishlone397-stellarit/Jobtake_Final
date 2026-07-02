@@ -152,6 +152,48 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                 </section>
               )}
 
+              {/* Job Details block — like reference image */}
+              <section className="rounded-xl bg-zinc-50 border border-zinc-100 p-5 space-y-3">
+                {job.category?.name && (
+                  <div className="flex gap-2 text-sm">
+                    <span className="font-semibold text-zinc-900 w-40 shrink-0">Role</span>
+                    <span className="text-zinc-700">{job.category.name}</span>
+                  </div>
+                )}
+                {job.company.industry && (
+                  <div className="flex gap-2 text-sm">
+                    <span className="font-semibold text-zinc-900 w-40 shrink-0">Industry Type</span>
+                    <span className="text-zinc-700">{job.company.industry}</span>
+                  </div>
+                )}
+                {job.collarType && (
+                  <div className="flex gap-2 text-sm">
+                    <span className="font-semibold text-zinc-900 w-40 shrink-0">Department</span>
+                    <span className="text-zinc-700">
+                      {job.collarType === "WHITE" ? "Corporate & Professional" : job.collarType === "BLUE" ? "Operations & Skilled Trades" : job.collarType === "PINK" ? "Service & Support" : job.collarType === "GREY" ? "Technical & Supervisory" : job.collarType === "MSME" ? "MSME & Entrepreneurship" : job.collarType}
+                    </span>
+                  </div>
+                )}
+                <div className="flex gap-2 text-sm">
+                  <span className="font-semibold text-zinc-900 w-40 shrink-0">Employment Type</span>
+                  <span className="text-zinc-700">
+                    {job.employmentType === "FULL_TIME" ? "Full Time, Permanent" : job.employmentType === "PART_TIME" ? "Part Time" : job.employmentType === "CONTRACT" ? "Contract" : job.employmentType === "INTERNSHIP" ? "Internship" : job.employmentType === "TEMPORARY" ? "Temporary" : job.employmentType}
+                  </span>
+                </div>
+                <div className="flex gap-2 text-sm">
+                  <span className="font-semibold text-zinc-900 w-40 shrink-0">Work Mode</span>
+                  <span className="text-zinc-700">
+                    {job.workMode === "REMOTE" ? "Remote" : job.workMode === "ONSITE" ? "On-site" : job.workMode === "HYBRID" ? "Hybrid" : job.workMode}
+                  </span>
+                </div>
+                {job.category?.name && (
+                  <div className="flex gap-2 text-sm">
+                    <span className="font-semibold text-zinc-900 w-40 shrink-0">Role Category</span>
+                    <span className="text-zinc-700">{job.category.name}</span>
+                  </div>
+                )}
+              </section>
+
               {job.jobSkills.length > 0 && (
                 <section>
                   <h2 className="text-lg font-bold text-zinc-900 mb-3">Skills</h2>
