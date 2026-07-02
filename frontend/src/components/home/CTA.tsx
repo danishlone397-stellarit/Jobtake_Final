@@ -92,10 +92,20 @@ export function CTA() {
               className="w-full max-w-[520px]"
               aria-hidden="true"
             >
-              {/* concentric rings */}
-              <circle cx="290" cy="260" r="220" stroke="#E4E7EF" strokeWidth="1.2" />
-              <circle cx="290" cy="260" r="158" stroke="#E4E7EF" strokeWidth="1.2" />
-              <circle cx="290" cy="260" r="96"  stroke="#D1D5E0" strokeWidth="1.2" />
+              <defs>
+                <style>{`
+                  @keyframes ctaSpinCW  { from { transform: rotate(0deg);    } to { transform: rotate(360deg);  } }
+                  @keyframes ctaSpinCCW { from { transform: rotate(0deg);    } to { transform: rotate(-360deg); } }
+                  .cta-r1 { transform-origin: 290px 260px; animation: ctaSpinCW  30s linear infinite; }
+                  .cta-r2 { transform-origin: 290px 260px; animation: ctaSpinCCW 20s linear infinite; }
+                  .cta-r3 { transform-origin: 290px 260px; animation: ctaSpinCW  14s linear infinite; }
+                `}</style>
+              </defs>
+
+              {/* concentric rings - spinning */}
+              <circle className="cta-r1" cx="290" cy="260" r="220" stroke="#3B82F6" strokeWidth="1.2" strokeDasharray="12 8" fill="none" opacity="0.45" />
+              <circle className="cta-r2" cx="290" cy="260" r="158" stroke="#6366F1" strokeWidth="1.2" strokeDasharray="8 6"  fill="none" opacity="0.5"  />
+              <circle className="cta-r3" cx="290" cy="260" r="96"  stroke="#8B5CF6" strokeWidth="1.5" strokeDasharray="6 5"  fill="none" opacity="0.55" />
 
               {/* coloured dots */}
               <circle cx="140" cy="148" r="7"  fill="#3B82F6" />

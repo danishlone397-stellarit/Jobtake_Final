@@ -5,8 +5,6 @@ import {
   MapPin,
   Sparkles,
   Briefcase,
-  Building2,
-  Zap,
   ChevronDown,
   UserRound,
   ClipboardList,
@@ -16,7 +14,20 @@ import {
   Star,
   ArrowUpRight,
   Building,
+  Monitor,
+  HardHat,
+  Users,
+  Store,
+  LayoutGrid,
 } from "lucide-react";
+
+const JOB_CATEGORIES = [
+  { icon: Monitor,    iconBg: "bg-blue-50",   iconColor: "text-blue-600",   label: "White Collar Jobs",  desc: "Office & professional opportunities",   href: "/jobs?collarType=WHITE" },
+  { icon: HardHat,   iconBg: "bg-teal-50",   iconColor: "text-teal-600",   label: "Blue Collar Jobs",   desc: "Skilled & frontline opportunities",      href: "/jobs?collarType=BLUE"  },
+  { icon: Users,     iconBg: "bg-purple-50", iconColor: "text-purple-600", label: "Diversity Jobs",     desc: "Inclusive workplaces, equal opportunities", href: "/jobs?collarType=PINK" },
+  { icon: Store,     iconBg: "bg-orange-50", iconColor: "text-orange-500", label: "MSME Jobs",          desc: "Jobs from growing small businesses",     href: "/jobs?collarType=MSME"  },
+  { icon: LayoutGrid,iconBg: "bg-zinc-100",  iconColor: "text-zinc-600",   label: "View All Jobs",      desc: "Explore all job opportunities",          href: "/jobs"                  },
+];
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -36,7 +47,7 @@ const employerActions = [
   { icon: Building, label: "Build employer profile" },
 ];
 
-export default function Hero({ totalJobs }: { totalJobs: number }) {
+export default function Hero() {
   const router = useRouter();
   const [q, setQ] = useState("");
   const [loc, setLoc] = useState("");
@@ -237,30 +248,31 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
 
         </div>
 
-        {/* Stats bar */}
+
+        {/* Job Categories */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2 }}
-          className="mt-10 sm:mt-8 flex items-center justify-center gap-6 flex-wrap font-bold"
-          style={{ color: "#000000", fontSize: "16px" }}
+          transition={{ delay: 1.4 }}
+          className="mt-8 border border-zinc-100 rounded-2xl overflow-hidden bg-white shadow-sm"
         >
-          {[
-            { icon: <Briefcase className="h-3.5 w-3.5" />, label: `${totalJobs.toLocaleString()}+ active roles` },
-            { icon: <Building2 className="h-3.5 w-3.5" />, label: "Verified hiring teams" },
-            { icon: <Zap className="h-3.5 w-3.5" />, label: "14-day average time-to-offer" },
-          ].map((item, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.05, color: "#14866f" }}
-              className="flex items-center gap-2 cursor-default transition-colors"
-            >
-              {item.icon} {item.label}
-              {i < 2 && (
-                <span className="h-1 w-1 rounded-full ml-4" style={{ background: "rgba(20,134,111,0.32)" }} />
-              )}
-            </motion.div>
-          ))}
+          <div className="px-5 py-3 border-b border-zinc-100">
+            <p className="text-xl font-black text-zinc-900">Find jobs that open doors for everyone</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-x divide-y divide-zinc-100">
+            {JOB_CATEGORIES.map(({ icon: Icon, iconBg, iconColor, label, desc, href }) => (
+              <a key={label} href={href} className="flex items-center gap-3 px-4 py-4 hover:bg-zinc-50 transition-colors group">
+                <div className={`h-10 w-10 shrink-0 rounded-xl ${iconBg} flex items-center justify-center`}>
+                  <Icon className={`h-5 w-5 ${iconColor}`} />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[13px] font-bold text-zinc-900 leading-tight">{label}</div>
+                  <div className="text-[11px] text-zinc-500 mt-0.5 leading-tight">{desc}</div>
+                </div>
+                <ArrowUpRight className="h-3.5 w-3.5 text-zinc-300 group-hover:text-zinc-500 shrink-0 ml-auto transition-colors" />
+              </a>
+            ))}
+          </div>
         </motion.div>
 
       </div>

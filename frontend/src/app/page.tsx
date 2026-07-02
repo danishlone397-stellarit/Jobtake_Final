@@ -82,7 +82,7 @@ export default async function Home() {
   return (
     <main data-testid="home-page">
       <PublicNav />
-      <Hero totalJobs={totalJobs} />
+      <Hero />
       <LogoWall />
       <FeaturedJobs jobs={featured} />
       <CollarSections sections={collarSections} />

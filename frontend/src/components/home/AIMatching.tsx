@@ -127,11 +127,21 @@ export function AIMatching() {
 
                 {/* Center — AI circle + side cards */}
                 <div className="relative flex items-center justify-center h-52 my-2">
-                  {/* Spinning dashed ring */}
+                  {/* Spinning dashed rings - 3 */}
                   <motion.div
                     animate={{ rotate: 360 }}
+                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                    className="absolute h-52 w-52 rounded-full border border-dashed border-blue-200"
+                  />
+                  <motion.div
+                    animate={{ rotate: -360 }}
                     transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
                     className="absolute h-44 w-44 rounded-full border-2 border-dashed border-zinc-300"
+                  />
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                    className="absolute h-24 w-24 rounded-full border border-dashed border-violet-200"
                   />
 
                   {/* AI Circle — pulse */}
@@ -227,19 +237,8 @@ export function AIMatching() {
         </div>
       </section>
 
-      {/* Companies section */}
-      <section className="py-12 border-t border-zinc-100">
-        <div className="mx-auto max-w-7xl px-6 md:px-12">
-          <p className="text-center text-sm font-medium text-zinc-500 mb-8">Companies hiring with Jobtake</p>
-          <div className="flex items-center justify-center gap-10 flex-wrap">
-            {COMPANY_LOGOS.map(({ name, text }) => (
-              <span key={name} className="text-zinc-400 font-bold text-xl tracking-tight hover:text-zinc-600 transition-colors cursor-default select-none">
-                {text}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
+    
+      
     </div>
   );
 }
