@@ -28,15 +28,15 @@ export function NavActions({ user }: Props) {
   if (!user) {
     return (
       <div className="ml-auto flex items-center gap-2">
-        <Link href="/login" className="hidden sm:inline-flex text-sm px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors" data-testid="nav-login">
+        <Link href="/login" className="hidden sm:inline-flex text-sm px-5 py-2 rounded-lg border border-blue-500 text-blue-600 font-semibold hover:bg-blue-50 transition-colors" data-testid="nav-login">
           Sign in
         </Link>
        <Link
-  href="/employer/post-job"
-  className="bg-orange-500 hover:bg-orange-600 text-white text-[13px] font-medium px-4 py-2 rounded-full inline-flex items-center gap-1.5 transition-colors"
+  href="/employers/login"
+  className="bg-orange-500 hover:bg-orange-600 text-white text-[13px] font-semibold px-5 py-2 rounded-lg inline-flex items-center gap-1.5 transition-colors"
   data-testid="nav-post-job"
 >
-  Post a job <ArrowUpRight className="h-3.5 w-3.5 text-white/75" />
+  Post a job <ArrowUpRight className="h-3.5 w-3.5" />
 </Link>
       </div>
     );
