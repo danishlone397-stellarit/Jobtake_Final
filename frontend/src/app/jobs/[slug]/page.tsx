@@ -41,7 +41,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
   return (
     <main className="min-h-screen bg-white">
       <PublicNav />
-      <div className="pt-28 pb-20 mx-auto max-w-6xl px-6 md:px-12">
+      <div className="pt-28 pb-32 mx-auto max-w-6xl px-6 md:px-12">
 
         {/* Back link */}
         <Link href="/jobs" className="inline-flex items-center gap-2 text-sm text-zinc-700 hover:text-zinc-800 transition-colors mb-6">
@@ -194,19 +194,6 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                 )}
               </section>
 
-              {job.jobSkills.length > 0 && (
-                <section>
-                  <h2 className="text-lg font-bold text-zinc-900 mb-3">Skills</h2>
-                  <div className="flex flex-wrap gap-2">
-                    {job.jobSkills.map(s => (
-                      <span key={s.skill.id} className="text-xs px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100 font-medium">
-                        {s.skill.name}
-                      </span>
-                    ))}
-                  </div>
-                </section>
-              )}
-
               <section>
                 <div className="flex items-center gap-2 mb-3">
                   <GraduationCap className="h-5 w-5 text-blue-600" />
@@ -232,19 +219,15 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                 </div>
               </section>
 
-              {(job.company.industry || job.category?.name) && (
+              {job.jobSkills.length > 0 && (
                 <section>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Building2 className="h-5 w-5 text-blue-600" />
-                    <h2 className="text-lg font-bold text-zinc-900">Industry</h2>
-                  </div>
+                  <h2 className="text-lg font-bold text-zinc-900 mb-3">Skills</h2>
                   <div className="flex flex-wrap gap-2">
-                    {job.company.industry && (
-                      <span className="text-xs px-3 py-1.5 rounded-full bg-zinc-50 text-zinc-700 border border-zinc-200 font-medium">{job.company.industry}</span>
-                    )}
-                    {job.category?.name && (
-                      <span className="text-xs px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100 font-medium">{job.category.name}</span>
-                    )}
+                    {job.jobSkills.map(s => (
+                      <span key={s.skill.id} className="text-xs px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100 font-medium">
+                        {s.skill.name}
+                      </span>
+                    ))}
                   </div>
                 </section>
               )}
@@ -327,6 +310,29 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
           </aside>
         </div>
       </div>
+      {/* Sticky Apply Bar — visible on mobile & desktop while scrolling */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-zinc-200 shadow-lg px-4 py-3 flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <div className="font-bold text-zinc-900 text-sm truncate">{job.title}</div>
+          <div className="text-xs text-zinc-500 truncate">{job.company.name} · {job.location}</div>
+        </div>
+        {me?.role === "SEEKER" ? (
+          hasApplied ? (
+            <span className="shrink-0 px-6 py-2.5 rounded-xl bg-emerald-50 text-emerald-700 font-semibold text-sm border border-emerald-200">
+              ✓ Applied
+            </span>
+          ) : (
+            <Link href={`/jobs/${job.slug}#apply`} className="shrink-0 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors">
+              Apply Now →
+            </Link>
+          )
+        ) : (
+          <Link href="/login" className="shrink-0 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors">
+            Apply Now →
+          </Link>
+        )}
+      </div>
+
       <PublicFooter />
     </main>
   );
