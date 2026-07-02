@@ -138,33 +138,14 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                 <p className="text-zinc-700 text-sm leading-relaxed whitespace-pre-wrap">{job.description}</p>
               </section>
 
-              {job.responsibilities && (
+              {(job.responsibilities || job.requirements) && (
                 <section>
                   <div className="flex items-center gap-2 mb-3">
                     <Briefcase className="h-5 w-5 text-blue-600" />
-                    <h2 className="text-lg font-bold text-zinc-900">What you&apos;ll do</h2>
+                    <h2 className="text-lg font-bold text-zinc-900">Roles and Responsibilities</h2>
                   </div>
-                  <div className="text-zinc-700 text-sm leading-relaxed whitespace-pre-wrap">{job.responsibilities}</div>
-                </section>
-              )}
-
-              {job.requirements && (
-                <section>
-                  <div className="flex items-center gap-2 mb-3">
-                    <ShieldCheck className="h-5 w-5 text-blue-600" />
-                    <h2 className="text-lg font-bold text-zinc-900">What we&apos;re looking for</h2>
-                  </div>
-                  <div className="text-zinc-700 text-sm leading-relaxed whitespace-pre-wrap">{job.requirements}</div>
-                </section>
-              )}
-
-              {job.benefits && (
-                <section>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Star className="h-5 w-5 text-blue-600" />
-                    <h2 className="text-lg font-bold text-zinc-900">Benefits</h2>
-                  </div>
-                  <div className="text-zinc-700 text-sm leading-relaxed whitespace-pre-wrap">{job.benefits}</div>
+                  {job.responsibilities && <div className="text-zinc-700 text-sm leading-relaxed whitespace-pre-wrap">{job.responsibilities}</div>}
+                  {job.requirements && <div className="text-zinc-700 text-sm leading-relaxed whitespace-pre-wrap mt-3">{job.requirements}</div>}
                 </section>
               )}
 
