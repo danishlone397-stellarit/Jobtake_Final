@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { PublicNav } from "@/components/PublicNav";
 import { PublicFooter } from "@/components/PublicFooter";
 import { ApplyPanel } from "./ApplyPanel";
+import { StickyApplyBar } from "./StickyApplyBar";
 import { getCurrentUser } from "@/lib/auth";
 import { formatSalary, timeAgo } from "@/lib/utils";
 import {
@@ -310,29 +311,14 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
           </aside>
         </div>
       </div>
-      {/* Sticky Apply Bar — visible on mobile & desktop while scrolling */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-zinc-200 shadow-lg px-4 py-3 flex items-center justify-between gap-4">
-        <div className="min-w-0">
-          <div className="font-bold text-zinc-900 text-sm truncate">{job.title}</div>
-          <div className="text-xs text-zinc-500 truncate">{job.company.name} · {job.location}</div>
-        </div>
-        {me?.role === "SEEKER" ? (
-          hasApplied ? (
-            <span className="shrink-0 px-6 py-2.5 rounded-xl bg-emerald-50 text-emerald-700 font-semibold text-sm border border-emerald-200">
-              ✓ Applied
-            </span>
-          ) : (
-            <Link href={`/jobs/${job.slug}#apply`} className="shrink-0 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors">
-              Apply Now →
-            </Link>
-          )
-        ) : (
-          <Link href="/login" className="shrink-0 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors">
-            Apply Now →
-          </Link>
-        )}
-      </div>
-
+      <StickyApplyBar
+        jobTitle={job.title}
+        companyName={job.company.name}
+        location={job.location}
+        slug={job.slug}
+        isSeeker={me?.role === "SEEKER"}
+        hasApplied={hasApplied}
+      />
       <PublicFooter />
     </main>
   );

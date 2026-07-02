@@ -50,6 +50,9 @@ export function PublicFooter() {
         </div>
         <div className="mt-16 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
           <div>© {new Date().getFullYear()} Jobtake™ Labs</div>
+          <div className="flex items-center gap-1.5 text-zinc-400">
+            Designed &amp; Developed by <span className="font-semibold text-zinc-600">Stellarit Global</span>
+          </div>
           <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-500" /> All systems normal</span>
         </div>
       </div>
