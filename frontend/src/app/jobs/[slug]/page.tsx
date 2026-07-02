@@ -311,7 +311,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
         </div>
       </div>
       {/* Sticky Apply Bar — visible on mobile & desktop while scrolling */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-zinc-200 shadow-lg px-4 py-3 flex items-center justify-between gap-4">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-zinc-200 shadow-lg px-4 py-3 flex items-center justify-between gap-4">
         <div className="min-w-0">
           <div className="font-bold text-zinc-900 text-sm truncate">{job.title}</div>
           <div className="text-xs text-zinc-500 truncate">{job.company.name} · {job.location}</div>
