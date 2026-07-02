@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+
 export default async function JobDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const [job, me] = await Promise.all([
@@ -123,7 +124,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                       <TrendingUp className="h-3 w-3" /> Experience
                     </div>
                     <div className="text-sm font-bold text-zinc-900">
-                      {job.seniority === "JUNIOR" ? "0-2 yrs" : job.seniority === "MID" ? "2-5 yrs" : job.seniority === "SENIOR" ? "5-10 yrs" : job.seniority === "LEAD" ? "10-15 yrs" : job.seniority === "EXECUTIVE" ? "15-20 yrs" : job.seniority}
+                      {job.seniority === "INTERN" ? "0-1 yrs" : job.seniority === "ENTRY" ? "1-2 yrs" : job.seniority === "MID" ? "2-5 yrs" : job.seniority === "SENIOR" ? "5-8 yrs" : job.seniority === "STAFF" ? "8-12 yrs" : job.seniority === "PRINCIPAL" ? "12-15 yrs" : job.seniority === "DIRECTOR" ? "15-20 yrs" : job.seniority === "EXECUTIVE" ? "20+ yrs" : job.seniority}
                     </div>
                   </div>
                 )}
@@ -170,7 +171,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                   <h2 className="text-lg font-bold text-zinc-900">Education</h2>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {(job.seniority === "JUNIOR" || job.seniority === "MID") ? (
+                  {(job.seniority === "INTERN" || job.seniority === "ENTRY" || job.seniority === "MID") ? (
                     <>
                       <span className="text-xs px-3 py-1.5 rounded-full bg-zinc-50 text-zinc-700 border border-zinc-200 font-medium">Bachelor&apos;s degree or equivalent</span>
                       <span className="text-xs px-3 py-1.5 rounded-full bg-zinc-50 text-zinc-700 border border-zinc-200 font-medium">Any discipline</span>
