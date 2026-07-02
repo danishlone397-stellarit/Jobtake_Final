@@ -8,7 +8,7 @@ import { formatSalary, timeAgo } from "@/lib/utils";
 import {
   MapPin, Briefcase, BadgeDollarSign, Building2,
   BadgeCheck, ArrowLeft, Bookmark, Share2,
-  Star, Users, TrendingUp, ShieldCheck,
+  Star, Users, TrendingUp, ShieldCheck, GraduationCap,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -122,7 +122,9 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                     <div className="flex items-center gap-1.5 text-[11px] text-zinc-400 uppercase tracking-wide font-semibold mb-1">
                       <TrendingUp className="h-3 w-3" /> Experience
                     </div>
-                    <div className="text-sm font-bold text-zinc-900">{job.seniority}</div>
+                    <div className="text-sm font-bold text-zinc-900">
+                      {job.seniority === "JUNIOR" ? "0-2 yrs" : job.seniority === "MID" ? "2-5 yrs" : job.seniority === "SENIOR" ? "5-10 yrs" : job.seniority === "LEAD" ? "10-15 yrs" : job.seniority === "EXECUTIVE" ? "15-20 yrs" : job.seniority}
+                    </div>
                   </div>
                 )}
               </div>
@@ -158,6 +160,48 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                         {s.skill.name}
                       </span>
                     ))}
+                  </div>
+                </section>
+              )}
+
+              <section>
+                <div className="flex items-center gap-2 mb-3">
+                  <GraduationCap className="h-5 w-5 text-blue-600" />
+                  <h2 className="text-lg font-bold text-zinc-900">Education</h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(job.seniority === "JUNIOR" || job.seniority === "MID") ? (
+                    <>
+                      <span className="text-xs px-3 py-1.5 rounded-full bg-zinc-50 text-zinc-700 border border-zinc-200 font-medium">Bachelor&apos;s degree or equivalent</span>
+                      <span className="text-xs px-3 py-1.5 rounded-full bg-zinc-50 text-zinc-700 border border-zinc-200 font-medium">Any discipline</span>
+                    </>
+                  ) : job.seniority === "SENIOR" ? (
+                    <>
+                      <span className="text-xs px-3 py-1.5 rounded-full bg-zinc-50 text-zinc-700 border border-zinc-200 font-medium">Bachelor&apos;s degree in relevant field</span>
+                      <span className="text-xs px-3 py-1.5 rounded-full bg-zinc-50 text-zinc-700 border border-zinc-200 font-medium">Master&apos;s degree preferred</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-xs px-3 py-1.5 rounded-full bg-zinc-50 text-zinc-700 border border-zinc-200 font-medium">Bachelor&apos;s / Master&apos;s degree</span>
+                      <span className="text-xs px-3 py-1.5 rounded-full bg-zinc-50 text-zinc-700 border border-zinc-200 font-medium">MBA or equivalent preferred</span>
+                    </>
+                  )}
+                </div>
+              </section>
+
+              {(job.company.industry || job.category?.name) && (
+                <section>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Building2 className="h-5 w-5 text-blue-600" />
+                    <h2 className="text-lg font-bold text-zinc-900">Industry</h2>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {job.company.industry && (
+                      <span className="text-xs px-3 py-1.5 rounded-full bg-zinc-50 text-zinc-700 border border-zinc-200 font-medium">{job.company.industry}</span>
+                    )}
+                    {job.category?.name && (
+                      <span className="text-xs px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100 font-medium">{job.category.name}</span>
+                    )}
                   </div>
                 </section>
               )}
