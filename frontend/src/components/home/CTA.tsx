@@ -9,7 +9,7 @@ export function CTA() {
     <section className="relative bg-white py-20 md:py-28">
       {/* Soft blue glow on right */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute right-0 top-0 h-full w-[55%] bg-[radial-gradient(ellipse_70%_60%_at_75%_50%,rgba(219,234,254,0.55)_0%,transparent_70%)]" />
+        <div className="absolute right-0  top-0 h-full w-[55%] bg-[radial-gradient(ellipse_70%_60%_at_75%_50%,rgba(219,234,254,0.55)_0%,transparent_70%)]" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 md:px-12">
@@ -36,7 +36,7 @@ export function CTA() {
                   fill="none"
                   preserveAspectRatio="none"
                 >
-                  <path d="M2 7C45 2 110 1.5 170 4.5C210 7 250 9 278 7" stroke="#f97316" strokeWidth="3.5" strokeLinecap="round" />
+                  <path d="M30 7C65 2.5 120 2 165 4.5C195 6.5 225 8.5 248 7" stroke="#f97316" strokeWidth="3.5" strokeLinecap="round" strokeOpacity="0.65" />
                 </svg>
               </span>
               {" "}away.

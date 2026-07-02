@@ -74,7 +74,7 @@ function LoginForm() {
       {/* Body */}
       <div className="flex flex-1 min-h-0">
         {/* Left — Form */}
-        <section className="flex flex-col justify-center px-8 md:px-16 lg:px-24 py-12 w-full lg:w-1/2">
+        <section className="flex flex-col justify-center px-8 md:px-16 lg:px-24 py-12 w-full lg:w-1/2 bg-white">
           <div className="max-w-sm w-full mx-auto">
             <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
               👋 Welcome back!
@@ -170,17 +170,31 @@ function LoginForm() {
         </section>
 
         {/* Right — Marketing panel */}
-        <aside className={`hidden lg:flex flex-col justify-center px-16 py-12 w-1/2 ${isEmployer ? "bg-orange-50" : "bg-blue-50"}`}>
+        <aside className="hidden lg:flex flex-col justify-center px-16 py-12 w-1/2 bg-white border-l border-zinc-200">
           <div className="max-w-md mx-auto">
-            <div className={`inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full mb-8 ${isEmployer ? "bg-orange-100 text-orange-700" : "bg-blue-100 text-blue-700"}`}>
+            <div className={`inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full mb-8 border ${isEmployer ? "bg-orange-50 text-orange-700 border-orange-100" : "bg-blue-50 text-blue-700 border-blue-100"}`}>
               <ShieldCheck className="h-3.5 w-3.5" /> Trusted by professionals and companies.
             </div>
 
             <h2 className="text-4xl md:text-5xl font-black text-zinc-900 leading-tight">
               {isEmployer ? (
-                <>Hire smarter,<br /><span className="text-orange-500">faster.</span></>
+                <>Hire smarter,<br />
+                  <span className="relative inline-block text-orange-500">
+                    faster.
+                    <svg aria-hidden="true" className="absolute left-0 -bottom-2 w-full overflow-visible" style={{ height: 12 }} viewBox="0 0 120 12" fill="none" preserveAspectRatio="none">
+                      <path d="M2 9C20 3 55 2 80 5.5C95 8 110 10.5 118 9" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
+                    </svg>
+                  </span>
+                </>
               ) : (
-                <>Opportunities<br />start <span className="text-blue-600">here</span></>
+                <>Opportunities<br />start{" "}
+                  <span className="relative inline-block text-blue-600">
+                    here
+                    <svg aria-hidden="true" className="absolute left-0 -bottom-2 w-full overflow-visible" style={{ height: 12 }} viewBox="0 0 120 12" fill="none" preserveAspectRatio="none">
+                      <path d="M2 9C20 3 55 2 80 5.5C95 8 110 10.5 118 9" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
+                    </svg>
+                  </span>
+                </>
               )}
             </h2>
 
@@ -204,7 +218,7 @@ function LoginForm() {
               ))}
             </div>
 
-            <div className={`mt-8 rounded-2xl border p-4 ${isEmployer ? "bg-white border-orange-100" : "bg-white border-blue-100"}`}>
+            <div className={`mt-8 rounded-2xl border p-4 ${isEmployer ? "bg-orange-50 border-orange-100" : "bg-blue-50 border-blue-100"}`}>
               <div className="flex items-center gap-3">
                 <div className="flex -space-x-2">
                   {["bg-orange-400", "bg-blue-500", "bg-emerald-500", "bg-purple-500"].map((c, i) => (

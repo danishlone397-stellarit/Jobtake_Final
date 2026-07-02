@@ -44,7 +44,7 @@ const COLLAR_META = {
     btn: "bg-teal-600 hover:bg-teal-700",
   },
   PINK: {
-    label: "Pink-Collar Jobs",
+    label: "Drivercity Jobs",
     desc: "Service and care-oriented roles that make a real difference.",
     tags: "Care · Service · Support",
     emoji: "🌸",
@@ -92,23 +92,23 @@ export function CollarSections({ sections }: { sections: CollarSection[] }) {
             </h2>
             <p className="text-zinc-600 max-w-lg text-base mt-3">Find the right opportunities across different job categories. Choose the path that suits your skills and aspirations.</p>
           </div>
-          <div className="flex flex-wrap items-start gap-6 shrink-0">
+          <div className="flex flex-col gap-3 shrink-0 bg-white rounded-2xl p-4 border border-zinc-100 shadow-sm">
             <div className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-full bg-blue-100 grid place-items-center"><ShieldCheck className="h-4 w-4 text-blue-600" /></div>
+              <div className="h-8 w-8 rounded-full bg-blue-100 grid place-items-center"><ShieldCheck className="h-4 w-4 text-blue-600" /></div>
               <div>
                 <div className="text-sm font-semibold text-zinc-900">Trusted Employers</div>
                 <div className="text-xs text-zinc-500">Verified companies hiring across India</div>
               </div>
             </div>
             <div className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-full bg-emerald-100 grid place-items-center"><Sparkles className="h-4 w-4 text-emerald-600" /></div>
+              <div className="h-8 w-8 rounded-full bg-emerald-100 grid place-items-center"><Sparkles className="h-4 w-4 text-emerald-600" /></div>
               <div>
                 <div className="text-sm font-semibold text-zinc-900">Quality Opportunities</div>
                 <div className="text-xs text-zinc-500">Relevant jobs, real growth.</div>
               </div>
             </div>
             <div className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-full bg-purple-100 grid place-items-center"><Zap className="h-4 w-4 text-purple-600" /></div>
+              <div className="h-8 w-8 rounded-full bg-purple-100 grid place-items-center"><Zap className="h-4 w-4 text-purple-600" /></div>
               <div>
                 <div className="text-sm font-semibold text-zinc-900">Updated Daily</div>
                 <div className="text-xs text-zinc-500">Fresh openings every day</div>

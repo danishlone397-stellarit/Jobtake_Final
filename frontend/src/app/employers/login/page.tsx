@@ -176,21 +176,26 @@ export default function EmployerLoginPage() {
         </section>
 
         {/* Right — Marketing panel */}
-        <aside className="hidden lg:flex flex-col justify-center px-16 py-12 flex-1 bg-orange-50">
+        <aside className="hidden lg:flex flex-col justify-center px-16 py-12 flex-1 bg-white border-l border-zinc-200">
           <div className="max-w-md mx-auto">
 
             {/* Trust badge */}
-            <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 text-xs font-semibold px-4 py-2 rounded-full mb-8 border border-orange-200">
+            <div className="inline-flex items-center gap-2 bg-orange-50 text-orange-700 text-xs font-semibold px-4 py-2 rounded-full mb-8 border border-orange-200">
               <ShieldCheck className="h-3.5 w-3.5" /> Trusted by professionals and companies.
             </div>
 
             {/* Headline */}
             <h2 className="text-4xl md:text-5xl font-black text-zinc-900 leading-tight">
               Hire smarter,<br />
-              <span className="text-orange-500">faster.</span>
+              <span className="relative inline-block text-orange-500">
+                faster.
+                <svg aria-hidden="true" className="absolute left-0 -bottom-2 w-full overflow-visible" style={{ height: 12 }} viewBox="0 0 120 12" fill="none" preserveAspectRatio="none">
+                  <path d="M2 9C20 3 55 2 80 5.5C95 8 110 10.5 118 9" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
+                </svg>
+              </span>
             </h2>
 
-            <p className="text-zinc-600 mt-4 text-base leading-relaxed">
+            <p className="text-zinc-600 mt-6 text-base leading-relaxed">
               Connect with skilled professionals, manage recruitment efficiently, and make better hiring decisions—all in one place.
             </p>
 
@@ -198,7 +203,7 @@ export default function EmployerLoginPage() {
             <div className="mt-8 space-y-5">
               {features.map(({ icon: Icon, title, desc }) => (
                 <div key={title} className="flex items-start gap-4">
-                  <div className="h-11 w-11 rounded-xl bg-orange-100 grid place-items-center shrink-0">
+                  <div className="h-11 w-11 rounded-xl bg-orange-50 grid place-items-center shrink-0">
                     <Icon className="h-5 w-5 text-orange-500" />
                   </div>
                   <div>
@@ -210,7 +215,7 @@ export default function EmployerLoginPage() {
             </div>
 
             {/* Social proof */}
-            <div className="mt-8 bg-white rounded-2xl border border-orange-100 p-4 flex items-center gap-4">
+            <div className="mt-8 bg-orange-50 rounded-2xl border border-orange-100 p-4 flex items-center gap-4">
               <div className="flex -space-x-2 shrink-0">
                 {["bg-orange-400", "bg-blue-500", "bg-emerald-500", "bg-purple-500"].map((c, i) => (
                   <div key={i} className={`h-9 w-9 rounded-full ${c} border-2 border-white flex items-center justify-center text-white text-xs font-bold`}>

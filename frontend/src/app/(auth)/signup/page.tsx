@@ -391,11 +391,13 @@ function CandidateSignupForm() {
         {/* Right — Form */}
         <section className="flex-1 px-8 md:px-12 lg:px-16 py-10 overflow-y-auto">
           <div className="max-w-2xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
-              <UserRound className="h-3.5 w-3.5" /> Join Jobtake
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
+                <UserRound className="h-3.5 w-3.5" /> Join Jobtake
+              </div>
+              <h1 className="text-3xl font-black text-zinc-900">Create your job seeker account</h1>
+              <p className="text-zinc-500 mt-1 text-sm">One step closer to the right opportunities.</p>
             </div>
-            <h1 className="text-3xl font-black text-zinc-900">Create your job seeker account</h1>
-            <p className="text-zinc-500 mt-1 text-sm">One step closer to the right opportunities.</p>
 
             <form onSubmit={onSubmit} className="mt-7 space-y-7">
               {/* Personal Information */}
