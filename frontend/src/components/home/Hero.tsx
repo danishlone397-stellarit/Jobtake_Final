@@ -1,195 +1,268 @@
 "use client";
+import { motion } from "framer-motion";
+import {
+  Search,
+  MapPin,
+  Sparkles,
+  Briefcase,
+  Building2,
+  Zap,
+  ChevronDown,
+  UserRound,
+  ClipboardList,
+  Bell,
+  CirclePlus,
+  UsersRound,
+  Star,
+  ArrowUpRight,
+  Building,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Sparkles, Lock, Target, Clock } from "lucide-react";
+import { useState } from "react";
 
-export default function Hero({ totalJobs: _totalJobs }: { totalJobs: number }) {
+const candidateActions = [
+  { icon: Search, label: "Search verified jobs" },
+  { icon: Sparkles, label: "AI Match for suitable roles" },
+  { icon: UserRound, label: "Create candidate profile" },
+  { icon: ClipboardList, label: "Track applications" },
+  { icon: Bell, label: "Get job alerts" },
+];
+
+const employerActions = [
+  { icon: CirclePlus, label: "Post job openings" },
+  { icon: UsersRound, label: "Manage applicants" },
+  { icon: Star, label: "Shortlist candidates" },
+  { icon: Sparkles, label: "Use AI-assisted matching" },
+  { icon: Building, label: "Build employer profile" },
+];
+
+export default function Hero({ totalJobs }: { totalJobs: number }) {
   const router = useRouter();
+  const [q, setQ] = useState("");
+  const [loc, setLoc] = useState("");
+
+  function search(e: React.FormEvent) {
+    e.preventDefault();
+    const p = new URLSearchParams();
+    if (q) p.set("q", q);
+    if (loc) p.set("location", loc);
+    router.push(`/jobs?${p.toString()}`);
+  }
 
   return (
-    <section className="relative bg-white pt-28 pb-16 md:pt-36 md:pb-20">
-      {/* Soft right-side glow */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute right-0 top-0 h-full w-[55%] bg-[radial-gradient(ellipse_70%_60%_at_75%_40%,rgba(219,234,254,0.55)_0%,transparent_70%)]" />
-      </div>
+    <section
+      className="relative pt-28 pb-10 md:pt-36 md:pb-12 overflow-hidden bg-white"
+      data-testid="hero-section"
+    >
+      <div className="relative mx-auto max-w-7xl px-6 md:px-12" style={{ zIndex: 2 }}>
 
-      <div className="relative mx-auto max-w-7xl px-6 md:px-12">
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
+        <div className="max-w-5xl">
+          {/* Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 1 }}
+            className="mt-6 max-w-4xl text-4xl font-black leading-[1.05] text-black sm:text-5xl md:text-6xl"
+          >
+            Connecting People.<br />Creating Opportunities
+          </motion.h1>
 
-          {/* ── LEFT — copy ── */}
-          <div className="max-w-xl">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[13px] font-semibold text-blue-600 mb-8">
-              <Sparkles className="h-3.5 w-3.5" />
-              Join thousands of professionals
-            </div>
-
-            {/* Heading */}
-            <h1 className="text-5xl md:text-[3.6rem] font-black leading-[1.07] tracking-tight text-zinc-900">
-              Your next role is<br />
-              <span className="relative inline-block text-blue-600">
-                one signal
-                <svg
-                  aria-hidden="true"
-                  className="absolute left-0 -bottom-1 w-full"
-                  style={{ height: 10 }}
-                  viewBox="0 0 280 10"
-                  fill="none"
-                  preserveAspectRatio="none"
+          {/* Search Form */}
+          <motion.form
+            onSubmit={search}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 1 }}
+            className="mt-10 max-w-5xl overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)]"
+          >
+            <div className="grid md:grid-cols-[1.08fr_0.92fr_1fr_auto]">
+              <label className="flex min-h-[62px] items-center gap-3 border-b border-zinc-200 px-4 transition-colors hover:bg-zinc-50 md:border-b-0 md:border-r">
+                <Search className="h-5 w-5 shrink-0 text-slate-500" />
+                <input
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  placeholder="Search jobs by title..."
+                  className="w-full bg-transparent text-[15px] text-zinc-900 outline-none placeholder:text-slate-500"
+                  data-testid="hero-search-input"
+                />
+              </label>
+              <label className="flex min-h-[62px] items-center gap-3 border-b border-zinc-200 px-4 transition-colors hover:bg-zinc-50 md:border-b-0 md:border-r">
+                <Briefcase className="h-5 w-5 shrink-0 text-slate-500" />
+                <select className="w-full appearance-none bg-transparent text-[15px] text-slate-600 outline-none">
+                  <option>Your experience</option>
+                  <option>Fresher</option>
+                  <option>1-5 years</option>
+                  <option>5-10 years</option>
+                  <option>10-20 years</option>
+                  <option>20-30 years</option>
+                  <option>30+ years</option>
+                </select>
+                <ChevronDown className="h-4 w-4 shrink-0 text-slate-500" />
+              </label>
+              <label className="flex min-h-[62px] items-center gap-3 border-b border-zinc-200 px-4 transition-colors hover:bg-zinc-50 md:border-b-0 md:border-r">
+                <MapPin className="h-5 w-5 shrink-0 text-slate-500" />
+                <input
+                  value={loc}
+                  onChange={(e) => setLoc(e.target.value)}
+                  placeholder="Search for an area..."
+                  className="w-full bg-transparent text-[15px] text-zinc-900 outline-none placeholder:text-slate-500"
+                  data-testid="hero-location-input"
+                />
+              </label>
+              <div className="p-2">
+                <motion.button
+                  type="submit"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex h-[46px] w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-7 text-sm font-bold text-white transition-colors hover:bg-blue-700 md:w-[160px]"
+                  data-testid="hero-search-btn"
                 >
-                  <path d="M2 7C45 2 110 1.5 170 4.5C210 7 250 9 278 7" stroke="#f97316" strokeWidth="3.5" strokeLinecap="round" />
-                </svg>
-              </span>
-              {" "}away.
-            </h1>
+                  Search jobs
+                </motion.button>
+              </div>
+            </div>
+          </motion.form>
+        </div>
 
-            {/* Subtitle */}
-            <p className="mt-6 max-w-md text-lg leading-relaxed text-zinc-500">
-              Create your free profile in minutes and let the right opportunities find you — confidentiality guaranteed.
-            </p>
+        {/* Candidate and Employer panels */}
+        <div className="mt-10 grid gap-5 lg:grid-cols-2">
 
-            {/* CTAs */}
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <button
-                onClick={() => router.push("/signup?role=candidate")}
-                className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-8 py-3.5 text-[15px] font-bold text-white shadow-lg shadow-blue-500/25 transition-colors hover:bg-blue-700"
-              >
-                Create my profile <span>→</span>
-              </button>
-              <button
-                onClick={() => router.push("/employers/login")}
-                className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-8 py-3.5 text-[15px] font-semibold text-zinc-800 transition-colors hover:border-zinc-300 hover:bg-zinc-50"
-              >
-                I&apos;m hiring instead
-              </button>
+          {/* FOR CANDIDATES */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1, delay: 0.75, ease: [0.2, 0.8, 0.2, 1] }}
+            className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(28,64,140,0.15)]"
+          >
+            <div className="absolute right-5 top-5 grid h-16 w-16 place-items-center rounded-2xl bg-blue-600 text-white">
+              <UserRound className="h-8 w-8" />
             </div>
 
-            {/* Trust row */}
-            <div className="mt-10 flex flex-wrap gap-7">
-              {[
-                { icon: Lock,   title: "100% Private",   desc: "Your data stays private and secure." },
-                { icon: Target, title: "Smart Matching",  desc: "Better matches using skills, experience & preferences." },
-                { icon: Clock,  title: "Quick & Easy",    desc: "Create your profile in just 4 minutes." },
-              ].map(({ icon: Icon, title, desc }) => (
-                <div key={title} className="flex items-start gap-2.5" style={{ maxWidth: 148 }}>
-                  <div className="mt-0.5 h-8 w-8 shrink-0 rounded-lg bg-zinc-100 flex items-center justify-center">
-                    <Icon className="h-4 w-4 text-zinc-500" />
-                  </div>
-                  <div>
-                    <p className="text-[13px] font-bold text-zinc-900">{title}</p>
-                    <p className="mt-0.5 text-[12px] leading-relaxed text-zinc-500">{desc}</p>
-                  </div>
-                </div>
-              ))}
+            <div className="relative max-w-[240px]">
+              <h2 className="mt-3 text-xl font-semibold leading-tight text-blue-900">For Candidates</h2>
+              <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">
+                Find roles that match your skills, goals and experience.
+              </p>
             </div>
-          </div>
 
-          {/* ── RIGHT — illustration ── */}
-          <div className="hidden lg:flex items-center justify-center">
-            {/*
-              Self-contained SVG illustration so nothing clips or overflows.
-              All elements drawn in a 540×520 coordinate space.
-            */}
-            <svg
-              viewBox="0 0 540 520"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-full max-w-[540px]"
-              aria-hidden="true"
-            >
-              {/* ── concentric rings centred at 290, 260 ── */}
-              <circle cx="290" cy="260" r="220" stroke="#E4E7EF" strokeWidth="1.2" />
-              <circle cx="290" cy="260" r="158" stroke="#E4E7EF" strokeWidth="1.2" />
-              <circle cx="290" cy="260" r="96"  stroke="#D1D5E0" strokeWidth="1.2" />
+            <div className="relative mt-4 rounded-xl bg-white/80 p-3 shadow-[0_8px_30px_rgba(15,23,42,0.07)]">
+              <div className="grid gap-x-6 md:grid-cols-2">
+                {candidateActions.map((item, index) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.label}
+                      className={`flex min-h-[34px] items-center gap-2.5 border-b border-slate-100 py-2 text-[13px] font-medium text-slate-800 ${
+                        index === 2 || index === 4 ? "border-b-0" : ""
+                      } ${index > 2 ? "md:border-b-0" : ""}`}
+                    >
+                      <Icon className="h-4 w-4 shrink-0 text-blue-600" />
+                      <span>{item.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => router.push("/signup?role=candidate")}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-blue-600/20 transition hover:bg-blue-700"
+                >
+                  Candidate Registration
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/jobs")}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-orange-500/20 transition hover:bg-orange-600"
+                >
+                  Find Jobs <ArrowUpRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
 
-              {/* ── colored dots ── */}
-              <circle cx="140" cy="148" r="7"  fill="#3B82F6" />
-              <circle cx="448" cy="198" r="6"  fill="#34D399" />
-              <circle cx="108" cy="336" r="8"  fill="#FB923C" />
-              <circle cx="238" cy="308" r="5"  fill="#A78BFA" />
+          {/* FOR EMPLOYERS */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1, delay: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
+            className="relative overflow-hidden rounded-[24px] border border-white/70 bg-white/85 p-5 shadow-[0_20px_60px_rgba(154,77,16,0.15)]"
+          >
+            <div className="absolute right-5 top-5 grid h-16 w-16 place-items-center rounded-2xl bg-orange-500 text-white">
+              <Briefcase className="h-8 w-8" />
+            </div>
 
-              {/* ── center blue circle with Jobtake person icon ── */}
-              <circle cx="290" cy="260" r="46" fill="#2563EB" />
-              {/* simple person/star icon */}
-              <circle cx="290" cy="248" r="12" fill="white" fillOpacity="0.95" />
-              <path d="M265 278 Q265 262 290 262 Q315 262 315 278 Q315 285 290 288 Q265 285 265 278Z" fill="white" fillOpacity="0.95" />
-              {/* arms */}
-              <path d="M278 260 L262 252M302 260 L318 252" stroke="white" strokeWidth="3" strokeLinecap="round" opacity="0.85"/>
+            <div className="relative max-w-[240px]">
+              <h2 className="mt-3 text-xl font-semibold leading-tight text-orange-900">For Employers</h2>
+              <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">
+                Hire better candidates faster with AI-supported recruitment tools.
+              </p>
+            </div>
 
-              {/* ─────────────────────────────────────── */}
-              {/* For Job Seekers card  (top-left)        */}
-              {/* ─────────────────────────────────────── */}
-              {/* card bg */}
-              <rect x="18" y="30" width="210" height="168" rx="18" fill="white" />
-              <rect x="18" y="30" width="210" height="168" rx="18" stroke="#E4E7EF" strokeWidth="1.2" />
-              {/* subtle shadow line */}
-              <rect x="28" y="220" width="190" height="4" rx="2" fill="#E4E7EF" opacity="0.4" />
-
-              {/* "For Job Seekers" pill badge */}
-              <rect x="30" y="44" width="100" height="18" rx="9" fill="#F1F5F9" />
-              <text x="80" y="57" textAnchor="middle" fill="#64748B" fontSize="9" fontWeight="600" fontFamily="system-ui, sans-serif">For Job Seekers</text>
-
-              {/* avatar circle — woman (blue gradient) */}
-              <circle cx="58" cy="106" r="22" fill="url(#womanGrad)" />
-              <circle cx="58" cy="100" r="9"  fill="white" fillOpacity="0.88" />
-              <ellipse cx="58" cy="118" rx="13" ry="8" fill="white" fillOpacity="0.88" />
-
-              {/* content lines */}
-              <rect x="90" y="96"  width="96" height="7" rx="3.5" fill="#E2E8F0" />
-              <rect x="90" y="109" width="72" height="7" rx="3.5" fill="#E2E8F0" />
-              <rect x="90" y="122" width="52" height="7" rx="3.5" fill="#E2E8F0" />
-
-              {/* blue check circle */}
-              <circle cx="210" cy="96" r="11" fill="#2563EB" />
-              <path d="M205 96.5 L208.5 100 L215 93" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-
-              {/* text */}
-              <text x="30" y="163" fill="#0F172A" fontSize="13" fontWeight="700" fontFamily="system-ui, sans-serif">Discover roles</text>
-              <text x="30" y="180" fill="#64748B" fontSize="11" fontFamily="system-ui, sans-serif">that match your skills</text>
-              <text x="30" y="193" fill="#64748B" fontSize="11" fontFamily="system-ui, sans-serif">and ambition.</text>
-
-              {/* ─────────────────────────────────────── */}
-              {/* For Employers card (bottom-right)       */}
-              {/* ─────────────────────────────────────── */}
-              <rect x="312" y="322" width="210" height="168" rx="18" fill="white" />
-              <rect x="312" y="322" width="210" height="168" rx="18" stroke="#FED7AA" strokeWidth="1.5" />
-
-              {/* "For Employers" pill badge */}
-              <rect x="324" y="336" width="88" height="18" rx="9" fill="#FFF7ED" />
-              <text x="368" y="349" textAnchor="middle" fill="#F97316" fontSize="9" fontWeight="600" fontFamily="system-ui, sans-serif">For Employers</text>
-
-              {/* avatar circle — man (orange gradient) */}
-              <circle cx="352" cy="398" r="22" fill="url(#manGrad)" />
-              <circle cx="352" cy="392" r="9"  fill="white" fillOpacity="0.88" />
-              <ellipse cx="352" cy="410" rx="13" ry="8" fill="white" fillOpacity="0.88" />
-
-              {/* content lines */}
-              <rect x="384" y="388" width="96" height="7" rx="3.5" fill="#E2E8F0" />
-              <rect x="384" y="401" width="72" height="7" rx="3.5" fill="#E2E8F0" />
-
-              {/* orange check circle */}
-              <circle cx="504" cy="388" r="11" fill="#F97316" />
-              <path d="M499 388.5 L502.5 392 L509 385" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-
-              {/* text */}
-              <text x="324" y="447" fill="#0F172A" fontSize="13" fontWeight="700" fontFamily="system-ui, sans-serif">Find the right talent</text>
-              <text x="324" y="464" fill="#64748B" fontSize="11" fontFamily="system-ui, sans-serif">faster with curated,</text>
-              <text x="324" y="477" fill="#64748B" fontSize="11" fontFamily="system-ui, sans-serif">quality profiles.</text>
-
-              {/* ── Gradients ── */}
-              <defs>
-                <linearGradient id="womanGrad" x1="36" y1="84" x2="80" y2="128" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#93C5FD" />
-                  <stop offset="1" stopColor="#6366F1" />
-                </linearGradient>
-                <linearGradient id="manGrad" x1="330" y1="376" x2="374" y2="420" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#FDB976" />
-                  <stop offset="1" stopColor="#F59E0B" />
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
+            <div className="relative mt-4 rounded-xl bg-white/80 p-3 shadow-[0_8px_30px_rgba(15,23,42,0.07)]">
+              <div className="grid gap-x-6 md:grid-cols-2">
+                {employerActions.map((item, index) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.label}
+                      className={`flex min-h-[34px] items-center gap-2.5 border-b border-slate-100 py-2 text-[13px] font-medium text-slate-800 ${
+                        index === 2 || index === 4 ? "border-b-0" : ""
+                      } ${index > 2 ? "md:border-b-0" : ""}`}
+                    >
+                      <Icon className="h-4 w-4 shrink-0 text-orange-500" />
+                      <span>{item.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => router.push("/signup?role=employer")}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-orange-500/20 transition hover:bg-orange-600"
+                >
+                  Employer Registration
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/employers/login")}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-blue-600/20 transition hover:bg-blue-700"
+                >
+                  Post a Job <ArrowUpRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
 
         </div>
+
+        {/* Stats bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2 }}
+          className="mt-10 sm:mt-8 flex items-center justify-center gap-6 flex-wrap font-bold"
+          style={{ color: "#000000", fontSize: "16px" }}
+        >
+          {[
+            { icon: <Briefcase className="h-3.5 w-3.5" />, label: `${totalJobs.toLocaleString()}+ active roles` },
+            { icon: <Building2 className="h-3.5 w-3.5" />, label: "Verified hiring teams" },
+            { icon: <Zap className="h-3.5 w-3.5" />, label: "14-day average time-to-offer" },
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ scale: 1.05, color: "#14866f" }}
+              className="flex items-center gap-2 cursor-default transition-colors"
+            >
+              {item.icon} {item.label}
+              {i < 2 && (
+                <span className="h-1 w-1 rounded-full ml-4" style={{ background: "rgba(20,134,111,0.32)" }} />
+              )}
+            </motion.div>
+          ))}
+        </motion.div>
+
       </div>
     </section>
   );
