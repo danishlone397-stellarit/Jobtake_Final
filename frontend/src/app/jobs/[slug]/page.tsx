@@ -4,6 +4,7 @@ import { PublicNav } from "@/components/PublicNav";
 import { PublicFooter } from "@/components/PublicFooter";
 import { ApplyPanel } from "./ApplyPanel";
 import { StickyApplyBar } from "./StickyApplyBar";
+import { NavHider } from "@/components/NavHider";
 import { getCurrentUser } from "@/lib/auth";
 import { formatSalary, timeAgo } from "@/lib/utils";
 import {
@@ -42,6 +43,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
   return (
     <main className="min-h-screen bg-white">
       <PublicNav />
+      <NavHider />
       <div className="pt-28 pb-32 mx-auto max-w-6xl px-6 md:px-12">
 
         {/* Back link */}
