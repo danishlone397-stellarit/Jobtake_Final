@@ -193,7 +193,7 @@ export default function Hero({ totalJobs }: { totalJobs: number }) {
             </div>
 
             <div className="relative max-w-[240px]">
-              <h2 className="mt-3 text-xl font-semibold leading-tight text-orange-900">For Employers</h2>
+              <h2 className="mt-3 text-xl font-semibold leading-tight text-orange-500">For Employers</h2>
               <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">
                 Hire better candidates faster with AI-supported recruitment tools.
               </p>
