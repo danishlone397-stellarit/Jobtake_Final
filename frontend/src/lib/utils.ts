@@ -20,7 +20,9 @@ export function slugify(input: string): string {
 export function formatSalary(min?: number | null, max?: number | null, currency = "USD", period = "year") {
   if (!min && !max) return "Competitive";
   const fmt = (n: number) => {
-    if (n >= 1000) return `${Math.round(n / 1000)}k`;
+    if (n >= 10000000) return `${+(n / 10000000).toFixed(2)}Cr`;
+    if (n >= 100000) return `${+(n / 100000).toFixed(2)}L`;
+    if (n >= 1000) return `${+(n / 1000).toFixed(1)}k`;
     return `${n}`;
   };
   const sym = "₹";
