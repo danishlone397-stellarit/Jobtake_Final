@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Star, Loader2, FileDown } from "lucide-react";
+import { Star, Loader2, FileDown, Users } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 
 type Stage = "APPLIED" | "SCREENING" | "INTERVIEW" | "OFFER" | "HIRED" | "REJECTED" | "WITHDRAWN";
@@ -12,14 +12,25 @@ type App = {
 };
 
 const STAGES: Stage[] = ["APPLIED", "SCREENING", "INTERVIEW", "OFFER", "HIRED", "REJECTED"];
-const STAGE_COLORS: Record<Stage, string> = {
-  APPLIED: "from-zinc-400 to-zinc-500",
-  SCREENING: "from-brand-blue to-violet-500",
-  INTERVIEW: "from-violet-500 to-fuchsia-500",
-  OFFER: "from-brand-orange to-amber-500",
-  HIRED: "from-emerald-500 to-teal-500",
-  REJECTED: "from-rose-500 to-red-600",
-  WITHDRAWN: "from-zinc-500 to-zinc-600",
+
+const STAGE_STYLE: Record<Stage, string> = {
+  APPLIED:   "bg-zinc-100 text-zinc-600",
+  SCREENING: "bg-blue-50 text-blue-700",
+  INTERVIEW: "bg-violet-50 text-violet-700",
+  OFFER:     "bg-amber-50 text-amber-700",
+  HIRED:     "bg-emerald-50 text-emerald-700",
+  REJECTED:  "bg-red-50 text-red-600",
+  WITHDRAWN: "bg-zinc-100 text-zinc-500",
+};
+
+const STAGE_ACTIVE: Record<Stage, string> = {
+  APPLIED:   "bg-zinc-600 text-white",
+  SCREENING: "bg-blue-600 text-white",
+  INTERVIEW: "bg-violet-600 text-white",
+  OFFER:     "bg-amber-500 text-white",
+  HIRED:     "bg-emerald-600 text-white",
+  REJECTED:  "bg-red-600 text-white",
+  WITHDRAWN: "bg-zinc-500 text-white",
 };
 
 export function ApplicantsBoard({ applications }: { applications: App[] }) {
@@ -29,92 +40,158 @@ export function ApplicantsBoard({ applications }: { applications: App[] }) {
 
   async function updateStage(id: string, stage: Stage) {
     setBusy(true);
-    await fetch(`/api/employer/applications/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ stage }) });
+    await fetch(`/api/employer/applications/${id}`, {
+      method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ stage }),
+    });
     setBusy(false);
     router.refresh();
-    if (selected?.id === id) setSelected({ ...selected, stage });
+    if (selected?.id === id) setSelected(s => s ? { ...s, stage } : s);
   }
 
   async function setRating(id: string, rating: number) {
     setBusy(true);
-    await fetch(`/api/employer/applications/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ rating }) });
+    await fetch(`/api/employer/applications/${id}`, {
+      method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ rating }),
+    });
     setBusy(false);
     router.refresh();
-    if (selected?.id === id) setSelected({ ...selected, rating });
+    if (selected?.id === id) setSelected(s => s ? { ...s, rating } : s);
   }
 
   return (
-    <div className="grid lg:grid-cols-[1fr_360px] gap-6">
-      <div className="space-y-3" data-testid="applicants-list">
-        {applications.length === 0 && <div className="glass rounded-3xl p-10 text-center text-zinc-500 text-sm">No applicants yet — share the role to attract candidates.</div>}
-        {applications.map(a => (
-          <button key={a.id} onClick={() => setSelected(a)} className={`w-full text-left glass rounded-3xl p-5 hover:-translate-y-0.5 transition ${selected?.id === a.id ? "ring-2 ring-brand-blue/30" : ""}`} data-testid={`applicant-${a.id}`}>
-            <div className="flex items-start gap-4">
-              <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-brand-blue to-brand-orange grid place-items-center text-white font-semibold">{a.user.name.split(" ").map(p => p[0]).slice(0, 2).join("").toUpperCase()}</div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-3 flex-wrap">
-                  <div className="font-display font-medium text-zinc-950 text-base truncate">{a.user.name}</div>
-                  <span className={`text-[10.5px] uppercase tracking-[0.16em] px-2.5 py-1 rounded-full bg-gradient-to-r ${STAGE_COLORS[a.stage]} text-white font-medium`}>{a.stage.toLowerCase()}</span>
-                </div>
-                <div className="text-xs text-zinc-500 mt-0.5">{a.user.headline || a.user.email}{a.user.location ? ` · ${a.user.location}` : ""}</div>
-                <div className="mt-3 flex items-center gap-4 text-xs text-zinc-500">
-                  <span>{a.matchScore || "—"}% match</span>
-                  <span>·</span>
-                  <span>applied {timeAgo(a.createdAt)}</span>
-                  {a.rating && <><span>·</span><span className="inline-flex items-center gap-0.5 text-amber-600">{Array.from({ length: a.rating }).map((_, i) => <Star key={i} className="h-3 w-3 fill-current" />)}</span></>}
-                </div>
-              </div>
+    <div className="grid lg:grid-cols-[1fr_360px] gap-5" data-testid="applicants-list">
+
+      {/* Left — applicant list */}
+      <div className="space-y-3">
+        {applications.length === 0 ? (
+          <div className="bg-white border border-zinc-100 rounded-2xl p-12 text-center shadow-sm">
+            <div className="h-14 w-14 rounded-2xl bg-zinc-50 border border-zinc-100 flex items-center justify-center mx-auto mb-4">
+              <Users className="h-7 w-7 text-zinc-300" />
             </div>
-          </button>
-        ))}
+            <p className="text-zinc-500 text-sm font-medium">No applicants yet</p>
+            <p className="text-zinc-400 text-xs mt-1">Share the role to attract candidates.</p>
+          </div>
+        ) : (
+          applications.map(a => {
+            const initials = a.user.name.split(" ").map(p => p[0]).slice(0, 2).join("").toUpperCase();
+            return (
+              <button
+                key={a.id}
+                onClick={() => setSelected(a)}
+                className={`w-full text-left bg-white border rounded-2xl p-5 hover:shadow-md transition-all ${selected?.id === a.id ? "border-blue-400 shadow-sm ring-2 ring-blue-100" : "border-zinc-100 shadow-sm"}`}
+                data-testid={`applicant-${a.id}`}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
+                    {initials}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold text-zinc-900 text-sm truncate">{a.user.name}</span>
+                      <span className={`text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full font-semibold ${STAGE_STYLE[a.stage]}`}>
+                        {a.stage.toLowerCase()}
+                      </span>
+                    </div>
+                    <div className="text-xs text-zinc-500 mt-0.5 truncate">
+                      {a.user.headline || a.user.email}{a.user.location ? ` · ${a.user.location}` : ""}
+                    </div>
+                    <div className="mt-2 flex items-center gap-3 text-xs text-zinc-400">
+                      <span>{a.matchScore ? `${a.matchScore}% match` : "—"}</span>
+                      <span>·</span>
+                      <span>Applied {timeAgo(a.createdAt)}</span>
+                      {a.rating ? (
+                        <>
+                          <span>·</span>
+                          <span className="flex items-center gap-0.5 text-amber-500">
+                            {Array.from({ length: a.rating }).map((_, i) => <Star key={i} className="h-3 w-3 fill-current" />)}
+                          </span>
+                        </>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+              </button>
+            );
+          })
+        )}
       </div>
 
+      {/* Right — detail panel */}
       <aside className="lg:sticky lg:top-6 h-fit">
         {!selected ? (
-          <div className="glass rounded-3xl p-6 text-sm text-zinc-500" data-testid="applicant-detail-empty">Select an applicant to manage their stage, rating and notes.</div>
+          <div className="bg-white border border-zinc-100 rounded-2xl p-8 text-center shadow-sm" data-testid="applicant-detail-empty">
+            <p className="text-zinc-400 text-sm">Select an applicant to manage their stage, rating and notes.</p>
+          </div>
         ) : (
-          <div className="glass-strong rounded-3xl p-6 space-y-4" data-testid="applicant-detail">
-            <div>
-              <div className="text-xs uppercase tracking-[0.18em] text-zinc-500 font-semibold">Candidate</div>
-              <div className="font-display text-xl font-medium text-zinc-950 mt-1">{selected.user.name}</div>
-              <div className="text-sm text-zinc-600">{selected.user.email}</div>
-              {selected.user.headline && <div className="text-xs text-zinc-500 mt-1">{selected.user.headline}</div>}
+          <div className="bg-white border border-zinc-100 rounded-2xl p-6 shadow-sm space-y-5" data-testid="applicant-detail">
+            {/* Header */}
+            <div className="flex items-start gap-3">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white font-bold shrink-0">
+                {selected.user.name.split(" ").map(p => p[0]).slice(0, 2).join("").toUpperCase()}
+              </div>
+              <div>
+                <div className="font-bold text-zinc-900 text-base">{selected.user.name}</div>
+                <div className="text-xs text-zinc-500">{selected.user.email}</div>
+                {selected.user.headline && <div className="text-xs text-zinc-400 mt-0.5">{selected.user.headline}</div>}
+              </div>
             </div>
+
+            {/* Pipeline Stage */}
             <div>
-              <div className="label">Pipeline stage</div>
-              <div className="mt-1 grid grid-cols-3 gap-1.5">
+              <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-2">Pipeline Stage</div>
+              <div className="grid grid-cols-3 gap-1.5">
                 {STAGES.map(s => (
-                  <button key={s} disabled={busy} onClick={() => updateStage(selected.id, s)}
-                    className={`text-[11px] rounded-full px-2 py-2 transition-all ${selected.stage === s ? `btn-primary text-white` : "glass text-zinc-700 hover:bg-white/90"}`}
+                  <button
+                    key={s}
+                    disabled={busy}
+                    onClick={() => updateStage(selected.id, s)}
+                    className={`text-[11px] rounded-lg px-2 py-2 font-semibold transition-all ${selected.stage === s ? STAGE_ACTIVE[s] : "bg-zinc-50 border border-zinc-200 text-zinc-600 hover:bg-zinc-100"}`}
                     data-testid={`stage-${s}`}
                   >
-                    {s.toLowerCase()}
+                    {s.charAt(0) + s.slice(1).toLowerCase()}
                   </button>
                 ))}
               </div>
             </div>
+
+            {/* Rating */}
             <div>
-              <div className="label">Rating</div>
-              <div className="mt-1 flex items-center gap-1">
+              <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-2">Rating</div>
+              <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map(n => (
                   <button key={n} disabled={busy} onClick={() => setRating(selected.id, n)} data-testid={`rate-${n}`}>
-                    <Star className={`h-5 w-5 transition-colors ${(selected.rating || 0) >= n ? "text-amber-500 fill-amber-500" : "text-zinc-300"}`} />
+                    <Star className={`h-6 w-6 transition-colors ${(selected.rating || 0) >= n ? "text-amber-400 fill-amber-400" : "text-zinc-200 hover:text-amber-300"}`} />
                   </button>
                 ))}
               </div>
             </div>
+
+            {/* Resume */}
             {selected.resumeUrl && (
-              <a href={selected.resumeUrl} target="_blank" rel="noreferrer" className="btn-glass rounded-full px-4 py-2 text-sm font-medium inline-flex items-center gap-2 w-fit" data-testid="download-resume">
-                <FileDown className="h-4 w-4" /> View resume
+              <a
+                href={selected.resumeUrl} target="_blank" rel="noreferrer"
+                className="inline-flex items-center gap-2 border border-zinc-200 text-zinc-700 font-semibold text-sm px-4 py-2 rounded-xl hover:bg-zinc-50 transition"
+                data-testid="download-resume"
+              >
+                <FileDown className="h-4 w-4" /> View Resume
               </a>
             )}
+
+            {/* Cover letter */}
             {selected.coverLetter && (
               <div>
-                <div className="label">Cover letter</div>
-                <p className="mt-1 text-sm text-zinc-700 whitespace-pre-wrap bg-white/60 rounded-2xl p-3 border border-zinc-200/60">{selected.coverLetter}</p>
+                <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-2">Cover Letter</div>
+                <p className="text-sm text-zinc-700 whitespace-pre-wrap bg-zinc-50 rounded-xl p-3 border border-zinc-100 leading-relaxed">
+                  {selected.coverLetter}
+                </p>
               </div>
             )}
-            {busy && <div className="text-xs text-zinc-500 flex items-center gap-1.5"><Loader2 className="h-3 w-3 animate-spin" /> Saving…</div>}
+
+            {busy && (
+              <div className="text-xs text-zinc-400 flex items-center gap-1.5">
+                <Loader2 className="h-3 w-3 animate-spin" /> Saving…
+              </div>
+            )}
           </div>
         )}
       </aside>

@@ -17,10 +17,10 @@ export default async function ApplicantsPage({ params }: { params: Promise<{ id:
 
   return (
     <DashboardShell role={me.role === "ADMIN" ? "ADMIN" : "EMPLOYER"} current="/employer/jobs">
-      <div className="glass-strong rounded-3xl p-7">
-        <div className="text-xs uppercase tracking-[0.18em] text-zinc-500 font-semibold">Applicant pipeline</div>
-        <h1 className="font-display mt-2 text-3xl md:text-4xl font-medium tracking-tight">{job.title}</h1>
-        <p className="text-zinc-600 mt-1 text-sm">{job.applications.length} candidate{job.applications.length === 1 ? "" : "s"} · {job.location} · {job.workMode.toLowerCase()}</p>
+      <div className="bg-white border border-zinc-100 rounded-2xl p-6 shadow-sm mb-5">
+        <div className="text-xs uppercase tracking-[0.18em] text-zinc-400 font-semibold">Applicant Pipeline</div>
+        <h1 className="text-3xl font-black text-zinc-900 mt-1">{job.title}</h1>
+        <p className="text-zinc-500 mt-1 text-sm">{job.applications.length} candidate{job.applications.length === 1 ? "" : "s"} · {job.location} · {job.workMode.toLowerCase()}</p>
       </div>
 
       <ApplicantsBoard
