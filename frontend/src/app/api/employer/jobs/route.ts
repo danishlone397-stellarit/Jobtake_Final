@@ -21,6 +21,7 @@ const Body = z.object({
   industry: z.string().optional(),
   collarType: z.enum(["WHITE", "BLUE", "PINK", "GREY", "MSME"]).default("WHITE"),
   categoryId: z.string().optional(),
+  categoryName: z.string().optional(),
   skills: z.array(z.string()).default([]),
   companyId: z.string().optional(),
 });
@@ -46,6 +47,18 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Resolve categoryId — use provided or find/create by name
+  let categoryId = data.data.categoryId;
+  if (!categoryId && data.data.categoryName?.trim()) {
+    const catName = data.data.categoryName.trim();
+    const cat = await prisma.category.upsert({
+      where: { name: catName },
+      update: {},
+      create: { name: catName, slug: slugify(catName) },
+    });
+    categoryId = cat.id;
+  }
+
   const base = slugify(data.data.title);
   const slug = `${base}-${Math.random().toString(36).slice(2, 7)}`;
 
@@ -53,7 +66,7 @@ export async function POST(req: NextRequest) {
     data: {
       companyId,
       postedById: user.id,
-      categoryId: data.data.categoryId,
+      categoryId,
       title: data.data.title,
       slug,
       description: data.data.description,

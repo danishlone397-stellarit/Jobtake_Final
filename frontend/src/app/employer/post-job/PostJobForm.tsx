@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Briefcase, ChevronRight, ChevronLeft } from "lucide-react";
+import { Loader2, Briefcase, ChevronRight, ChevronLeft, X, Plus } from "lucide-react";
 
 type Cat = { id: string; name: string };
 
@@ -68,16 +68,19 @@ const COLLAR_OPTIONS = [
   },
 ];
 
-export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmin: boolean }) {
+export function PostJobForm({ categories: _categories, isAdmin }: { categories: Cat[]; isAdmin: boolean }) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     title: "", description: "", roleDetails: "", benefits: "",
-    location: "", industry: "", ctc: "",
+    location: "", industry: "", ctc: "", categoryName: "",
     workMode: "REMOTE", employmentType: "FULL_TIME", seniority: "MID",
     salaryMin: "", salaryMax: "", salaryCurrency: "INR", salaryPeriod: "month",
-    categoryId: "", skills: "", collarType: "",
+    collarType: "",
   });
+  const [skills, setSkills] = useState<string[]>([]);
+  const [skillInput, setSkillInput] = useState("");
+  const skillRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const roleDetailsWordCount = form.roleDetails.trim() === "" ? 0 : form.roleDetails.trim().split(/\s+/).length;
@@ -85,6 +88,25 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
 
   function set<K extends keyof typeof form>(k: K, v: string) {
     setForm(f => ({ ...f, [k]: v }));
+  }
+
+  function addSkill(val: string) {
+    const trimmed = val.trim();
+    if (trimmed && !skills.includes(trimmed)) setSkills(s => [...s, trimmed]);
+    setSkillInput("");
+  }
+
+  function removeSkill(s: string) {
+    setSkills(prev => prev.filter(x => x !== s));
+  }
+
+  function onSkillKey(e: KeyboardEvent<HTMLInputElement>) {
+    if (["Enter", ",", "Tab"].includes(e.key)) {
+      e.preventDefault();
+      addSkill(skillInput);
+    } else if (e.key === "Backspace" && !skillInput && skills.length) {
+      setSkills(s => s.slice(0, -1));
+    }
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -105,8 +127,8 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
       salaryMax: form.salaryMax ? parseInt(form.salaryMax, 10) : undefined,
       salaryCurrency: form.salaryCurrency,
       salaryPeriod: form.salaryPeriod,
-      categoryId: form.categoryId || undefined,
-      skills: form.skills.split(",").map(s => s.trim()).filter(Boolean),
+      categoryName: form.categoryName.trim() || undefined,
+      skills,
       collarType: form.collarType || "WHITE",
     };
     const res = await fetch("/api/employer/jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
@@ -231,9 +253,32 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Skills <span className="text-xs font-normal text-zinc-400">(comma separated)</span></label>
-              <input className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"
-                value={form.skills} onChange={e => set("skills", e.target.value)} placeholder="React, TypeScript, Node.js" />
+              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Skills <span className="text-xs font-normal text-zinc-400">(type & press Enter or comma)</span></label>
+              <div
+                className="min-h-[48px] w-full px-3 py-2 border border-zinc-200 rounded-lg focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition flex flex-wrap gap-2 cursor-text bg-white"
+                onClick={() => skillRef.current?.focus()}
+              >
+                {skills.map(s => (
+                  <span key={s} className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-100 font-medium">
+                    {s}
+                    <button type="button" onClick={() => removeSkill(s)} className="hover:text-red-500 transition-colors">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+                <input
+                  ref={skillRef}
+                  className="flex-1 min-w-[120px] text-sm outline-none bg-transparent placeholder:text-zinc-400"
+                  value={skillInput}
+                  onChange={e => setSkillInput(e.target.value)}
+                  onKeyDown={onSkillKey}
+                  onBlur={() => skillInput.trim() && addSkill(skillInput)}
+                  placeholder={skills.length === 0 ? "React, TypeScript, Node.js..." : "Add more..."}
+                />
+              </div>
+              {skills.length > 0 && (
+                <p className="text-xs text-zinc-400 mt-1">{skills.length} skill{skills.length > 1 ? "s" : ""} added</p>
+              )}
             </div>
 
             <div>
@@ -318,11 +363,12 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
               </div>
               <div>
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Category</label>
-                <select className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white"
-                  value={form.categoryId} onChange={e => set("categoryId", e.target.value)}>
-                  <option value="">Uncategorized</option>
-                  {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                </select>
+                <input
+                  className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white"
+                  value={form.categoryName}
+                  onChange={e => set("categoryName", e.target.value)}
+                  placeholder="e.g. Engineering, Finance, Marketing"
+                />
               </div>
             </div>
           </div>
