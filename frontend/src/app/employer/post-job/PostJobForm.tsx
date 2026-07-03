@@ -48,7 +48,8 @@ const selectCls = inputCls;
 export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmin: boolean }) {
   const router = useRouter();
 
-  const [collarType, setCollarType]       = useState("WHITE");
+  const [collarTypes, setCollarTypes]     = useState<string[]>(["WHITE"]);
+  const collarType = collarTypes[0] ?? "WHITE"; // primary for API
   const [title, setTitle]                 = useState("");
   const [categoryName, setCategoryName]   = useState("");
   const [employmentType, setEmploymentType] = useState("");
@@ -142,9 +143,13 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
           <SectionHeader num={1} title="Job Type / Category (Select One) *" />
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             {COLLAR_OPTIONS.map(opt => {
-              const active = collarType === opt.value;
+              const active = collarTypes.includes(opt.value);
               return (
-                <button key={opt.value} type="button" onClick={() => setCollarType(opt.value)}
+                <button key={opt.value} type="button" onClick={() => setCollarTypes(prev =>
+                  prev.includes(opt.value)
+                    ? prev.length === 1 ? prev : prev.filter(v => v !== opt.value)
+                    : [...prev, opt.value]
+                )}
                   className={`relative flex flex-col items-center gap-2 rounded-xl border-2 p-3 text-center transition-all ${active ? `${opt.activeBg} ${opt.activeBorder} shadow-sm` : "bg-zinc-50 border-zinc-200 hover:border-zinc-300"}`}>
                   {active && (
                     <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-green-500 flex items-center justify-center">
