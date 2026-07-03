@@ -145,7 +145,7 @@ export default async function EmployerJobsPage() {
 
               {/* Actions */}
               <div className="flex items-center justify-end gap-2">
-                <Link href={`/jobs/${j.slug ?? j.id}`} title="View" className="h-8 w-8 rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-100 transition-colors">
+                <Link href={`/employer/jobs/${j.id}/preview`} title="Preview" className="h-8 w-8 rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-100 transition-colors">
                   <Eye className="h-4 w-4 text-zinc-500" />
                 </Link>
                 <Link href={`/employer/jobs/${j.id}/applicants`} title="Applicants" className="h-8 w-8 rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-100 transition-colors">

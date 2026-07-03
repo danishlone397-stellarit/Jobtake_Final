@@ -1,275 +1,432 @@
 "use client";
 import { useState, useRef, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Briefcase, X, Check } from "lucide-react";
+import { Loader2, MapPin, X, Check, Eye } from "lucide-react";
 
 type Cat = { id: string; name: string };
 
 const COLLAR_OPTIONS = [
-  { value: "WHITE", label: "White-Collar", emoji: "🏢", desc: "Corporate · Professional · Desk Jobs", iconBg: "bg-blue-600",   activeBorder: "border-blue-500",   activeBg: "bg-blue-50",   activeText: "text-blue-700" },
-  { value: "BLUE",  label: "Blue-Collar",  emoji: "🔧", desc: "Skilled · Technical · Hands-on",      iconBg: "bg-teal-600",   activeBorder: "border-teal-500",   activeBg: "bg-teal-50",   activeText: "text-teal-700" },
-  { value: "PINK",  label: "Pink-Collar",  emoji: "🌸", desc: "Care · Service · Support",            iconBg: "bg-pink-500",   activeBorder: "border-pink-500",   activeBg: "bg-pink-50",   activeText: "text-pink-700" },
-  { value: "GREY",  label: "Grey-Collar",  emoji: "⚙️", desc: "Technical · Supervisory · Hybrid",   iconBg: "bg-zinc-600",   activeBorder: "border-zinc-500",   activeBg: "bg-zinc-100",  activeText: "text-zinc-700" },
-  { value: "MSME",  label: "MSME",         emoji: "🏭", desc: "Local · Enterprise · Growth",         iconBg: "bg-orange-500", activeBorder: "border-orange-500", activeBg: "bg-orange-50", activeText: "text-orange-700" },
+  { value: "WHITE", label: "White-Collar", emoji: "🏢", desc: "Corporate · Professional · Desk Jobs",  iconBg: "bg-blue-600",   activeBorder: "border-blue-500",   activeBg: "bg-blue-50",   activeText: "text-blue-700" },
+  { value: "BLUE",  label: "Blue-Collar",  emoji: "🔧", desc: "Skilled · Technical · Hands-on",        iconBg: "bg-teal-600",   activeBorder: "border-teal-500",   activeBg: "bg-teal-50",   activeText: "text-teal-700" },
+  { value: "MSME",  label: "MSME Job",     emoji: "🏭", desc: "Local · Enterprise · Growth",           iconBg: "bg-orange-500", activeBorder: "border-orange-500", activeBg: "bg-orange-50", activeText: "text-orange-700" },
+  { value: "PINK",  label: "Diversity Job",emoji: "🌸", desc: "Inclusive · Equal Opportunity",         iconBg: "bg-pink-500",   activeBorder: "border-pink-500",   activeBg: "bg-pink-50",   activeText: "text-pink-700" },
+  { value: "GREY",  label: "Others",       emoji: "⚙️", desc: "Other Job Categories",                  iconBg: "bg-zinc-500",   activeBorder: "border-zinc-500",   activeBg: "bg-zinc-100",  activeText: "text-zinc-700" },
 ];
 
-export function PostJobForm({ categories: _categories, isAdmin }: { categories: Cat[]; isAdmin: boolean }) {
+const EMPLOYMENT_TYPES = [
+  { value: "FULL_TIME", label: "Full-time" },
+  { value: "PART_TIME", label: "Part-time" },
+  { value: "CONTRACT",  label: "Contract" },
+  { value: "INTERNSHIP",label: "Internship" },
+  { value: "TEMPORARY", label: "Temporary" },
+];
+
+const SENIORITY_OPTIONS = [
+  { value: "INTERN",    label: "Intern / Fresher (0 yrs)" },
+  { value: "ENTRY",     label: "Entry Level (0-2 yrs)" },
+  { value: "MID",       label: "Mid Level (2-5 yrs)" },
+  { value: "SENIOR",    label: "Senior (5-8 yrs)" },
+  { value: "STAFF",     label: "Staff (8-12 yrs)" },
+  { value: "PRINCIPAL", label: "Principal (12-15 yrs)" },
+  { value: "DIRECTOR",  label: "Director (15-20 yrs)" },
+  { value: "EXECUTIVE", label: "Executive (20+ yrs)" },
+];
+
+const MIN_EDU_OPTIONS = ["Any", "10th Pass", "12th Pass", "Diploma", "Graduate", "Post Graduate", "Doctorate"];
+const DEGREE_OPTIONS  = ["Any", "B.Tech / B.E.", "B.Sc", "B.Com", "BA", "BBA / BBM", "MBA / PGDM", "M.Tech", "M.Sc", "MCA", "B.C.A", "B.Ed", "Other"];
+
+const SectionHeader = ({ num, title }: { num: number; title: string }) => (
+  <div className="flex items-center gap-3 mb-5">
+    <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold shrink-0">{num}</div>
+    <h2 className="text-base font-bold text-zinc-900">{title}</h2>
+  </div>
+);
+
+const inputCls = "w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white";
+const selectCls = inputCls;
+
+export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmin: boolean }) {
   const router = useRouter();
 
-  // multi-select collar types
-  const [collarTypes, setCollarTypes] = useState<string[]>(["WHITE"]);
-
-  const [form, setForm] = useState({
-    title: "", description: "", roleDetails: "", benefits: "",
-    location: "", industry: "", categoryName: "",
-    workMode: "REMOTE", employmentType: "FULL_TIME", seniority: "MID",
-    salaryMin: "", salaryMax: "", salaryCurrency: "INR", salaryPeriod: "month",
-  });
-  const [skills, setSkills] = useState<string[]>([]);
-  const [skillInput, setSkillInput] = useState("");
+  const [collarType, setCollarType]       = useState("WHITE");
+  const [title, setTitle]                 = useState("");
+  const [categoryName, setCategoryName]   = useState("");
+  const [employmentType, setEmploymentType] = useState("");
+  const [seniority, setSeniority]         = useState("");
+  const [workMode, setWorkMode]           = useState("ONSITE");
+  const [location, setLocation]           = useState("");
+  const [remoteJob, setRemoteJob]         = useState(false);
+  const [jobType, setJobType]             = useState("FULL_TIME");
+  const [minEdu, setMinEdu]               = useState("");
+  const [degree, setDegree]               = useState("");
+  const [passingYear, setPassingYear]     = useState("");
+  const [description, setDescription]     = useState("");
+  const [responsibilities, setResponsibilities] = useState("");
+  const [requirements, setRequirements]   = useState("");
+  const [salaryMin, setSalaryMin]         = useState("");
+  const [salaryMax, setSalaryMax]         = useState("");
+  const [benefits, setBenefits]           = useState("");
+  const [skills, setSkills]               = useState<string[]>([]);
+  const [skillInput, setSkillInput]       = useState("");
   const skillRef = useRef<HTMLInputElement>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const roleDetailsWordCount = form.roleDetails.trim() === "" ? 0 : form.roleDetails.trim().split(/\s+/).length;
-  const WORD_LIMIT = 500;
-
-  function toggleCollar(val: string) {
-    setCollarTypes(prev =>
-      prev.includes(val)
-        ? prev.length === 1 ? prev          // at least one must stay selected
-          : prev.filter(v => v !== val)
-        : [...prev, val]
-    );
-  }
-
-  function set<K extends keyof typeof form>(k: K, v: string) {
-    setForm(f => ({ ...f, [k]: v }));
-  }
+  const [loading, setLoading]             = useState(false);
+  const [error, setError]                 = useState<string | null>(null);
 
   function addSkill(val: string) {
-    const trimmed = val.trim();
-    if (trimmed && !skills.includes(trimmed)) setSkills(s => [...s, trimmed]);
+    const t = val.trim();
+    if (t && !skills.includes(t)) setSkills(s => [...s, t]);
     setSkillInput("");
   }
-
-  function removeSkill(s: string) {
-    setSkills(prev => prev.filter(x => x !== s));
-  }
-
   function onSkillKey(e: KeyboardEvent<HTMLInputElement>) {
-    if (["Enter", ",", "Tab"].includes(e.key)) {
-      e.preventDefault();
-      addSkill(skillInput);
-    } else if (e.key === "Backspace" && !skillInput && skills.length) {
-      setSkills(s => s.slice(0, -1));
-    }
+    if (["Enter", ",", "Tab"].includes(e.key)) { e.preventDefault(); addSkill(skillInput); }
+    else if (e.key === "Backspace" && !skillInput && skills.length) setSkills(s => s.slice(0, -1));
   }
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  const SENIORITY_LABEL: Record<string, string> = {
+    INTERN: "Fresher", ENTRY: "0-2 yrs", MID: "2-5 yrs", SENIOR: "5-8 yrs",
+    STAFF: "8-12 yrs", PRINCIPAL: "12-15 yrs", DIRECTOR: "15-20 yrs", EXECUTIVE: "20+ yrs",
+  };
+
+  async function submit(status: "DRAFT" | "PENDING") {
     setLoading(true); setError(null);
     const body = {
-      title: form.title,
-      description: form.description,
-      responsibilities: form.roleDetails,
-      requirements: form.roleDetails,
-      benefits: form.benefits,
-      location: form.location,
-      industry: form.industry,
-      workMode: form.workMode,
-      employmentType: form.employmentType,
-      seniority: form.seniority,
-      salaryMin: form.salaryMin ? parseInt(form.salaryMin, 10) : undefined,
-      salaryMax: form.salaryMax ? parseInt(form.salaryMax, 10) : undefined,
-      salaryCurrency: form.salaryCurrency,
-      salaryPeriod: form.salaryPeriod,
-      categoryName: form.categoryName.trim() || undefined,
+      title, description, responsibilities, requirements, benefits,
+      location: remoteJob ? "Remote" : location,
+      industry: categoryName,
+      workMode: remoteJob ? "REMOTE" : workMode,
+      employmentType: employmentType || jobType || "FULL_TIME",
+      seniority: seniority || "MID",
+      salaryMin: salaryMin ? parseInt(salaryMin) : undefined,
+      salaryMax: salaryMax ? parseInt(salaryMax) : undefined,
+      salaryCurrency: "INR",
+      salaryPeriod: "year",
+      categoryName: categoryName.trim() || undefined,
       skills,
-      collarType: collarTypes[0] ?? "WHITE", // Prisma stores single enum; send first selected
+      collarType: collarType || "WHITE",
     };
-    const res = await fetch("/api/employer/jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const res = await fetch("/api/employer/jobs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
     const data = await res.json();
     setLoading(false);
     if (!res.ok) { setError(data.error || "Failed to post"); return; }
-    router.push(isAdmin ? "/admin/jobs" : "/employer/jobs"); router.refresh();
+    if (status === "DRAFT") {
+      router.push(isAdmin ? "/admin/jobs" : "/employer/jobs");
+    } else {
+      router.push(`/employer/jobs/${data.job.id}/preview`);
+    }
+    router.refresh();
   }
 
-  return (
-    <div className="max-w-3xl mx-auto" data-testid="post-job-form">
-      <form onSubmit={onSubmit} className="space-y-5">
+  const summaryFields = [
+    { label: "Job Title",       value: title },
+    { label: "Category",        value: categoryName },
+    { label: "Location",        value: remoteJob ? "Remote" : location },
+    { label: "Employment Type", value: EMPLOYMENT_TYPES.find(e => e.value === (employmentType || jobType))?.label },
+    { label: "Experience Level",value: SENIORITY_LABEL[seniority] },
+    { label: "Work Mode",       value: remoteJob ? "Remote" : workMode.charAt(0) + workMode.slice(1).toLowerCase() },
+    { label: "Education",       value: minEdu || undefined },
+    { label: "Salary Range",    value: salaryMin || salaryMax ? `₹${salaryMin || "?"} – ₹${salaryMax || "?"}` : undefined },
+  ];
 
-        {/* Job Category Type — multi-select */}
+  return (
+    <div className="flex gap-6 items-start">
+
+      {/* ── MAIN FORM ── */}
+      <div className="flex-1 min-w-0 space-y-5 pb-24">
+
+        {/* 1. Job Type */}
         <div className="bg-white border border-zinc-200 rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-zinc-900">Job Category Type</h3>
-            <span className="text-xs text-zinc-400">{collarTypes.length} selected · click to toggle</span>
-          </div>
+          <SectionHeader num={1} title="Job Type / Category (Select One) *" />
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             {COLLAR_OPTIONS.map(opt => {
-              const active = collarTypes.includes(opt.value);
+              const active = collarType === opt.value;
               return (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => toggleCollar(opt.value)}
-                  className={`relative flex flex-col items-center gap-2 rounded-xl border-2 p-3 text-center transition-all ${
-                    active
-                      ? `${opt.activeBg} ${opt.activeBorder} shadow-sm`
-                      : "bg-zinc-50 border-zinc-200 hover:border-zinc-300"
-                  }`}
-                >
-                  {/* checkmark badge */}
+                <button key={opt.value} type="button" onClick={() => setCollarType(opt.value)}
+                  className={`relative flex flex-col items-center gap-2 rounded-xl border-2 p-3 text-center transition-all ${active ? `${opt.activeBg} ${opt.activeBorder} shadow-sm` : "bg-zinc-50 border-zinc-200 hover:border-zinc-300"}`}>
                   {active && (
                     <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-green-500 flex items-center justify-center">
                       <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />
                     </span>
                   )}
-                  <div className={`h-10 w-10 rounded-xl ${opt.iconBg} grid place-items-center text-xl shadow`}>
-                    {opt.emoji}
-                  </div>
-                  <span className={`text-xs font-semibold leading-tight ${active ? opt.activeText : "text-zinc-700"}`}>
-                    {opt.label}
-                  </span>
-                  <span className={`text-[10px] leading-tight ${active ? opt.activeText : "text-zinc-400"}`}>
-                    {opt.desc}
-                  </span>
+                  <div className={`h-10 w-10 rounded-xl ${opt.iconBg} grid place-items-center text-xl shadow`}>{opt.emoji}</div>
+                  <span className={`text-xs font-semibold leading-tight ${active ? opt.activeText : "text-zinc-700"}`}>{opt.label}</span>
+                  <span className={`text-[10px] leading-tight ${active ? opt.activeText : "text-zinc-400"}`}>{opt.desc}</span>
                 </button>
               );
             })}
           </div>
-          {collarTypes.length > 1 && (
-            <p className="text-xs text-zinc-400 mt-3">
-              Primary collar type: <span className="font-semibold text-zinc-600">{COLLAR_OPTIONS.find(o => o.value === collarTypes[0])?.label}</span>
-            </p>
-          )}
         </div>
 
-        {/* Job Information */}
-        <div className="bg-white border border-zinc-200 rounded-2xl p-6 space-y-5">
-          <h3 className="font-bold text-zinc-900 flex items-center gap-2">
-            <Briefcase className="h-4 w-4 text-blue-600" /> Job Information
-          </h3>
-
-          <div>
-            <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Job Title <span className="text-red-500">*</span></label>
-            <input className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"
-              required value={form.title} onChange={e => set("title", e.target.value)} placeholder="e.g. Senior Software Engineer" data-testid="job-title" />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-zinc-700 mb-1.5">About the Role <span className="text-red-500">*</span></label>
-            <textarea className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition min-h-[100px]"
-              required value={form.description} onChange={e => set("description", e.target.value)} placeholder="Describe the role and team..." data-testid="job-description" />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Roles, Responsibilities &amp; Requirements</label>
-            <textarea
-              className={`w-full px-4 py-3 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-100 transition min-h-[140px] ${roleDetailsWordCount > WORD_LIMIT ? "border-red-400 focus:border-red-400" : "border-zinc-200 focus:border-blue-400"}`}
-              value={form.roleDetails} onChange={e => set("roleDetails", e.target.value)}
-              placeholder="List the responsibilities and requirements..." />
-            <div className={`text-xs mt-1 text-right ${roleDetailsWordCount > WORD_LIMIT ? "text-red-500 font-semibold" : "text-zinc-400"}`}>
-              {roleDetailsWordCount} / {WORD_LIMIT} words
+        {/* 2. Job Information */}
+        <div className="bg-white border border-zinc-200 rounded-2xl p-6">
+          <SectionHeader num={2} title="Job Information" />
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Job Title <span className="text-red-500">*</span></label>
+              <input className={inputCls} value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Senior Software Engineer" data-testid="job-title" />
             </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-zinc-700 mb-1.5">
-              Skills <span className="text-xs font-normal text-zinc-400">(type &amp; press Enter or comma)</span>
-            </label>
-            <div
-              className="min-h-[48px] w-full px-3 py-2 border border-zinc-200 rounded-lg focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition flex flex-wrap gap-2 cursor-text bg-white"
-              onClick={() => skillRef.current?.focus()}
-            >
-              {skills.map(s => (
-                <span key={s} className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-100 font-medium">
-                  {s}
-                  <button type="button" onClick={() => removeSkill(s)} className="hover:text-red-500 transition-colors">
-                    <X className="h-3 w-3" />
-                  </button>
-                </span>
-              ))}
-              <input
-                ref={skillRef}
-                className="flex-1 min-w-[120px] text-sm outline-none bg-transparent placeholder:text-zinc-400"
-                value={skillInput}
-                onChange={e => setSkillInput(e.target.value)}
-                onKeyDown={onSkillKey}
-                onBlur={() => skillInput.trim() && addSkill(skillInput)}
-                placeholder={skills.length === 0 ? "React, TypeScript, Node.js..." : "Add more..."}
-              />
+            <div>
+              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Job Category <span className="text-red-500">*</span></label>
+              <input className={inputCls} value={categoryName} onChange={e => setCategoryName(e.target.value)} placeholder="e.g. Engineering, Finance, Marketing" list="cat-list" />
+              <datalist id="cat-list">
+                {categories.map(c => <option key={c.id} value={c.name} />)}
+              </datalist>
             </div>
-            {skills.length > 0 && (
-              <p className="text-xs text-zinc-400 mt-1">{skills.length} skill{skills.length > 1 ? "s" : ""} added</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Benefits</label>
-            <textarea className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"
-              value={form.benefits} onChange={e => set("benefits", e.target.value)} placeholder="Health insurance, flexible hours..." />
+            <div className="grid md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Employment Type <span className="text-red-500">*</span></label>
+                <select className={selectCls} value={employmentType} onChange={e => setEmploymentType(e.target.value)}>
+                  <option value="">Select type</option>
+                  {EMPLOYMENT_TYPES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Experience Level <span className="text-red-500">*</span></label>
+                <select className={selectCls} value={seniority} onChange={e => setSeniority(e.target.value)}>
+                  <option value="">Select experience</option>
+                  {SENIORITY_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Work Mode <span className="text-red-500">*</span></label>
+                <select className={selectCls} value={workMode} onChange={e => setWorkMode(e.target.value)}>
+                  <option value="">Select work mode</option>
+                  <option value="ONSITE">On-site</option>
+                  <option value="REMOTE">Remote</option>
+                  <option value="HYBRID">Hybrid</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Location & Work Details */}
-        <div className="bg-white border border-zinc-200 rounded-2xl p-6 space-y-5">
-          <h3 className="font-bold text-zinc-900">Location &amp; Work Details</h3>
-          <div className="grid md:grid-cols-3 gap-4">
+        {/* 3. Location & Job Type */}
+        <div className="bg-white border border-zinc-200 rounded-2xl p-6">
+          <SectionHeader num={3} title="Location & Job Type" />
+          <div className="space-y-5">
             <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Location <span className="text-red-500">*</span></label>
-              <input className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"
-                required value={form.location} onChange={e => set("location", e.target.value)} placeholder="Mumbai, India" />
+              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Job Location <span className="text-red-500">*</span></label>
+              <div className="flex items-center gap-3">
+                <div className="relative flex-1">
+                  <input className={inputCls} value={location} onChange={e => setLocation(e.target.value)}
+                    placeholder="e.g. Mumbai, India" disabled={remoteJob} />
+                  <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 pointer-events-none" />
+                </div>
+                <label className="flex items-center gap-2 text-sm font-medium text-zinc-700 whitespace-nowrap cursor-pointer">
+                  <input type="checkbox" checked={remoteJob} onChange={e => setRemoteJob(e.target.checked)}
+                    className="h-4 w-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500" />
+                  Remote Job
+                </label>
+              </div>
             </div>
+
             <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Industry</label>
-              <input className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"
-                value={form.industry} onChange={e => set("industry", e.target.value)} placeholder="IT, Finance, Healthcare..." />
-            </div>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Work Mode</label>
-              <select className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white"
-                value={form.workMode} onChange={e => set("workMode", e.target.value)}>
-                <option value="REMOTE">Remote</option>
-                <option value="HYBRID">Hybrid</option>
-                <option value="ONSITE">On-site</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Employment Type</label>
-              <select className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white"
-                value={form.employmentType} onChange={e => set("employmentType", e.target.value)}>
-                <option value="FULL_TIME">Full-time</option>
-                <option value="PART_TIME">Part-time</option>
-                <option value="CONTRACT">Contract</option>
-                <option value="INTERNSHIP">Internship</option>
-                <option value="TEMPORARY">Temporary</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Seniority</label>
-              <select className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white"
-                value={form.seniority} onChange={e => set("seniority", e.target.value)}>
-                {["INTERN","ENTRY","MID","SENIOR","STAFF","PRINCIPAL","DIRECTOR","EXECUTIVE"].map(s => (
-                  <option key={s} value={s}>{s.charAt(0) + s.slice(1).toLowerCase()}</option>
+              <label className="block text-sm font-semibold text-zinc-700 mb-2">Work Mode <span className="text-red-500">*</span></label>
+              <div className="flex gap-5">
+                {[{v:"ONSITE",l:"On-site"},{v:"REMOTE",l:"Remote"},{v:"HYBRID",l:"Hybrid"}].map(o => (
+                  <label key={o.v} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input type="radio" name="workMode" value={o.v} checked={workMode === o.v} onChange={() => setWorkMode(o.v)}
+                      className="h-4 w-4 text-blue-600 border-zinc-300 focus:ring-blue-500" />
+                    {o.l}
+                  </label>
                 ))}
-              </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-zinc-700 mb-2">Job Type <span className="text-red-500">*</span></label>
+              <div className="flex flex-wrap gap-5">
+                {EMPLOYMENT_TYPES.map(o => (
+                  <label key={o.value} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input type="radio" name="jobType" value={o.value} checked={jobType === o.value} onChange={() => setJobType(o.value)}
+                      className="h-4 w-4 text-blue-600 border-zinc-300 focus:ring-blue-500" />
+                    {o.label}
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-{error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">{error}</div>}
+        {/* 4. Education Details */}
+        <div className="bg-white border border-zinc-200 rounded-2xl p-6">
+          <SectionHeader num={4} title="Education Details" />
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Minimum Education <span className="text-red-500">*</span></label>
+              <select className={selectCls} value={minEdu} onChange={e => setMinEdu(e.target.value)}>
+                <option value="">Select minimum education</option>
+                {MIN_EDU_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Degree / Diploma <span className="text-red-500">*</span></label>
+              <select className={selectCls} value={degree} onChange={e => setDegree(e.target.value)}>
+                <option value="">Select degree or diploma</option>
+                {DEGREE_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+              </select>
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Passing Year <span className="text-xs font-normal text-zinc-400">(Optional)</span></label>
+              <input className={inputCls} value={passingYear} onChange={e => setPassingYear(e.target.value)} placeholder="e.g. 2020 or Later" />
+            </div>
+          </div>
+        </div>
 
-        <div className="flex items-center justify-end pt-2">
-          <button type="submit" disabled={loading}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition" data-testid="submit-job">
-            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {isAdmin ? "Publish Role" : "Submit for Review"}
+        {/* 5. Job Description */}
+        <div className="bg-white border border-zinc-200 rounded-2xl p-6">
+          <SectionHeader num={5} title="Job Description" />
+          <div className="space-y-5">
+            {[
+              { label: "About the Role", value: description, set: setDescription, placeholder: "Describe the role, key responsibilities and expectations..." },
+              { label: "Roles & Responsibilities", value: responsibilities, set: setResponsibilities, placeholder: "Add key tasks and responsibilities..." },
+              { label: "Job Requirements", value: requirements, set: setRequirements, placeholder: "Skills, experience and qualifications required..." },
+            ].map(({ label, value, set, placeholder }) => (
+              <div key={label}>
+                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{label} <span className="text-red-500">*</span></label>
+                <textarea
+                  className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition min-h-[120px] resize-none"
+                  value={value} onChange={e => set(e.target.value)} placeholder={placeholder} maxLength={5000} />
+                <div className="text-xs text-right text-zinc-400 mt-1">{value.length} / 5000</div>
+              </div>
+            ))}
+
+            {/* Skills */}
+            <div>
+              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Skills <span className="text-xs font-normal text-zinc-400">(type &amp; press Enter or comma)</span></label>
+              <div
+                className="min-h-[48px] w-full px-3 py-2 border border-zinc-200 rounded-lg focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition flex flex-wrap gap-2 cursor-text bg-white"
+                onClick={() => skillRef.current?.focus()}
+              >
+                {skills.map(s => (
+                  <span key={s} className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-100 font-medium">
+                    {s}
+                    <button type="button" onClick={() => setSkills(p => p.filter(x => x !== s))} className="hover:text-red-500 transition-colors">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+                <input
+                  ref={skillRef}
+                  className="flex-1 min-w-[120px] text-sm outline-none bg-transparent placeholder:text-zinc-400"
+                  value={skillInput} onChange={e => setSkillInput(e.target.value)}
+                  onKeyDown={onSkillKey}
+                  onBlur={() => skillInput.trim() && addSkill(skillInput)}
+                  placeholder={skills.length === 0 ? "React, TypeScript, Node.js..." : "Add more..."}
+                />
+              </div>
+              {skills.length > 0 && <p className="text-xs text-zinc-400 mt-1">{skills.length} skill{skills.length > 1 ? "s" : ""} added</p>}
+            </div>
+          </div>
+        </div>
+
+        {/* 6. Compensation */}
+        <div className="bg-white border border-zinc-200 rounded-2xl p-6">
+          <SectionHeader num={6} title="Compensation" />
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Salary Range <span className="text-red-500">*</span></label>
+              <div className="flex items-center gap-3">
+                <input type="number" className={inputCls} value={salaryMin} onChange={e => setSalaryMin(e.target.value)} placeholder="Min Salary" />
+                <span className="text-zinc-400 text-sm font-medium shrink-0">to</span>
+                <input type="number" className={inputCls} value={salaryMax} onChange={e => setSalaryMax(e.target.value)} placeholder="Max Salary" />
+                <span className="text-zinc-600 text-sm font-semibold shrink-0">INR</span>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Additional Benefits</label>
+              <textarea
+                className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition resize-none"
+                value={benefits} onChange={e => setBenefits(e.target.value)}
+                placeholder="e.g. Health Insurance, Flexible Hours, Bonus, etc."
+                maxLength={200} rows={2} />
+              <div className="flex items-center justify-between mt-1">
+                <p className="text-xs text-zinc-400">Enter up to 5 benefits (comma separated)</p>
+                <p className="text-xs text-zinc-400">{benefits.length} / 200</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">{error}</div>}
+      </div>
+
+      {/* ── RIGHT SIDEBAR ── */}
+      <div className="w-72 shrink-0 sticky top-6 space-y-5 hidden lg:block">
+
+        {/* Job Summary */}
+        <div className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-sm">
+          <h3 className="font-bold text-zinc-900 mb-4">Job Summary</h3>
+          <div className="space-y-3">
+            {summaryFields.map(({ label, value }) => (
+              <div key={label} className="flex items-start justify-between gap-2 text-sm">
+                <span className="text-zinc-500 shrink-0">{label}</span>
+                <span className={`font-medium text-right ${value ? "text-zinc-900" : "text-zinc-300"}`}>{value || "Not added"}</span>
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => submit("PENDING")}
+            disabled={loading}
+            className="mt-4 w-full inline-flex items-center justify-center gap-2 text-blue-600 text-sm font-semibold hover:underline"
+          >
+            <Eye className="h-4 w-4" /> Preview Full Job
           </button>
         </div>
 
-      </form>
+        {/* Posting Tips */}
+        <div className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-sm">
+          <h3 className="font-bold text-zinc-900 mb-3">Posting Tips</h3>
+          <ul className="space-y-2.5 text-sm text-zinc-600">
+            {[
+              "Write a clear and specific job title.",
+              "Describe responsibilities in detail.",
+              "Add must-have skills and qualifications.",
+              "Include salary range to attract relevant candidates.",
+              "Review before publishing to ensure accuracy.",
+            ].map(tip => (
+              <li key={tip} className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-blue-400 shrink-0" />
+                {tip}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* ── BOTTOM ACTION BAR (fixed) ── */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-zinc-200 px-6 py-4 flex items-center justify-end gap-3">
+        <button
+          type="button"
+          disabled={loading}
+          onClick={() => submit("DRAFT")}
+          className="px-5 py-2.5 rounded-xl border border-zinc-200 text-zinc-700 font-semibold text-sm hover:bg-zinc-50 transition disabled:opacity-50"
+        >
+          Save as Draft
+        </button>
+        <button
+          type="button"
+          disabled={loading}
+          onClick={() => submit("PENDING")}
+          className="px-5 py-2.5 rounded-xl border border-blue-200 text-blue-700 font-semibold text-sm hover:bg-blue-50 transition disabled:opacity-50"
+        >
+          <span className="flex items-center gap-2"><Eye className="h-4 w-4" /> Preview Job</span>
+        </button>
+        <button
+          type="button"
+          disabled={loading}
+          onClick={() => submit("PENDING")}
+          data-testid="submit-job"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold px-6 py-2.5 rounded-xl transition"
+        >
+          {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+          {isAdmin ? "Publish Job" : "Publish Job"}
+        </button>
+      </div>
     </div>
   );
 }

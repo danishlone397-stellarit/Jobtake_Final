@@ -11,10 +11,10 @@ export default async function PostJobPage() {
   const cats = await prisma.category.findMany({ where: { active: true }, orderBy: { sortOrder: "asc" } });
   return (
     <DashboardShell role={me.role === "ADMIN" ? "ADMIN" : "EMPLOYER"} current="/employer/post-job">
-      <div className="glass-strong rounded-3xl p-7">
-        <div className="text-xs uppercase tracking-[0.18em] text-zinc-500 font-semibold">New role</div>
-        <h1 className="font-display mt-2 text-3xl md:text-4xl font-medium tracking-tight">Post a job</h1>
-        <p className="text-zinc-600 mt-2 text-sm">Pending jobs are queued for admin review and published immediately after approval.</p>
+      <div className="mb-6">
+        <a href="/employer/jobs" className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-800 transition mb-1">← Back to My Jobs</a>
+        <h1 className="text-2xl font-black text-zinc-900">Post a New Job</h1>
+        <p className="text-sm text-zinc-500 mt-1">Fill in the details below to create your job post. Fields marked with <span className="text-red-500">*</span> are required.</p>
       </div>
       <PostJobForm categories={cats.map(c => ({ id: c.id, name: c.name }))} isAdmin={me.role === "ADMIN"} />
     </DashboardShell>
