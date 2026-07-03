@@ -4,55 +4,167 @@ import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { timeAgo } from "@/lib/utils";
+import { Briefcase, Send, Eye, Bookmark, MapPin, Globe, MoreVertical, Users } from "lucide-react";
 
 export default async function EmployerJobsPage() {
   const me = await getCurrentUser();
   if (!me || me.role !== "EMPLOYER") redirect("/login");
+
   const jobs = await prisma.job.findMany({
-    where: { postedById: me.id }, orderBy: { createdAt: "desc" },
-    include: { _count: { select: { applications: true } }, company: { select: { name: true } } },
+    where: { postedById: me.id },
+    orderBy: { createdAt: "desc" },
+    include: {
+      _count: { select: { applications: true } },
+      company: { select: { name: true } },
+      category: { select: { name: true } },
+    },
   });
+
+  const totalJobs = jobs.length;
+  const activeJobs = jobs.filter(j => j.status === "PUBLISHED").length;
+  const totalApplicants = jobs.reduce((sum, j) => sum + j._count.applications, 0);
+  const shortlisted = 0; // placeholder
+
+  const STATUS_STYLE: Record<string, string> = {
+    PUBLISHED: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+    PENDING:   "bg-amber-50  text-amber-700  border border-amber-200",
+    DRAFT:     "bg-zinc-100  text-zinc-600   border border-zinc-200",
+    CLOSED:    "bg-red-50    text-red-600    border border-red-200",
+  };
 
   return (
     <DashboardShell role="EMPLOYER" current="/employer/jobs">
-      <div className="glass-strong rounded-3xl p-7">
-        <div className="flex justify-between items-end flex-wrap gap-3">
-          <div>
-            <div className="text-xs uppercase tracking-[0.18em] text-zinc-500 font-semibold">My jobs</div>
-            <h1 className="font-display mt-2 text-3xl md:text-4xl font-medium tracking-tight">{jobs.length} posting{jobs.length === 1 ? "" : "s"}</h1>
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-zinc-900">My Jobs</h1>
+        <p className="text-sm text-zinc-500 mt-1">Manage all your job postings in one place.</p>
+      </div>
+
+      {/* Stats row */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-5 flex items-center gap-4">
+          <div className="h-12 w-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+            <Briefcase className="h-5 w-5 text-blue-600" />
           </div>
-          <Link href="/employer/post-job" className="btn-primary rounded-full px-5 py-3 text-sm font-medium">+ Post a job</Link>
+          <div>
+            <div className="text-2xl font-bold text-zinc-900">{totalJobs}</div>
+            <div className="text-xs text-zinc-500 font-medium">Total Jobs</div>
+            <div className="text-[11px] text-zinc-400">All time</div>
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-5 flex items-center gap-4">
+          <div className="h-12 w-12 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+            <Send className="h-5 w-5 text-emerald-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-zinc-900">{activeJobs}</div>
+            <div className="text-xs text-zinc-500 font-medium">Active Jobs</div>
+            <div className="text-[11px] text-zinc-400">Currently running</div>
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-5 flex items-center gap-4">
+          <div className="h-12 w-12 rounded-xl bg-purple-50 flex items-center justify-center shrink-0">
+            <Eye className="h-5 w-5 text-purple-600" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-zinc-900">{totalApplicants}</div>
+            <div className="text-xs text-zinc-500 font-medium">Total Applicants</div>
+            <div className="text-[11px] text-zinc-400">Across all jobs</div>
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-5 flex items-center gap-4">
+          <div className="h-12 w-12 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+            <Bookmark className="h-5 w-5 text-orange-500" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-zinc-900">{shortlisted}</div>
+            <div className="text-xs text-zinc-500 font-medium">Shortlisted</div>
+            <div className="text-[11px] text-zinc-400">Across all jobs</div>
+          </div>
         </div>
       </div>
 
-      <div className="glass rounded-3xl p-2 overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-[11px] uppercase tracking-[0.18em] text-zinc-500">
-              <th className="px-4 py-3">Title</th>
-              <th className="px-4 py-3">Location</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Applicants</th>
-              <th className="px-4 py-3">Posted</th>
-              <th className="px-4 py-3"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {jobs.map(j => (
-              <tr key={j.id} className="border-t border-zinc-200/60 hover:bg-white/70">
-                <td className="px-4 py-3 font-medium text-zinc-950">{j.title}</td>
-                <td className="px-4 py-3 text-zinc-700">{j.location}</td>
-                <td className="px-4 py-3"><span className="text-[10.5px] uppercase tracking-[0.16em] px-2.5 py-1 rounded-full bg-zinc-100 text-zinc-700">{j.status.toLowerCase()}</span></td>
-                <td className="px-4 py-3">{j._count.applications}</td>
-                <td className="px-4 py-3 text-zinc-500">{timeAgo(j.createdAt)}</td>
-                <td className="px-4 py-3 text-right">
-                  <Link href={`/employer/jobs/${j.id}/applicants`} className="btn-glass rounded-full text-xs px-3 py-1.5">Manage</Link>
-                </td>
-              </tr>
-            ))}
-            {!jobs.length && <tr><td colSpan={6} className="px-4 py-12 text-center text-zinc-500 text-sm">No jobs yet.</td></tr>}
-          </tbody>
-        </table>
+      {/* Table */}
+      <div className="bg-white rounded-2xl border border-zinc-100 shadow-sm overflow-hidden">
+        {/* Table header row */}
+        <div className="px-6 py-4 border-b border-zinc-100">
+          <div className="grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_80px] items-center gap-4 text-[11px] uppercase tracking-[0.18em] text-zinc-400 font-semibold">
+            <div>Job Title</div>
+            <div>Location</div>
+            <div>Status</div>
+            <div>Applicants</div>
+            <div>Posted</div>
+            <div className="text-right">Actions</div>
+          </div>
+        </div>
+
+        {/* Rows */}
+        {jobs.length === 0 ? (
+          <div className="py-16 text-center text-zinc-500 text-sm">
+            <Briefcase className="h-8 w-8 mx-auto text-zinc-300 mb-3" />
+            No jobs posted yet.{" "}
+            <Link href="/employer/post-job" className="text-blue-600 font-semibold hover:underline">Post your first job →</Link>
+          </div>
+        ) : (
+          jobs.map((j, i) => (
+            <div
+              key={j.id}
+              className={`px-6 py-4 grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_80px] items-center gap-4 hover:bg-zinc-50 transition-colors ${i !== 0 ? "border-t border-zinc-100" : ""}`}
+            >
+              {/* Title */}
+              <div>
+                <div className="font-semibold text-zinc-900 text-sm">{j.title}</div>
+                <div className="text-xs text-zinc-400 mt-0.5">{j.category?.name ?? "—"}</div>
+              </div>
+
+              {/* Location */}
+              <div className="flex items-center gap-1.5 text-sm text-zinc-600">
+                {j.workMode === "REMOTE" ? (
+                  <Globe className="h-3.5 w-3.5 text-zinc-400 shrink-0" />
+                ) : (
+                  <MapPin className="h-3.5 w-3.5 text-zinc-400 shrink-0" />
+                )}
+                <span className="truncate">
+                  {j.location}
+                  {j.workMode !== "ONSITE" && ` · ${j.workMode.charAt(0) + j.workMode.slice(1).toLowerCase()}`}
+                </span>
+              </div>
+
+              {/* Status */}
+              <div>
+                <span className={`text-[11px] font-semibold uppercase tracking-wide px-2.5 py-1 rounded-full ${STATUS_STYLE[j.status] ?? STATUS_STYLE.DRAFT}`}>
+                  {j.status.toLowerCase()}
+                </span>
+              </div>
+
+              {/* Applicants */}
+              <div className="text-sm text-zinc-700 font-medium">{j._count.applications}</div>
+
+              {/* Posted */}
+              <div className="text-sm text-zinc-400">{timeAgo(j.createdAt)}</div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-end gap-2">
+                <Link href={`/jobs/${j.slug ?? j.id}`} title="View" className="h-8 w-8 rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-100 transition-colors">
+                  <Eye className="h-4 w-4 text-zinc-500" />
+                </Link>
+                <Link href={`/employer/jobs/${j.id}/applicants`} title="Applicants" className="h-8 w-8 rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-100 transition-colors">
+                  <Users className="h-4 w-4 text-zinc-500" />
+                </Link>
+                <button title="More" className="h-8 w-8 rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-100 transition-colors">
+                  <MoreVertical className="h-4 w-4 text-zinc-500" />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+
+        {/* Footer */}
+        {jobs.length > 0 && (
+          <div className="px-6 py-3 border-t border-zinc-100 text-xs text-zinc-400">
+            Showing 1 to {jobs.length} of {jobs.length} job{jobs.length !== 1 ? "s" : ""}
+          </div>
+        )}
       </div>
     </DashboardShell>
   );
