@@ -33,9 +33,19 @@ const STAGE_ACTIVE: Record<Stage, string> = {
   WITHDRAWN: "bg-zinc-500 text-white",
 };
 
+const DEMO_APPLICANTS: App[] = [
+  { id: "demo-1", stage: "APPLIED",   rating: null, matchScore: 87, createdAt: new Date(Date.now() - 1 * 86400000).toISOString(), resumeUrl: null, coverLetter: "I am very interested in this role and believe my background in digital marketing aligns well with your requirements.", user: { id: "d1", name: "Priya Sharma",  email: "priya.sharma@gmail.com",  headline: "Digital Marketing Executive · 3 yrs exp", location: "Mumbai, India" } },
+  { id: "demo-2", stage: "SCREENING", rating: 4,    matchScore: 92, createdAt: new Date(Date.now() - 2 * 86400000).toISOString(), resumeUrl: null, coverLetter: null,                   user: { id: "d2", name: "Rahul Verma",   email: "rahul.v@outlook.com",     headline: "SEO & SEM Specialist · 5 yrs exp",      location: "Bangalore, India" } },
+  { id: "demo-3", stage: "INTERVIEW", rating: 5,    matchScore: 95, createdAt: new Date(Date.now() - 3 * 86400000).toISOString(), resumeUrl: null, coverLetter: null,                   user: { id: "d3", name: "Ananya Patel",  email: "ananya.p@yahoo.com",      headline: "Growth Marketer · 4 yrs exp",           location: "Pune, India" } },
+  { id: "demo-4", stage: "OFFER",     rating: 4,    matchScore: 89, createdAt: new Date(Date.now() - 5 * 86400000).toISOString(), resumeUrl: null, coverLetter: null,                   user: { id: "d4", name: "Karan Mehta",   email: "karan.m@gmail.com",       headline: "Brand & Campaign Manager · 6 yrs exp",  location: "Delhi, India" } },
+  { id: "demo-5", stage: "REJECTED",  rating: 2,    matchScore: 61, createdAt: new Date(Date.now() - 7 * 86400000).toISOString(), resumeUrl: null, coverLetter: null,                   user: { id: "d5", name: "Sneha Joshi",   email: "sneha.joshi@gmail.com",   headline: "Social Media Executive · 1 yr exp",     location: "Ahmedabad, India" } },
+];
+
 export function ApplicantsBoard({ applications }: { applications: App[] }) {
   const router = useRouter();
-  const [selected, setSelected] = useState<App | null>(null);
+  const isDemo = applications.length === 0;
+  const list = isDemo ? DEMO_APPLICANTS : applications;
+  const [selected, setSelected] = useState<App | null>(isDemo ? DEMO_APPLICANTS[0] : null);
   const [busy, setBusy] = useState(false);
 
   async function updateStage(id: string, stage: Stage) {
@@ -63,16 +73,12 @@ export function ApplicantsBoard({ applications }: { applications: App[] }) {
 
       {/* Left — applicant list */}
       <div className="space-y-3">
-        {applications.length === 0 ? (
-          <div className="bg-white border border-zinc-100 rounded-2xl p-12 text-center shadow-sm">
-            <div className="h-14 w-14 rounded-2xl bg-zinc-50 border border-zinc-100 flex items-center justify-center mx-auto mb-4">
-              <Users className="h-7 w-7 text-zinc-300" />
-            </div>
-            <p className="text-zinc-500 text-sm font-medium">No applicants yet</p>
-            <p className="text-zinc-400 text-xs mt-1">Share the role to attract candidates.</p>
+        {isDemo && (
+          <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5 text-xs text-amber-700 font-medium">
+            <span>👋</span> Demo preview — these are sample applicants. Real applicants will appear here once candidates apply.
           </div>
-        ) : (
-          applications.map(a => {
+        )}
+        {list.map(a => {
             const initials = a.user.name.split(" ").map(p => p[0]).slice(0, 2).join("").toUpperCase();
             return (
               <button
@@ -112,8 +118,7 @@ export function ApplicantsBoard({ applications }: { applications: App[] }) {
                 </div>
               </button>
             );
-          })
-        )}
+          })}
       </div>
 
       {/* Right — detail panel */}
