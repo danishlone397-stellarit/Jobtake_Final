@@ -21,7 +21,7 @@ export function PostJobForm({ categories: _categories, isAdmin }: { categories: 
 
   const [form, setForm] = useState({
     title: "", description: "", roleDetails: "", benefits: "",
-    location: "", industry: "", ctc: "", categoryName: "",
+    location: "", industry: "", categoryName: "",
     workMode: "REMOTE", employmentType: "FULL_TIME", seniority: "MID",
     salaryMin: "", salaryMax: "", salaryCurrency: "INR", salaryPeriod: "month",
   });
@@ -225,11 +225,6 @@ export function PostJobForm({ categories: _categories, isAdmin }: { categories: 
               <input className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"
                 value={form.industry} onChange={e => set("industry", e.target.value)} placeholder="IT, Finance, Healthcare..." />
             </div>
-            <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">CTC</label>
-              <input className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"
-                value={form.ctc} onChange={e => set("ctc", e.target.value)} placeholder="12 LPA" />
-            </div>
           </div>
           <div className="grid md:grid-cols-3 gap-4">
             <div>
@@ -264,41 +259,7 @@ export function PostJobForm({ categories: _categories, isAdmin }: { categories: 
           </div>
         </div>
 
-        {/* Salary & Category */}
-        <div className="bg-white border border-zinc-200 rounded-2xl p-6 space-y-5">
-          <h3 className="font-bold text-zinc-900">Salary &amp; Category</h3>
-          <div className="grid md:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Salary Min (₹)</label>
-              <input type="number" className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"
-                value={form.salaryMin} onChange={e => set("salaryMin", e.target.value)} placeholder="30000" />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Salary Max (₹)</label>
-              <input type="number" className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"
-                value={form.salaryMax} onChange={e => set("salaryMax", e.target.value)} placeholder="80000" />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Salary Period</label>
-              <select className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white"
-                value={form.salaryPeriod} onChange={e => set("salaryPeriod", e.target.value)}>
-                <option value="month">Monthly</option>
-                <option value="year">Yearly</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Category</label>
-              <input
-                className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white"
-                value={form.categoryName}
-                onChange={e => set("categoryName", e.target.value)}
-                placeholder="e.g. Engineering, Finance, Marketing"
-              />
-            </div>
-          </div>
-        </div>
-
-        {error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">{error}</div>}
+{error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">{error}</div>}
 
         <div className="flex items-center justify-end pt-2">
           <button type="submit" disabled={loading}

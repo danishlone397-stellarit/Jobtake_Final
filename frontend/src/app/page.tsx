@@ -4,8 +4,6 @@ import { PublicFooter } from "@/components/PublicFooter";
 import Hero from "@/components/home/Hero";
 import { LogoWall } from "@/components/home/LogoWall";
 import { FeaturedJobs, type FeaturedJob } from "@/components/home/FeaturedJobs";
-import { AIMatching } from "@/components/home/AIMatching";
-import { CTA } from "@/components/home/CTA";
 import { CollarSections, type CollarSection } from "@/components/home/CollarSections";
 import { formatSalary, timeAgo } from "@/lib/utils";
 
@@ -86,8 +84,7 @@ export default async function Home() {
       <LogoWall />
       <FeaturedJobs jobs={featured} />
       <CollarSections sections={collarSections} />
-      <AIMatching />
-      <CTA />
+
       <PublicFooter />
     </main>
   );
