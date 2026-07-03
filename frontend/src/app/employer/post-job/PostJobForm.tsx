@@ -1,82 +1,26 @@
 "use client";
 import { useState, useRef, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Briefcase, ChevronRight, ChevronLeft, X, Plus } from "lucide-react";
+import { Loader2, Briefcase, X } from "lucide-react";
 
 type Cat = { id: string; name: string };
 
 const COLLAR_OPTIONS = [
-  {
-    value: "WHITE",
-    label: "White-Collar Jobs",
-    desc: "Office-based professional roles in corporate environments.",
-    tags: "Corporate · Professional · Desk Jobs",
-    emoji: "🏢",
-    bg: "bg-gradient-to-r from-blue-50 to-indigo-50",
-    border: "border-blue-300",
-    iconBg: "bg-blue-600",
-    text: "text-blue-700",
-    activeBg: "bg-blue-600",
-  },
-  {
-    value: "BLUE",
-    label: "Blue-Collar Jobs",
-    desc: "Skilled and manual labor roles that build and power our world.",
-    tags: "Skilled · Technical · Hands-on",
-    emoji: "🔧",
-    bg: "bg-gradient-to-r from-teal-50 to-cyan-50",
-    border: "border-teal-300",
-    iconBg: "bg-teal-600",
-    text: "text-teal-700",
-    activeBg: "bg-teal-600",
-  },
-  {
-    value: "PINK",
-    label: "Pink-Collar Jobs",
-    desc: "Service and care-oriented roles that make a real difference.",
-    tags: "Care · Service · Support",
-    emoji: "🌸",
-    bg: "bg-gradient-to-r from-pink-50 to-rose-50",
-    border: "border-pink-300",
-    iconBg: "bg-pink-500",
-    text: "text-pink-700",
-    activeBg: "bg-pink-500",
-  },
-  {
-    value: "GREY",
-    label: "Grey-Collar Jobs",
-    desc: "Technical and supervisory roles bridging skilled trades and management.",
-    tags: "Technical · Supervisory · Hybrid",
-    emoji: "⚙️",
-    bg: "bg-gradient-to-r from-zinc-100 to-slate-100",
-    border: "border-zinc-300",
-    iconBg: "bg-zinc-600",
-    text: "text-zinc-700",
-    activeBg: "bg-zinc-600",
-  },
-  {
-    value: "MSME",
-    label: "MSME Jobs",
-    desc: "Roles at micro, small & medium enterprises driving local economies.",
-    tags: "Local · Enterprise · Growth",
-    emoji: "🏭",
-    bg: "bg-gradient-to-r from-orange-50 to-amber-50",
-    border: "border-orange-300",
-    iconBg: "bg-orange-500",
-    text: "text-orange-700",
-    activeBg: "bg-orange-500",
-  },
+  { value: "WHITE", label: "White-Collar", emoji: "🏢", desc: "Corporate · Professional · Desk Jobs", iconBg: "bg-blue-600", activeBorder: "border-blue-500", activeBg: "bg-blue-50", activeText: "text-blue-700" },
+  { value: "BLUE",  label: "Blue-Collar",  emoji: "🔧", desc: "Skilled · Technical · Hands-on",       iconBg: "bg-teal-600",  activeBorder: "border-teal-500",  activeBg: "bg-teal-50",  activeText: "text-teal-700" },
+  { value: "PINK",  label: "Pink-Collar",  emoji: "🌸", desc: "Care · Service · Support",             iconBg: "bg-pink-500",  activeBorder: "border-pink-500",  activeBg: "bg-pink-50",  activeText: "text-pink-700" },
+  { value: "GREY",  label: "Grey-Collar",  emoji: "⚙️", desc: "Technical · Supervisory · Hybrid",    iconBg: "bg-zinc-600",  activeBorder: "border-zinc-500",  activeBg: "bg-zinc-100", activeText: "text-zinc-700" },
+  { value: "MSME",  label: "MSME",         emoji: "🏭", desc: "Local · Enterprise · Growth",          iconBg: "bg-orange-500",activeBorder: "border-orange-500",activeBg: "bg-orange-50",activeText: "text-orange-700" },
 ];
 
 export function PostJobForm({ categories: _categories, isAdmin }: { categories: Cat[]; isAdmin: boolean }) {
   const router = useRouter();
-  const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     title: "", description: "", roleDetails: "", benefits: "",
     location: "", industry: "", ctc: "", categoryName: "",
     workMode: "REMOTE", employmentType: "FULL_TIME", seniority: "MID",
     salaryMin: "", salaryMax: "", salaryCurrency: "INR", salaryPeriod: "month",
-    collarType: "",
+    collarType: "WHITE",
   });
   const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState("");
@@ -138,93 +82,37 @@ export function PostJobForm({ categories: _categories, isAdmin }: { categories: 
     router.push(isAdmin ? "/admin/jobs" : "/employer/jobs"); router.refresh();
   }
 
-  const selectedCollar = COLLAR_OPTIONS.find(c => c.value === form.collarType);
-
   return (
     <div className="max-w-3xl mx-auto" data-testid="post-job-form">
 
-      {/* Step indicators */}
-      <div className="flex items-center gap-2 mb-8">
-        {[1, 2].map(s => (
-          <div key={s} className="flex items-center gap-2">
-            <div className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${step >= s ? "bg-blue-600 text-white" : "bg-zinc-100 text-zinc-400"}`}>
-              {s}
+      {/* Job Details Form */}
+      <form onSubmit={onSubmit} className="space-y-5">
+
+          {/* Job Category Type */}
+          <div className="bg-white border border-zinc-200 rounded-2xl p-6">
+            <h3 className="font-bold text-zinc-900 mb-4">Job Category Type</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+              {COLLAR_OPTIONS.map(opt => {
+                const active = form.collarType === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => set("collarType", opt.value)}
+                    className={`flex flex-col items-center gap-2 rounded-xl border-2 p-3 text-center transition-all ${
+                      active ? `${opt.activeBg} ${opt.activeBorder} shadow-sm` : "bg-zinc-50 border-zinc-200 hover:border-zinc-300"
+                    }`}
+                  >
+                    <div className={`h-10 w-10 rounded-xl ${opt.iconBg} grid place-items-center text-xl shadow`}>
+                      {opt.emoji}
+                    </div>
+                    <span className={`text-xs font-semibold leading-tight ${active ? opt.activeText : "text-zinc-700"}`}>{opt.label}</span>
+                    <span className={`text-[10px] leading-tight ${active ? opt.activeText : "text-zinc-400"}`}>{opt.desc}</span>
+                  </button>
+                );
+              })}
             </div>
-            <span className={`text-sm font-medium ${step >= s ? "text-zinc-900" : "text-zinc-400"}`}>
-              {s === 1 ? "Select Job Type" : "Job Details"}
-            </span>
-            {s < 2 && <ChevronRight className="h-4 w-4 text-zinc-300 mx-1" />}
           </div>
-        ))}
-      </div>
-
-      {/* Step 1 — Collar Type Selection */}
-      {step === 1 && (
-        <div>
-          <div className="mb-6">
-            <h2 className="text-2xl font-black text-zinc-900">Select Job Category Type</h2>
-            <p className="text-zinc-500 mt-1 text-sm">Choose the category that best describes this job opening.</p>
-          </div>
-
-          <div className="space-y-4">
-            {COLLAR_OPTIONS.map(opt => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => { set("collarType", opt.value); }}
-                className={`w-full flex items-center gap-5 rounded-2xl border-2 p-5 text-left transition-all hover:shadow-md ${
-                  form.collarType === opt.value
-                    ? `${opt.bg} ${opt.border} shadow-md`
-                    : "bg-white border-zinc-200 hover:border-zinc-300"
-                }`}
-              >
-                <div className={`h-14 w-14 shrink-0 rounded-2xl ${opt.iconBg} grid place-items-center text-2xl shadow`}>
-                  {opt.emoji}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-bold text-zinc-900 text-base">{opt.label}</div>
-                  <div className="text-sm text-zinc-500 mt-0.5">{opt.desc}</div>
-                  <div className={`text-xs font-medium mt-1 ${opt.text}`}>{opt.tags}</div>
-                </div>
-                <div className={`h-5 w-5 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors ${
-                  form.collarType === opt.value ? `${opt.activeBg} border-transparent` : "border-zinc-300"
-                }`}>
-                  {form.collarType === opt.value && (
-                    <div className="h-2 w-2 rounded-full bg-white" />
-                  )}
-                </div>
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-6 flex justify-end">
-            <button
-              type="button"
-              disabled={!form.collarType}
-              onClick={() => setStep(2)}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold px-8 py-3 rounded-xl transition"
-            >
-              Continue <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 2 — Job Details */}
-      {step === 2 && (
-        <form onSubmit={onSubmit} className="space-y-5">
-          {/* Selected collar badge */}
-          {selectedCollar && (
-            <div className={`flex items-center gap-3 rounded-xl ${selectedCollar.bg} border ${selectedCollar.border} p-4`}>
-              <div className={`h-10 w-10 rounded-xl ${selectedCollar.iconBg} grid place-items-center text-xl shrink-0`}>
-                {selectedCollar.emoji}
-              </div>
-              <div>
-                <div className="font-semibold text-zinc-900 text-sm">{selectedCollar.label}</div>
-                <button type="button" onClick={() => setStep(1)} className={`text-xs ${selectedCollar.text} underline`}>Change category</button>
-              </div>
-            </div>
-          )}
 
           <div className="bg-white border border-zinc-200 rounded-2xl p-6 space-y-5">
             <h3 className="font-bold text-zinc-900 flex items-center gap-2"><Briefcase className="h-4 w-4 text-blue-600" /> Job Information</h3>
@@ -375,11 +263,7 @@ export function PostJobForm({ categories: _categories, isAdmin }: { categories: 
 
           {error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">{error}</div>}
 
-          <div className="flex items-center justify-between pt-2">
-            <button type="button" onClick={() => setStep(1)}
-              className="flex items-center gap-2 text-zinc-600 hover:text-zinc-900 font-medium text-sm transition">
-              <ChevronLeft className="h-4 w-4" /> Back
-            </button>
+          <div className="flex items-center justify-end pt-2">
             <button type="submit" disabled={loading}
               className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition" data-testid="submit-job">
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
@@ -387,7 +271,6 @@ export function PostJobForm({ categories: _categories, isAdmin }: { categories: 
             </button>
           </div>
         </form>
-      )}
     </div>
   );
 }
