@@ -21,7 +21,7 @@ export function PostJobForm({ categories: _categories, isAdmin }: { categories: 
 
   const [form, setForm] = useState({
     title: "", description: "", roleDetails: "", benefits: "",
-    location: "", industry: "", ctc: "", categoryName: "",
+    location: "", industry: "", categoryName: "",
     workMode: "REMOTE", employmentType: "FULL_TIME", seniority: "MID",
     salaryMin: "", salaryMax: "", salaryCurrency: "INR", salaryPeriod: "month",
   });
@@ -224,23 +224,6 @@ export function PostJobForm({ categories: _categories, isAdmin }: { categories: 
               <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Industry</label>
               <input className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"
                 value={form.industry} onChange={e => set("industry", e.target.value)} placeholder="IT, Finance, Healthcare..." />
-            </div>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Salary Min (₹)</label>
-              <input type="number" className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"
-                value={form.salaryMin} onChange={e => set("salaryMin", e.target.value)} placeholder="e.g. 300000" />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Salary Max (₹)</label>
-              <input type="number" className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"
-                value={form.salaryMax} onChange={e => set("salaryMax", e.target.value)} placeholder="e.g. 800000" />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">CTC</label>
-              <input className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"
-                value={form.ctc} onChange={e => set("ctc", e.target.value)} placeholder="e.g. 12 LPA" />
             </div>
           </div>
           <div className="grid md:grid-cols-3 gap-4">
