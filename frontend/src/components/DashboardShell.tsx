@@ -103,21 +103,6 @@ export async function DashboardShell({ children, role, current }: { children: Re
             })}
           </nav>
 
-          {/* Upgrade to Premium — employer only */}
-          {role === "EMPLOYER" && (
-            <div className="mx-4 my-4 bg-amber-50 border border-amber-100 rounded-2xl p-4">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg">👑</span>
-                <span className="font-bold text-zinc-900 text-sm">Upgrade to Premium</span>
-              </div>
-              <p className="text-xs text-zinc-500 leading-relaxed mb-3">
-                Unlock advanced features and hire better, faster.
-              </p>
-              <button className="w-full border border-blue-500 text-blue-600 font-semibold text-sm py-2 rounded-xl hover:bg-blue-50 transition-colors">
-                Upgrade Now
-              </button>
-            </div>
-          )}
 
           {/* User info at bottom */}
           <div className="border-t border-zinc-100 px-4 py-4 space-y-3">
