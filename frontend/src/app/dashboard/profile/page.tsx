@@ -86,9 +86,9 @@ export default async function ProfilePage() {
 
             {/* Right — contact info + edit button */}
             <div className="flex flex-col items-end gap-3">
-              <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-4 py-2.5 rounded-xl transition">
+              <Link href="/dashboard/profile/edit" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-4 py-2.5 rounded-xl transition">
                 <Pencil className="h-3.5 w-3.5" /> Edit Profile
-              </button>
+              </Link>
               <div className="space-y-1.5 text-sm text-zinc-500">
                 <div className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-zinc-400" />{user.email}</div>
                 <div className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-zinc-400" />{user.phone || "+1 (123) 456-7890"}</div>
