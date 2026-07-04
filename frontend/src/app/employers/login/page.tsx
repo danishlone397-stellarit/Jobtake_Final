@@ -23,11 +23,11 @@ export default function EmployerLoginPage() {
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, expectedRole: "EMPLOYER" }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Login failed"); setLoading(false); return; }
-      router.push("/employer/post-job"); router.refresh();
+      router.push("/employer"); router.refresh();
     } catch {
       setError("Network error"); setLoading(false);
     }

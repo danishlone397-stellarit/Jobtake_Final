@@ -6,6 +6,7 @@ import { verifyPassword, signSession, setSessionCookie } from "@/lib/auth";
 const Body = z.object({
   email: z.string().email().toLowerCase(),
   password: z.string().min(1),
+  expectedRole: z.enum(["EMPLOYER", "SEEKER", "ADMIN"]).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -17,6 +18,11 @@ export async function POST(req: NextRequest) {
 
   const ok = await verifyPassword(data.data.password, user.passwordHash);
   if (!ok) return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+
+  // Role guard — if caller specifies expectedRole, enforce it
+  if (data.data.expectedRole && user.role !== data.data.expectedRole) {
+    return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+  }
 
   const token = await signSession({ sub: user.id, email: user.email, name: user.name, role: user.role });
   await setSessionCookie(token);
