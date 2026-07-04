@@ -6,7 +6,7 @@ import { slugify } from "@/lib/utils";
 
 const Body = z.object({
   title: z.string().min(3),
-  description: z.string().min(20),
+  description: z.string().optional().default(""),
   responsibilities: z.string().optional(),
   requirements: z.string().optional(),
   benefits: z.string().optional(),
@@ -32,7 +32,12 @@ export async function POST(req: NextRequest) {
   if (user.role !== "EMPLOYER" && user.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const data = Body.safeParse(await req.json().catch(() => ({})));
-  if (!data.success) return NextResponse.json({ error: "Invalid", details: data.error.flatten() }, { status: 400 });
+  if (!data.success) {
+    const fields = data.error.flatten().fieldErrors;
+    const first = Object.entries(fields).find(([, v]) => v?.length);
+    const msg = first ? `${first[0]}: ${first[1]?.[0]}` : "Invalid form data";
+    return NextResponse.json({ error: msg }, { status: 400 });
+  }
 
   // pick company: provided, or first owned, or auto-create
   let companyId = data.data.companyId;

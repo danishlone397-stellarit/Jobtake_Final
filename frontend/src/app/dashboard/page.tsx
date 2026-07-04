@@ -80,8 +80,8 @@ export default async function SeekerDashboard() {
 
           {/* Greeting */}
           <div>
-            <p className="text-zinc-400 text-sm">{getHour()}, {firstName}! 👋</p>
-            <h1 className="text-3xl font-black text-zinc-900 mt-0.5" data-testid="seeker-greeting">Hello</h1>
+            <p className="text-zinc-400 text-sm">{getHour()}! 👋</p>
+            <h1 className="text-3xl font-black text-zinc-900 mt-0.5" data-testid="seeker-greeting">Welcome, {firstName}!</h1>
             <p className="text-zinc-500 text-sm mt-1">Here's an overview of your job search activity.</p>
           </div>
 
