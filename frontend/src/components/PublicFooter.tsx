@@ -1,59 +1,196 @@
 import Link from "next/link";
-import { Logo } from "./Logo";
-import { Twitter, Github, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { Facebook, Twitter, Linkedin, Pinterest, MapPin, Mail, Phone } from "lucide-react";
 
 const COLS = [
-  { title: "Product", links: [["AI Match", "/ai-match"], ["Jobs", "/jobs"], ["Companies", "/companies"], ["Post a job", "/employer/post-job"]] },
-  { title: "For You", links: [["Sign in", "/login"], ["Sign up", "/signup"], ["Seeker dashboard", "/dashboard"], ["Employer dashboard", "/employer"]] },
-  { title: "Company", links: [["About", "/about"], ["Privacy", "/privacy"], ["Terms", "/terms"]] },
+  {
+    title: "PRODUCT",
+    links: [
+      ["Browse Jobs",       "/jobs"],
+      ["Browse Companies",  "/companies"],
+      ["Post a Job",        "/employer/post-job"],
+      ["For Employers",     "/employers"],
+      ["Pricing",           "/pricing"],
+      ["AI Match",          "/ai-match"],
+    ],
+  },
+  {
+    title: "FOR JOB SEEKERS",
+    links: [
+      ["Sign In",          "/login"],
+      ["Sign Up",          "/signup"],
+      ["Seeker Dashboard", "/dashboard"],
+      ["Saved Jobs",       "/dashboard/saved"],
+      ["Job Alerts",       "/dashboard/alerts"],
+      ["Career Advice",    "/blog"],
+    ],
+  },
+  {
+    title: "FOR EMPLOYERS",
+    links: [
+      ["Employer Dashboard", "/employer"],
+      ["Post a Job",         "/employer/post-job"],
+      ["Manage Jobs",        "/employer/jobs"],
+      ["Applicants",         "/employer/jobs"],
+    ],
+  },
+  {
+    title: "COMPANY",
+    links: [
+      ["About Us",        "/about"],
+      ["Careers",         "/careers"],
+      ["Blog",            "/blog"],
+      ["Privacy Policy",  "/privacy"],
+      ["Terms of Service","/terms"],
+      ["Contact Us",      "/contact"],
+    ],
+  },
+];
+
+const SOCIALS = [
+  { icon: Facebook,  label: "Facebook",  href: "#" },
+  { icon: Twitter,   label: "Twitter",   href: "#" },
+  { icon: Linkedin,  label: "LinkedIn",  href: "#" },
+  { icon: Pinterest, label: "Pinterest", href: "#" },
+];
+
+const TRUST = [
+  { icon: "🛡", title: "Trusted by Top Companies",     desc: "Helping leading organizations build high-performing teams." },
+  { icon: "👥", title: "Great Careers Start Here",      desc: "Connecting exceptional talent with meaningful opportunities." },
+  { icon: "⚡", title: "Smart Hiring, Simplified",      desc: "Powerful tools to find, hire and manage the right talent." },
 ];
 
 export function PublicFooter() {
   return (
-    <footer className="relative pt-20 pb-10">
-      <div className="mx-auto max-w-7xl px-6 md:px-12">
-        <div className="divider-grad mb-16" />
-        <div className="grid md:grid-cols-5 gap-10">
-          <div className="md:col-span-2">
-            <Logo size={54} />
-            <p className="mt-5 text-sm text-zinc-600 max-w-sm leading-relaxed">
-              The hiring layer for extraordinary careers. Built for senior talent and ambitious teams.
-            </p>
-            <div className="mt-6 rounded-2xl border border-zinc-200 bg-white/80 p-4 shadow-sm backdrop-blur-sm">
-              <div className="text-[11px] uppercase tracking-[0.22em] text-zinc-500 font-semibold">Contact</div>
-              <ul className="mt-3 space-y-2 text-sm text-zinc-700">
-                <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 text-zinc-500" /><span>202, Mourya Center, 16, Race Course Road, Opp. BBC, Indore – 452003</span></li>
-                <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 text-zinc-500" /><span>For Employers: <a href="mailto:enquiry@jobtake.com" className="hover:text-zinc-950 transition-colors">enquiry@jobtake.com</a></span></li>
-                <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 text-zinc-500" /><span>For Employees / Resume Submission: <a href="mailto:resume@jobtake.com" className="hover:text-zinc-950 transition-colors">resume@jobtake.com</a></span></li>
-                <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 text-zinc-500" /><span>Support: <a href="mailto:support@jobtake.com" className="hover:text-zinc-950 transition-colors">support@jobtake.com</a></span></li>
-                <li className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4 text-zinc-500" /><span>Contact No.: Will be shared shortly</span></li>
-              </ul>
+    <footer className="bg-[#0d2154] text-white">
+
+      {/* ── Main footer grid ── */}
+      <div className="mx-auto max-w-7xl px-6 md:px-12 pt-16 pb-12">
+        <div className="grid lg:grid-cols-[300px_1fr] gap-12">
+
+          {/* Left: Brand + trust + subscribe */}
+          <div>
+            {/* Logo */}
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-orange-400 text-3xl font-black">✦</span>
+              <span className="text-2xl font-black tracking-tight">jobtake<sup className="text-xs font-normal">™</sup></span>
             </div>
-            <div className="mt-6 flex items-center gap-2">
-              {[Twitter, Github, Linkedin].map((Icon, i) => (
-                <a key={i} href="#" className="h-9 w-9 rounded-full glass grid place-items-center text-zinc-700 hover:text-zinc-950 hover:-translate-y-0.5 transition-all" aria-label="social">
-                  <Icon className="h-4 w-4" />
-                </a>
+            <p className="text-sm text-blue-200 leading-relaxed mb-6">
+              The hiring layer for extraordinary careers.<br />Built for senior talent and ambitious teams.
+            </p>
+
+            {/* Trust points */}
+            <div className="space-y-4 mb-8">
+              {TRUST.map(t => (
+                <div key={t.title} className="flex items-start gap-3">
+                  <div className="h-9 w-9 rounded-xl bg-white/10 flex items-center justify-center text-base shrink-0">{t.icon}</div>
+                  <div>
+                    <div className="text-sm font-bold text-white">{t.title}</div>
+                    <div className="text-xs text-blue-300 leading-relaxed">{t.desc}</div>
+                  </div>
+                </div>
               ))}
             </div>
-          </div>
-          {COLS.map((c) => (
-            <div key={c.title}>
-              <div className="text-[11px] uppercase tracking-[0.22em] text-zinc-500 font-semibold">{c.title}</div>
-              <ul className="mt-5 space-y-3 text-sm text-zinc-700">
-                {c.links.map(([label, href]) => (
-                  <li key={label}><Link href={href} className="hover:text-zinc-950 transition-colors">{label}</Link></li>
-                ))}
-              </ul>
+
+            {/* Newsletter */}
+            <div className="bg-white/10 rounded-2xl p-5">
+              <div className="font-bold text-white text-sm mb-1">Stay Updated</div>
+              <p className="text-xs text-blue-200 mb-4">Get the latest job alerts and hiring insights straight to your inbox.</p>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-blue-300 outline-none focus:border-blue-400 mb-2"
+              />
+              <button className="w-full bg-blue-500 hover:bg-blue-400 transition text-white font-semibold text-sm py-2.5 rounded-xl flex items-center justify-center gap-2">
+                Subscribe ✈
+              </button>
             </div>
-          ))}
-        </div>
-        <div className="mt-16 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
-          <div>© {new Date().getFullYear()} Jobtake™ Labs</div>
-          <div className="flex items-center gap-1.5 text-zinc-400">
-            Designed &amp; Developed by <span className="font-semibold text-zinc-600">Stellarit Global</span>
           </div>
-          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-500" /> All systems normal</span>
+
+          {/* Right: Nav columns + contact + social */}
+          <div className="space-y-10">
+
+            {/* Nav columns */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {COLS.map(col => (
+                <div key={col.title}>
+                  <div className="text-xs font-black tracking-[0.18em] text-white mb-4">{col.title}</div>
+                  <div className="w-8 h-0.5 bg-blue-400 mb-4" />
+                  <ul className="space-y-2.5">
+                    {col.links.map(([label, href]) => (
+                      <li key={label}>
+                        <Link href={href} className="text-sm text-blue-200 hover:text-white transition-colors">{label}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            {/* Contact + Social row */}
+            <div className="grid sm:grid-cols-2 gap-8">
+
+              {/* Get In Touch */}
+              <div>
+                <div className="text-xs font-black tracking-[0.18em] text-white mb-4">GET IN TOUCH</div>
+                <div className="w-8 h-0.5 bg-blue-400 mb-4" />
+                <ul className="space-y-3 text-sm text-blue-200">
+                  <li className="flex items-start gap-2.5">
+                    <MapPin className="h-4 w-4 shrink-0 mt-0.5 text-blue-400" />
+                    <span>202, Mourya Center, 16, Race Course Road,<br />Opp. BBC, Indore — 452003</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Mail className="h-4 w-4 shrink-0 text-blue-400" />
+                    <span>For Employers: <a href="mailto:enquiry@jobtake.com" className="hover:text-white transition-colors">enquiry@jobtake.com</a></span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Mail className="h-4 w-4 shrink-0 text-blue-400" />
+                    <span>Resume Submission: <a href="mailto:resume@jobtake.com" className="hover:text-white transition-colors">resume@jobtake.com</a></span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Mail className="h-4 w-4 shrink-0 text-blue-400" />
+                    <span>Support: <a href="mailto:support@jobtake.com" className="hover:text-white transition-colors">support@jobtake.com</a></span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Phone className="h-4 w-4 shrink-0 text-blue-400" />
+                    <span>Contact No.: Will be shared shortly</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Social */}
+              <div>
+                <div className="text-xs font-black tracking-[0.18em] text-white mb-4">WE ARE SOCIALIZE</div>
+                <div className="w-8 h-0.5 bg-blue-400 mb-4" />
+                <div className="flex items-center gap-3">
+                  {SOCIALS.map(({ icon: Icon, label, href }) => (
+                    <a key={label} href={href} aria-label={label}
+                      className="h-10 w-10 rounded-xl bg-white/10 hover:bg-blue-500 transition-colors flex items-center justify-center">
+                      <Icon className="h-4 w-4 text-white" />
+                    </a>
+                  ))}
+                </div>
+
+                {/* World map dots decoration */}
+                <div className="mt-6 rounded-2xl bg-white/5 h-28 flex items-center justify-center text-4xl opacity-30 select-none">
+                  🌍
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Bottom bar ── */}
+      <div className="border-t border-white/10">
+        <div className="mx-auto max-w-7xl px-6 md:px-12 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-blue-300">
+          <div>© {new Date().getFullYear()} Jobtake™ Labs. All rights reserved.</div>
+          <div className="flex items-center gap-2">
+            <span className="text-blue-400">🛡</span> Your data is secure with us
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            All systems operational
+          </div>
         </div>
       </div>
     </footer>
