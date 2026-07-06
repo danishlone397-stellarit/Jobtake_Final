@@ -79,7 +79,7 @@ export function PublicFooter() {
           <div>
             {/* Logo */}
             <div className="mb-5">
-              <Image src={logo} alt="Jobtake" width={160} height={50} className="object-contain brightness-0 invert" />
+              <Image src={logo} alt="Jobtake" width={160} height={50} className="object-contain" />
             </div>
             <p className="text-sm text-blue-200 leading-relaxed mb-6">
               The hiring layer for extraordinary careers.<br />Built for senior talent and ambitious teams.
