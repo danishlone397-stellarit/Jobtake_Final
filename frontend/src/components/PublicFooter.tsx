@@ -37,7 +37,6 @@ const COLS = [
     links: [
       ["About Us",        "/about"],
       ["Careers",         "/careers"],
-      ["Blog",            "/blog"],
       ["Privacy Policy",  "/privacy"],
       ["Terms of Service","/terms"],
       ["Contact Us",      "/contact"],
@@ -137,23 +136,23 @@ export function PublicFooter() {
                 <div className="w-8 h-0.5 bg-blue-400 mb-4" />
                 <ul className="space-y-3 text-sm text-blue-200">
                   <li className="flex items-start gap-2.5">
-                    <MapPin className="h-4 w-4 shrink-0 mt-0.5 text-blue-400" />
+                    <MapPin className="h-4 w-4 shrink-0 mt-0.5 text-white" />
                     <span>202, Mourya Center, 16, Race Course Road,<br />Opp. BBC, Indore — 452003</span>
                   </li>
                   <li className="flex items-center gap-2.5">
-                    <Mail className="h-4 w-4 shrink-0 text-blue-400" />
+                    <Mail className="h-4 w-4 shrink-0 text-white" />
                     <span>For Employers: <a href="mailto:enquiry@jobtake.com" className="hover:text-white transition-colors">enquiry@jobtake.com</a></span>
                   </li>
                   <li className="flex items-center gap-2.5">
-                    <Mail className="h-4 w-4 shrink-0 text-blue-400" />
+                    <Mail className="h-4 w-4 shrink-0 text-white" />
                     <span>Resume Submission: <a href="mailto:resume@jobtake.com" className="hover:text-white transition-colors">resume@jobtake.com</a></span>
                   </li>
                   <li className="flex items-center gap-2.5">
-                    <Mail className="h-4 w-4 shrink-0 text-blue-400" />
+                    <Mail className="h-4 w-4 shrink-0 text-white" />
                     <span>Support: <a href="mailto:support@jobtake.com" className="hover:text-white transition-colors">support@jobtake.com</a></span>
                   </li>
                   <li className="flex items-center gap-2.5">
-                    <Phone className="h-4 w-4 shrink-0 text-blue-400" />
+                    <Phone className="h-4 w-4 shrink-0 text-white" />
                     <span>Contact No.: Will be shared shortly</span>
                   </li>
                 </ul>
