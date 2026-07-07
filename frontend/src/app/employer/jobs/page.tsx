@@ -4,7 +4,8 @@ import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { timeAgo } from "@/lib/utils";
-import { Briefcase, Send, Eye, Bookmark, MapPin, Globe, MoreVertical, Users } from "lucide-react";
+import { Briefcase, Send, Eye, Bookmark, MapPin, Globe } from "lucide-react";
+import { JobRowActions } from "./JobRowActions";
 
 export default async function EmployerJobsPage() {
   const me = await getCurrentUser();
@@ -144,17 +145,7 @@ export default async function EmployerJobsPage() {
               <div className="text-sm text-zinc-400">{timeAgo(j.createdAt)}</div>
 
               {/* Actions */}
-              <div className="flex items-center justify-end gap-2">
-                <Link href={`/employer/jobs/${j.id}/preview`} title="Preview" className="h-8 w-8 rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-100 transition-colors">
-                  <Eye className="h-4 w-4 text-zinc-500" />
-                </Link>
-                <Link href={`/employer/jobs/${j.id}/applicants`} title="Applicants" className="h-8 w-8 rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-100 transition-colors">
-                  <Users className="h-4 w-4 text-zinc-500" />
-                </Link>
-                <button title="More" className="h-8 w-8 rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-100 transition-colors">
-                  <MoreVertical className="h-4 w-4 text-zinc-500" />
-                </button>
-              </div>
+              <JobRowActions jobId={j.id} jobTitle={j.title} />
             </div>
           ))
         )}
