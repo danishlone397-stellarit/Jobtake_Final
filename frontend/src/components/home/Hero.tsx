@@ -75,7 +75,7 @@ export default function Hero() {
             transition={{ delay: 0.2, duration: 1 }}
             className="mt-6 max-w-4xl text-2xl font-black leading-[1.05] text-black sm:text-3xl md:text-4xl"
           >
-            Connecting People.<br />Talent Opportunities
+            Connecting People.<br />With  Opportunities
           </motion.h1>
 
           {/* Search Form */}
