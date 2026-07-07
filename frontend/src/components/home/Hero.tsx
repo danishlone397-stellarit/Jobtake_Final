@@ -73,9 +73,9 @@ export default function Hero() {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 1 }}
-            className="mt-6 max-w-4xl text-4xl font-black leading-[1.05] text-black sm:text-5xl md:text-6xl"
+            className="mt-6 max-w-4xl text-2xl font-black leading-[1.05] text-black sm:text-3xl md:text-4xl"
           >
-            Connecting People.<br />Creating Opportunities
+            Connecting People.<br />Talent Opportunities
           </motion.h1>
 
           {/* Search Form */}

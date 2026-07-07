@@ -31,14 +31,32 @@ const DEMO_JOBS: Job[] = [
 
 export function SavedJobsClient({ jobs }: { jobs: Job[] }) {
   const [search, setSearch] = useState("");
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [employmentType, setEmploymentType] = useState("");
+  const [location, setLocation] = useState("");
+  const [sortOpen, setSortOpen] = useState(false);
+  const [sort, setSort] = useState<"recent" | "oldest">("recent");
+
   const isDemo = jobs.length === 0;
   const list = isDemo ? DEMO_JOBS : jobs;
 
-  const filtered = list.filter(j =>
-    !search ||
-    j.title.toLowerCase().includes(search.toLowerCase()) ||
-    j.company.toLowerCase().includes(search.toLowerCase())
-  );
+  const employmentTypes = Array.from(new Set(list.map(j => j.employmentType))).filter(Boolean);
+  const locations = Array.from(new Set(list.map(j => j.location))).filter(Boolean);
+  const activeFilterCount = (employmentType ? 1 : 0) + (location ? 1 : 0);
+
+  const filtered = list
+    .filter(j =>
+      !search ||
+      j.title.toLowerCase().includes(search.toLowerCase()) ||
+      j.company.toLowerCase().includes(search.toLowerCase())
+    )
+    .filter(j => !employmentType || j.employmentType === employmentType)
+    .filter(j => !location || j.location === location)
+    .slice()
+    .sort((a, b) => {
+      const diff = new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime();
+      return sort === "recent" ? diff : -diff;
+    });
 
   return (
     <>
@@ -84,13 +102,82 @@ export function SavedJobsClient({ jobs }: { jobs: Job[] }) {
           />
         </div>
 
-        <button className="flex items-center gap-2 text-sm font-semibold text-zinc-600 border border-zinc-200 bg-white px-4 py-2.5 rounded-xl hover:bg-zinc-50 transition shrink-0">
-          <SlidersHorizontal className="h-4 w-4" /> Filter
-        </button>
+        <div className="relative shrink-0">
+          <button
+            onClick={() => { setFilterOpen(v => !v); setSortOpen(false); }}
+            className="flex items-center gap-2 text-sm font-semibold text-zinc-600 border border-zinc-200 bg-white px-4 py-2.5 rounded-xl hover:bg-zinc-50 transition"
+          >
+            <SlidersHorizontal className="h-4 w-4" /> Filter
+            {activeFilterCount > 0 && (
+              <span className="h-5 w-5 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">{activeFilterCount}</span>
+            )}
+          </button>
+          {filterOpen && (
+            <div className="absolute right-0 top-11 z-10 w-64 rounded-xl border border-zinc-200 bg-white shadow-lg p-4 space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">Employment Type</label>
+                <select
+                  value={employmentType}
+                  onChange={e => setEmploymentType(e.target.value)}
+                  className="mt-1.5 w-full text-sm border border-zinc-200 rounded-lg px-2.5 py-2 outline-none focus:border-blue-400"
+                >
+                  <option value="">All types</option>
+                  {employmentTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">Location</label>
+                <select
+                  value={location}
+                  onChange={e => setLocation(e.target.value)}
+                  className="mt-1.5 w-full text-sm border border-zinc-200 rounded-lg px-2.5 py-2 outline-none focus:border-blue-400"
+                >
+                  <option value="">All locations</option>
+                  {locations.map(l => <option key={l} value={l}>{l}</option>)}
+                </select>
+              </div>
+              <div className="flex items-center justify-between pt-1">
+                <button
+                  onClick={() => { setEmploymentType(""); setLocation(""); }}
+                  className="text-xs font-semibold text-zinc-500 hover:text-zinc-700"
+                >
+                  Clear filters
+                </button>
+                <button
+                  onClick={() => setFilterOpen(false)}
+                  className="text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg transition"
+                >
+                  Apply
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
-        <button className="flex items-center gap-2 text-sm font-semibold text-zinc-600 border border-zinc-200 bg-white px-4 py-2.5 rounded-xl hover:bg-zinc-50 transition shrink-0">
-          <SlidersHorizontal className="h-3.5 w-3.5" /> Recently Saved ▾
-        </button>
+        <div className="relative shrink-0">
+          <button
+            onClick={() => { setSortOpen(v => !v); setFilterOpen(false); }}
+            className="flex items-center gap-2 text-sm font-semibold text-zinc-600 border border-zinc-200 bg-white px-4 py-2.5 rounded-xl hover:bg-zinc-50 transition"
+          >
+            <SlidersHorizontal className="h-3.5 w-3.5" /> {sort === "recent" ? "Recently Saved" : "Oldest Saved"} ▾
+          </button>
+          {sortOpen && (
+            <div className="absolute right-0 top-11 z-10 w-44 rounded-xl border border-zinc-200 bg-white shadow-lg py-1">
+              <button
+                onClick={() => { setSort("recent"); setSortOpen(false); }}
+                className={`w-full text-left px-3 py-2 text-sm hover:bg-zinc-50 ${sort === "recent" ? "text-blue-600 font-semibold" : "text-zinc-700"}`}
+              >
+                Recently Saved
+              </button>
+              <button
+                onClick={() => { setSort("oldest"); setSortOpen(false); }}
+                className={`w-full text-left px-3 py-2 text-sm hover:bg-zinc-50 ${sort === "oldest" ? "text-blue-600 font-semibold" : "text-zinc-700"}`}
+              >
+                Oldest Saved
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Job list */}

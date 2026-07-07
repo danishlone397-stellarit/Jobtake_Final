@@ -80,6 +80,9 @@ type Tab = "All Applications" | "In Review" | "No Reply Yet" | "Archived";
 export function ApplicationsClient({ applications, savedCount }: { applications: App[]; savedCount: number }) {
   const [tab, setTab] = useState<Tab>("All Applications");
   const [search, setSearch] = useState("");
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [employmentType, setEmploymentType] = useState("");
+  const [location, setLocation] = useState("");
 
   const isDemo = applications.length === 0;
   const rawList = isDemo ? DEMO_APPS : applications.map(a => ({ ...a, appliedDate: new Date(a.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }), nextStepDate: NEXT_STEP[a.stage] ? "Upcoming" : null }));
@@ -87,12 +90,18 @@ export function ApplicationsClient({ applications, savedCount }: { applications:
   const inReviewCount   = rawList.filter(a => a.stage === "SCREENING" || a.stage === "INTERVIEW").length;
   const noReplyCount    = rawList.filter(a => a.stage === "APPLIED").length;
 
+  const employmentTypes = Array.from(new Set(rawList.map(a => a.employmentType))).filter(Boolean);
+  const locations = Array.from(new Set(rawList.map(a => a.location))).filter(Boolean);
+  const activeFilterCount = (employmentType ? 1 : 0) + (location ? 1 : 0);
+
   const filtered = rawList.filter(a => {
     if (tab === "In Review"    && a.stage !== "SCREENING" && a.stage !== "INTERVIEW") return false;
     if (tab === "No Reply Yet" && a.stage !== "APPLIED") return false;
     if (tab === "Archived"     && a.stage !== "REJECTED" && a.stage !== "WITHDRAWN") return false;
     if (search && !a.title.toLowerCase().includes(search.toLowerCase()) &&
         !a.company.toLowerCase().includes(search.toLowerCase())) return false;
+    if (employmentType && a.employmentType !== employmentType) return false;
+    if (location && a.location !== location) return false;
     return true;
   });
 
@@ -156,9 +165,57 @@ export function ApplicationsClient({ applications, savedCount }: { applications:
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search applications..."
                 className="pl-8 pr-4 py-2 text-sm border border-zinc-200 rounded-xl outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 w-48" />
             </div>
-            <button className="flex items-center gap-1.5 text-sm font-semibold text-zinc-600 border border-zinc-200 px-3 py-2 rounded-xl hover:bg-zinc-50 transition">
-              <SlidersHorizontal className="h-3.5 w-3.5" /> Filter
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setFilterOpen(v => !v)}
+                className="flex items-center gap-1.5 text-sm font-semibold text-zinc-600 border border-zinc-200 px-3 py-2 rounded-xl hover:bg-zinc-50 transition"
+              >
+                <SlidersHorizontal className="h-3.5 w-3.5" /> Filter
+                {activeFilterCount > 0 && (
+                  <span className="ml-1 h-5 w-5 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">{activeFilterCount}</span>
+                )}
+              </button>
+              {filterOpen && (
+                <div className="absolute right-0 top-11 z-10 w-64 rounded-xl border border-zinc-200 bg-white shadow-lg p-4 space-y-4">
+                  <div>
+                    <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">Employment Type</label>
+                    <select
+                      value={employmentType}
+                      onChange={e => setEmploymentType(e.target.value)}
+                      className="mt-1.5 w-full text-sm border border-zinc-200 rounded-lg px-2.5 py-2 outline-none focus:border-blue-400"
+                    >
+                      <option value="">All types</option>
+                      {employmentTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">Location</label>
+                    <select
+                      value={location}
+                      onChange={e => setLocation(e.target.value)}
+                      className="mt-1.5 w-full text-sm border border-zinc-200 rounded-lg px-2.5 py-2 outline-none focus:border-blue-400"
+                    >
+                      <option value="">All locations</option>
+                      {locations.map(l => <option key={l} value={l}>{l}</option>)}
+                    </select>
+                  </div>
+                  <div className="flex items-center justify-between pt-1">
+                    <button
+                      onClick={() => { setEmploymentType(""); setLocation(""); }}
+                      className="text-xs font-semibold text-zinc-500 hover:text-zinc-700"
+                    >
+                      Clear filters
+                    </button>
+                    <button
+                      onClick={() => setFilterOpen(false)}
+                      className="text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg transition"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -185,7 +242,7 @@ export function ApplicationsClient({ applications, savedCount }: { applications:
             const next = NEXT_STEP[a.stage];
             const nextDate = (a as DemoApp).nextStepDate ?? null;
             return (
-              <div key={a.id} className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 px-6 py-4 hover:bg-zinc-50 transition-colors items-center" data-testid={`app-${a.id}`}>
+              <Link href={`/jobs/${a.slug}`} key={a.id} className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 px-6 py-4 hover:bg-zinc-50 transition-colors items-center cursor-pointer" data-testid={`app-${a.id}`}>
                 <div className="flex items-center gap-3 min-w-0">
                   {a.logoUrl ? (
                     <img src={a.logoUrl} alt="" className="h-11 w-11 rounded-xl object-contain border border-zinc-100 shrink-0" />
@@ -233,9 +290,9 @@ export function ApplicationsClient({ applications, savedCount }: { applications:
                       <div className="text-xs text-zinc-400 mt-0.5">We&apos;ll notify you</div>
                     </div>
                   )}
-                  <Link href={`/jobs/${a.slug}`}><ChevronRight className="h-4 w-4 text-zinc-300 shrink-0" /></Link>
+                  <ChevronRight className="h-4 w-4 text-zinc-300 shrink-0" />
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

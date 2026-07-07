@@ -6,8 +6,9 @@ import Link from "next/link";
 import { timeAgo } from "@/lib/utils";
 import {
   Briefcase, Users, Eye, Bookmark, MapPin, Globe,
-  ArrowRight, MoreHorizontal, Building2,
+  ArrowRight, Building2,
 } from "lucide-react";
+import { JobRowActions } from "./jobs/JobRowActions";
 
 export default async function EmployerHome() {
   const me = await getCurrentUser();
@@ -128,17 +129,7 @@ export default async function EmployerHome() {
                       {STATUS_LABEL[j.status] ?? j.status}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Link href={`/jobs/${j.slug}`} title="View" className="h-7 w-7 rounded-lg hover:bg-zinc-100 flex items-center justify-center transition-colors">
-                      <Eye className="h-3.5 w-3.5 text-zinc-400" />
-                    </Link>
-                    <Link href={`/employer/jobs/${j.id}/applicants`} title="Applicants" className="h-7 w-7 rounded-lg hover:bg-zinc-100 flex items-center justify-center transition-colors">
-                      <Users className="h-3.5 w-3.5 text-zinc-400" />
-                    </Link>
-                    <button title="More" className="h-7 w-7 rounded-lg hover:bg-zinc-100 flex items-center justify-center transition-colors">
-                      <MoreHorizontal className="h-3.5 w-3.5 text-zinc-400" />
-                    </button>
-                  </div>
+                  <JobRowActions jobId={j.id} jobTitle={j.title} compact />
                 </div>
               ))
             )}

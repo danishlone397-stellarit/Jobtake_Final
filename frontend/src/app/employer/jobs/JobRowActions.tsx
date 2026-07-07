@@ -3,9 +3,17 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Eye, Users, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { Eye, Users, MoreVertical, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 
-export function JobRowActions({ jobId, jobTitle }: { jobId: string; jobTitle: string }) {
+export function JobRowActions({
+  jobId,
+  jobTitle,
+  compact = false,
+}: {
+  jobId: string;
+  jobTitle: string;
+  compact?: boolean;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -34,20 +42,23 @@ export function JobRowActions({ jobId, jobTitle }: { jobId: string; jobTitle: st
     }
   }
 
+  const btnSize = compact ? "h-7 w-7" : "h-8 w-8";
+  const iconSize = compact ? "h-3.5 w-3.5" : "h-4 w-4";
+  const btnClass = compact
+    ? `${btnSize} rounded-lg hover:bg-zinc-100 flex items-center justify-center transition-colors`
+    : `${btnSize} rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-100 transition-colors`;
+  const MoreIcon = compact ? MoreHorizontal : MoreVertical;
+
   return (
-    <div className="flex items-center justify-end gap-2 relative" ref={menuRef}>
-      <Link href={`/employer/jobs/${jobId}/preview`} title="Preview" className="h-8 w-8 rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-100 transition-colors">
-        <Eye className="h-4 w-4 text-zinc-500" />
+    <div className={`flex items-center ${compact ? "gap-1" : "gap-2"} relative`} ref={menuRef}>
+      <Link href={`/employer/jobs/${jobId}/preview`} title="Preview" className={btnClass}>
+        <Eye className={`${iconSize} text-zinc-400`} />
       </Link>
-      <Link href={`/employer/jobs/${jobId}/applicants`} title="Applicants" className="h-8 w-8 rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-100 transition-colors">
-        <Users className="h-4 w-4 text-zinc-500" />
+      <Link href={`/employer/jobs/${jobId}/applicants`} title="Applicants" className={btnClass}>
+        <Users className={`${iconSize} text-zinc-400`} />
       </Link>
-      <button
-        title="More"
-        onClick={() => setOpen(v => !v)}
-        className="h-8 w-8 rounded-lg border border-zinc-200 flex items-center justify-center hover:bg-zinc-100 transition-colors"
-      >
-        <MoreVertical className="h-4 w-4 text-zinc-500" />
+      <button title="More" onClick={() => setOpen(v => !v)} className={btnClass}>
+        <MoreIcon className={`${iconSize} text-zinc-400`} />
       </button>
 
       {open && (
