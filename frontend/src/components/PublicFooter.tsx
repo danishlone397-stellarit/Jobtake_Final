@@ -22,7 +22,6 @@ const COLS = [
       ["Seeker Dashboard", "/dashboard"],
       ["Saved Jobs",       "/dashboard/saved"],
       ["Job Alerts",       "/dashboard/alerts"],
-      ["Career Advice",    "/blog"],
     ],
   },
   {
