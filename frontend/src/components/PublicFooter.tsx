@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import worldMap from "@/assets/img/world-map.svg";
+import indiaMap from "@/assets/img/india-map.svg";
 import { Facebook, Twitter, Linkedin, MapPin, Mail, Phone } from "lucide-react";
 
 const COLS = [
@@ -172,11 +172,11 @@ export function PublicFooter() {
                   ))}
                 </div>
 
-                {/* World map */}
+                {/* India map */}
                 <div className="mt-6 rounded-2xl overflow-hidden p-4" style={{ background: "rgba(255,255,255,0.04)" }}>
                   <Image
-                    src={worldMap}
-                    alt="Global reach"
+                    src={indiaMap}
+                    alt="India"
                     width={400}
                     height={222}
                     className="w-full h-auto opacity-70"
