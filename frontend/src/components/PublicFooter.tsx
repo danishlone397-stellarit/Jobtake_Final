@@ -77,8 +77,7 @@ export function PublicFooter() {
           {/* Left: Brand + trust + subscribe */}
           <div>
             <p className="text-sm text-blue-200 leading-relaxed mb-6">
-              The hiring layer for extraordinary careers.<br />Built for senior talent and ambitious teams.
-            </p>
+              The hiring layer for extraordinary careers.            </p>
 
             {/* Trust points */}
             <div className="space-y-4 mb-8">
