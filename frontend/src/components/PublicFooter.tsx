@@ -173,13 +173,13 @@ export function PublicFooter() {
                 </div>
 
                 {/* India map */}
-                <div className="mt-6 rounded-2xl overflow-hidden p-4" style={{ background: "rgba(255,255,255,0.04)" }}>
+                <div className="mt-6 rounded-2xl overflow-hidden p-4 flex justify-center" style={{ background: "rgba(255,255,255,0.04)" }}>
                   <Image
                     src={indiaMap}
                     alt="India"
-                    width={400}
-                    height={222}
-                    className="w-full h-auto opacity-70"
+                    width={1486}
+                    height={1734}
+                    className="h-56 w-auto object-contain opacity-70"
                     style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(40%) saturate(500%) hue-rotate(180deg) brightness(1.3)" }}
                   />
                 </div>
