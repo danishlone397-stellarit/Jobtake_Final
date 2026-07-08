@@ -191,6 +191,7 @@ export function SavedJobsClient({ jobs }: { jobs: Job[] }) {
           ) : filtered.map((j, i) => {
             const initials = j.company.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase();
             const color = LOGO_COLORS[i % LOGO_COLORS.length];
+            const href = j.slug && j.slug !== "#" ? `/jobs/${j.slug}` : `/jobs?q=${encodeURIComponent(j.title)}`;
             return (
               <div key={j.id} className="flex items-center gap-4 px-6 py-5 hover:bg-zinc-50 transition-colors" data-testid={`saved-${j.id}`}>
                 {j.logoUrl ? (
@@ -212,7 +213,7 @@ export function SavedJobsClient({ jobs }: { jobs: Job[] }) {
                     <button className="h-9 w-9 rounded-xl border border-blue-200 bg-blue-50 flex items-center justify-center hover:bg-blue-100 transition">
                       <Bookmark className="h-4 w-4 text-blue-600 fill-blue-600" />
                     </button>
-                    <Link href={`/jobs/${j.slug}`}
+                    <Link href={href}
                       className="flex items-center gap-1.5 bg-white border border-zinc-200 text-zinc-700 font-semibold text-sm px-4 py-2 rounded-xl hover:bg-zinc-50 hover:border-zinc-300 transition">
                       View Job
                     </Link>

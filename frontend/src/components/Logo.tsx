@@ -9,7 +9,7 @@ export function Logo({ size = 36, className = "" }: { size?: number; className?:
       <Image
         src={logo}
         alt="Jobtake"
-        width={size * 3.2}
+        width={size * 2.72}
         height={size}
         className="object-contain"
         priority

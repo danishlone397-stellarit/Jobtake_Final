@@ -241,8 +241,9 @@ export function ApplicationsClient({ applications, savedCount }: { applications:
             const desc = STAGE_DESC[a.stage] ?? "";
             const next = NEXT_STEP[a.stage];
             const nextDate = (a as DemoApp).nextStepDate ?? null;
+            const href = a.slug && a.slug !== "#" ? `/jobs/${a.slug}` : `/jobs?q=${encodeURIComponent(a.title)}`;
             return (
-              <Link href={`/jobs/${a.slug}`} key={a.id} className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 px-6 py-4 hover:bg-zinc-50 transition-colors items-center cursor-pointer" data-testid={`app-${a.id}`}>
+              <Link href={href} key={a.id} className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 px-6 py-4 hover:bg-zinc-50 transition-colors items-center cursor-pointer" data-testid={`app-${a.id}`}>
                 <div className="flex items-center gap-3 min-w-0">
                   {a.logoUrl ? (
                     <img src={a.logoUrl} alt="" className="h-11 w-11 rounded-xl object-contain border border-zinc-100 shrink-0" />
