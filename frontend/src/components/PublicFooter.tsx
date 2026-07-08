@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import indiaMap from "@/assets/img/india-map.svg";
-import { Facebook, Twitter, Linkedin, MapPin, Mail, Phone } from "lucide-react";
+import { Facebook, Twitter, Linkedin, MapPin, Mail, Phone, ShieldCheck, Users, Zap } from "lucide-react";
 
 const COLS = [
   {
@@ -61,9 +61,9 @@ const SOCIALS = [
 ];
 
 const TRUST = [
-  { icon: "🛡", title: "Trusted by Top Companies",     desc: "Helping leading organizations build high-performing teams." },
-  { icon: "👥", title: "Great Careers Start Here",      desc: "Connecting exceptional talent with meaningful opportunities." },
-  { icon: "⚡", title: "Smart Hiring, Simplified",      desc: "Powerful tools to find, hire and manage the right talent." },
+  { icon: ShieldCheck, title: "Trusted by Top Companies",     desc: "Helping leading organizations build high-performing teams." },
+  { icon: Users,       title: "Great Careers Start Here",      desc: "Connecting exceptional talent with meaningful opportunities." },
+  { icon: Zap,         title: "Smart Hiring, Simplified",      desc: "Powerful tools to find, hire and manage the right talent." },
 ];
 
 export function PublicFooter() {
@@ -77,14 +77,16 @@ export function PublicFooter() {
           {/* Left: Brand + trust + subscribe */}
           <div>
             <p className="text-sm text-blue-200 leading-relaxed mb-6">
-              The hiring layer for extraordinary careers.<br />Built for senior talent and ambitious teams.
+              The hiring layer for extraordinary careers.<br />
             </p>
 
             {/* Trust points */}
             <div className="space-y-4 mb-8">
               {TRUST.map(t => (
                 <div key={t.title} className="flex items-start gap-3">
-                  <div className="h-9 w-9 rounded-xl bg-white/10 flex items-center justify-center text-base shrink-0">{t.icon}</div>
+                  <div className="h-9 w-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
+                    <t.icon className="h-4 w-4 text-white" />
+                  </div>
                   <div>
                     <div className="text-sm font-bold text-white">{t.title}</div>
                     <div className="text-xs text-blue-300 leading-relaxed">{t.desc}</div>
