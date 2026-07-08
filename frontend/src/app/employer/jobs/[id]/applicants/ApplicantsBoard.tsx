@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Star, Loader2, FileDown, Search, SlidersHorizontal, MapPin, Briefcase, X, ExternalLink, Bookmark, ArrowRight, ArrowLeft, MoreVertical } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
@@ -79,6 +79,16 @@ export function ApplicantsBoard({ applications, jobId, jobTitle }: { application
   const [selected, setSelected] = useState<App>(list[0]);
   const [busy, setBusy]         = useState(false);
   const [search, setSearch]     = useState("");
+  const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpenId(null);
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, []);
 
   const filtered = list.filter(a =>
     !search ||
@@ -187,9 +197,39 @@ export function ApplicantsBoard({ applications, jobId, jobTitle }: { application
                       ))}
                     </div>
                   ) : null}
-                  <button className="h-7 w-7 rounded-lg hover:bg-zinc-100 flex items-center justify-center">
-                    <MoreVertical className="h-4 w-4 text-zinc-400" />
-                  </button>
+                  <div className="relative" ref={menuOpenId === a.id ? menuRef : undefined}>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setMenuOpenId(id => id === a.id ? null : a.id); }}
+                      className="h-7 w-7 rounded-lg hover:bg-zinc-100 flex items-center justify-center"
+                    >
+                      <MoreVertical className="h-4 w-4 text-zinc-400" />
+                    </button>
+                    {menuOpenId === a.id && (
+                      <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="absolute right-0 top-9 z-10 w-44 rounded-xl border border-zinc-200 bg-white shadow-lg py-1"
+                      >
+                        <button
+                          onClick={() => { setSelected(a); setMenuOpenId(null); }}
+                          className="w-full text-left px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50"
+                        >
+                          View Profile
+                        </button>
+                        <button
+                          onClick={() => { updateStage(a.id, "SCREENING"); setMenuOpenId(null); }}
+                          className="w-full text-left px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50"
+                        >
+                          Shortlist
+                        </button>
+                        <button
+                          onClick={() => { updateStage(a.id, "REJECTED"); setMenuOpenId(null); }}
+                          className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

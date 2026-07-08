@@ -212,10 +212,17 @@ function LoginForm() {
             <div className={`mt-8 rounded-2xl border p-4 ${isEmployer ? "bg-orange-50 border-orange-100" : "bg-blue-50 border-blue-100"}`}>
               <div className="flex items-center gap-3">
                 <div className="flex -space-x-2">
-                  {["bg-orange-400", "bg-blue-500", "bg-emerald-500", "bg-purple-500"].map((c, i) => (
-                    <div key={i} className={`h-8 w-8 rounded-full ${c} border-2 border-white flex items-center justify-center text-white text-xs font-bold`}>
-                      {["A","B","C","D"][i]}
-                    </div>
+                  {(isEmployer
+                    ? ["men/22", "women/56", "men/78"]
+                    : ["men/32", "women/44", "men/65"]
+                  ).map((path, i) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      key={i}
+                      src={`https://randomuser.me/api/portraits/${path}.jpg`}
+                      alt=""
+                      className="h-8 w-8 rounded-full border-2 border-white object-cover"
+                    />
                   ))}
                 </div>
                 <div className="text-sm text-zinc-700">

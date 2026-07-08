@@ -212,10 +212,14 @@ export default function EmployerLoginPage() {
             {/* Social proof */}
             <div className="mt-8 bg-orange-50 rounded-2xl border border-orange-100 p-4 flex items-center gap-4">
               <div className="flex -space-x-2 shrink-0">
-                {["bg-orange-400", "bg-blue-500", "bg-emerald-500", "bg-purple-500"].map((c, i) => (
-                  <div key={i} className={`h-9 w-9 rounded-full ${c} border-2 border-white flex items-center justify-center text-white text-xs font-bold`}>
-                    {["A", "B", "C", "D"][i]}
-                  </div>
+                {["men/22", "women/56", "men/78"].map((path, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={i}
+                    src={`https://randomuser.me/api/portraits/${path}.jpg`}
+                    alt=""
+                    className="h-9 w-9 rounded-full border-2 border-white object-cover"
+                  />
                 ))}
               </div>
               <div className="text-sm text-zinc-700 leading-snug">
