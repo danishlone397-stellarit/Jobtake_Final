@@ -177,8 +177,8 @@ export function PublicFooter() {
                   <Image
                     src={indiaMap}
                     alt="India"
-                    width={1486}
-                    height={1734}
+                    width={667}
+                    height={777}
                     className="h-56 w-auto object-contain opacity-70"
                     style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(40%) saturate(500%) hue-rotate(180deg) brightness(1.3)" }}
                   />
