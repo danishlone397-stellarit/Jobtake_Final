@@ -212,7 +212,7 @@ export default function EmployerLoginPage() {
             {/* Social proof */}
             <div className="mt-8 bg-orange-50 rounded-2xl border border-orange-100 p-4 flex items-center gap-4">
               <div className="flex -space-x-2 shrink-0">
-                {["men/22", "women/56", "men/78"].map((path, i) => (
+                {["men/22", "women/56", "men/78", "women/12"].map((path, i) => (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     key={i}

@@ -213,8 +213,8 @@ function LoginForm() {
               <div className="flex items-center gap-3">
                 <div className="flex -space-x-2">
                   {(isEmployer
-                    ? ["men/22", "women/56", "men/78"]
-                    : ["men/32", "women/44", "men/65"]
+                    ? ["men/22", "women/56", "men/78", "women/12"]
+                    : ["men/32", "women/44", "men/65", "women/68"]
                   ).map((path, i) => (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
