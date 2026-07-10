@@ -1,6 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
-import indiaMap from "@/assets/img/india-map.svg";
 import { Facebook, Twitter, Linkedin, MapPin, Mail, Phone, ShieldCheck, Users, Zap } from "lucide-react";
 
 const COLS = [
@@ -172,18 +170,6 @@ export function PublicFooter() {
                       <Icon className="h-4 w-4 text-white" />
                     </a>
                   ))}
-                </div>
-
-                {/* India map */}
-                <div className="mt-6 rounded-2xl overflow-hidden p-4 flex justify-center" style={{ background: "rgba(255,255,255,0.04)" }}>
-                  <Image
-                    src={indiaMap}
-                    alt="India"
-                    width={667}
-                    height={777}
-                    className="h-56 w-auto object-contain opacity-70"
-                    style={{ filter: "brightness(0) saturate(100%) invert(72%) sepia(40%) saturate(500%) hue-rotate(180deg) brightness(1.3)" }}
-                  />
                 </div>
               </div>
             </div>
