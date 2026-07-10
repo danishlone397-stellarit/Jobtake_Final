@@ -19,8 +19,8 @@ export async function POST(req: NextRequest) {
   const ok = await verifyPassword(data.data.password, user.passwordHash);
   if (!ok) return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
 
-  // Role guard — if caller specifies expectedRole, enforce it
-  if (data.data.expectedRole && user.role !== data.data.expectedRole) {
+  // Role guard — if caller specifies expectedRole, enforce it (admins can sign in from any login form)
+  if (data.data.expectedRole && user.role !== data.data.expectedRole && user.role !== "ADMIN") {
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }
 
