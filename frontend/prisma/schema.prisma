@@ -41,7 +41,6 @@ model User {
   experiences      Experience[]
   postedJobs       Job[]             @relation("JobPostedBy")
   notifications    Notification[]
-  payments         Payment[]
   resumes          Resume[]
   savedJobs        SavedJob[]
   sessions         Session[]
@@ -154,31 +153,31 @@ model JobSkill {
 }
 
 model Company {
-  id                 String           @id @default(cuid())
-  ownerId            String
-  name               String
-  slug               String           @unique
-  tagline            String?
-  description        String?
-  website            String?
-  logoUrl            String?
-  bannerUrl          String?
-  industry           String?
-  size               String?
-  founded            Int?
+  id           String           @id @default(cuid())
+  ownerId      String
+  name         String
+  slug         String           @unique
+  tagline      String?
+  description  String?
+  website      String?
+  logoUrl      String?
+  bannerUrl    String?
+  industry     String?
+  size         String?
+  founded      Int?
   headquarters       String?
   gstNumber          String?
   registrationAs     String?
   contactDesignation String?
   status             CompanyStatus    @default(PENDING)
-  verified           Boolean          @default(false)
-  featured           Boolean          @default(false)
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
-  owner              User             @relation("CompanyOwner", fields: [ownerId], references: [id])
-  benefits           CompanyBenefit[]
-  members            CompanyMember[]
-  jobs               Job[]
+  verified     Boolean          @default(false)
+  featured     Boolean          @default(false)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  owner        User             @relation("CompanyOwner", fields: [ownerId], references: [id])
+  benefits     CompanyBenefit[]
+  members      CompanyMember[]
+  jobs         Job[]
 
   @@index([status])
   @@index([slug])
@@ -259,7 +258,6 @@ model Job {
   postedBy         User           @relation("JobPostedBy", fields: [postedById], references: [id])
   jobSkills        JobSkill[]
   savedBy          SavedJob[]
-  payments         Payment[]
 
   @@index([status, publishedAt])
   @@index([featured])
@@ -267,33 +265,6 @@ model Job {
   @@index([categoryId])
   @@index([workMode])
   @@index([seniority])
-}
-
-model Payment {
-  id                String        @id @default(cuid())
-  jobId             String
-  userId            String
-  purpose           String        @default("FEATURE_JOB")
-  amount            Int
-  currency          String        @default("INR")
-  status            PaymentStatus @default(CREATED)
-  razorpayOrderId   String        @unique
-  razorpayPaymentId String?
-  razorpaySignature String?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
-  job               Job           @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([jobId])
-  @@index([userId])
-  @@index([status])
-}
-
-enum PaymentStatus {
-  CREATED
-  PAID
-  FAILED
 }
 
 model Application {
