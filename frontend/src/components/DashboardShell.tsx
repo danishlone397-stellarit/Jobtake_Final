@@ -29,6 +29,7 @@ const NAV: Record<Role, { label: string; href: string; icon: React.ComponentType
   ADMIN: [
     { label: "Overview",        href: "/admin",                  icon: ShieldCheck },
     { label: "Jobs",            href: "/admin/jobs",             icon: Briefcase },
+    { label: "Companies",       href: "/admin/companies",        icon: Building2 },
     { label: "Categories",      href: "/admin/categories",       icon: Tag },
     { label: "Users",           href: "/admin/users",            icon: UsersIcon },
     { label: "Homepage Stats",  href: "/admin/stats",            icon: ListChecks },
