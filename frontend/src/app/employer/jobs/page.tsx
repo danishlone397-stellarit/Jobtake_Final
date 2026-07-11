@@ -145,7 +145,7 @@ export default async function EmployerJobsPage() {
               <div className="text-sm text-zinc-400">{timeAgo(j.createdAt)}</div>
 
               {/* Actions */}
-              <JobRowActions jobId={j.id} jobTitle={j.title} />
+              <JobRowActions jobId={j.id} jobTitle={j.title} featured={j.featured} />
             </div>
           ))
         )}

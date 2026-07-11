@@ -129,7 +129,7 @@ export default async function EmployerHome() {
                       {STATUS_LABEL[j.status] ?? j.status}
                     </span>
                   </div>
-                  <JobRowActions jobId={j.id} jobTitle={j.title} compact />
+                  <JobRowActions jobId={j.id} jobTitle={j.title} featured={j.featured} compact />
                 </div>
               ))
             )}
