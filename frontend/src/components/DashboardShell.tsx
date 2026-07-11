@@ -6,7 +6,7 @@ import { Role } from "@prisma/client";
 import {
   LayoutDashboard, Briefcase, Bookmark, User as UserIcon,
   FileText, ShieldCheck, Building2, Users as UsersIcon,
-  ListChecks, Quote, Tag, Settings, ExternalLink, Plus,
+  ListChecks, Quote, Settings, ExternalLink, Plus,
 } from "lucide-react";
 import { LogoutButton } from "./LogoutButton";
 import { prisma } from "@/lib/prisma";
@@ -30,7 +30,6 @@ const NAV: Record<Role, { label: string; href: string; icon: React.ComponentType
     { label: "Overview",        href: "/admin",                  icon: ShieldCheck },
     { label: "Jobs",            href: "/admin/jobs",             icon: Briefcase },
     { label: "Companies",       href: "/admin/companies",        icon: Building2 },
-    { label: "Categories",      href: "/admin/categories",       icon: Tag },
     { label: "Users",           href: "/admin/users",            icon: UsersIcon },
     { label: "Homepage Stats",  href: "/admin/stats",            icon: ListChecks },
     { label: "Testimonials",    href: "/admin/testimonials",     icon: Quote },
