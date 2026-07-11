@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
 import {
   Briefcase, Bookmark, Eye, Send, Search, SlidersHorizontal,
   Building2, MapPin, Calendar, Clock, ChevronRight, ArrowRight, ArrowLeft,
 } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
+import { JobPreviewModal } from "@/components/JobPreviewModal";
 
 type App = {
   id: string;
@@ -83,6 +83,7 @@ export function ApplicationsClient({ applications, savedCount }: { applications:
   const [filterOpen, setFilterOpen] = useState(false);
   const [employmentType, setEmploymentType] = useState("");
   const [location, setLocation] = useState("");
+  const [preview, setPreview] = useState<App | null>(null);
 
   const isDemo = applications.length === 0;
   const rawList = isDemo ? DEMO_APPS : applications.map(a => ({ ...a, appliedDate: new Date(a.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }), nextStepDate: NEXT_STEP[a.stage] ? "Upcoming" : null }));
@@ -241,9 +242,8 @@ export function ApplicationsClient({ applications, savedCount }: { applications:
             const desc = STAGE_DESC[a.stage] ?? "";
             const next = NEXT_STEP[a.stage];
             const nextDate = (a as DemoApp).nextStepDate ?? null;
-            const href = a.slug && a.slug !== "#" ? `/jobs/${a.slug}` : `/jobs?q=${encodeURIComponent(a.title)}`;
             return (
-              <Link href={href} key={a.id} className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 px-6 py-4 hover:bg-zinc-50 transition-colors items-center cursor-pointer" data-testid={`app-${a.id}`}>
+              <div onClick={() => setPreview(a)} key={a.id} className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4 px-6 py-4 hover:bg-zinc-50 transition-colors items-center cursor-pointer" data-testid={`app-${a.id}`}>
                 <div className="flex items-center gap-3 min-w-0">
                   {a.logoUrl ? (
                     <img src={a.logoUrl} alt="" className="h-11 w-11 rounded-xl object-contain border border-zinc-100 shrink-0" />
@@ -293,7 +293,7 @@ export function ApplicationsClient({ applications, savedCount }: { applications:
                   )}
                   <ChevronRight className="h-4 w-4 text-zinc-300 shrink-0" />
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>
@@ -310,6 +310,11 @@ export function ApplicationsClient({ applications, savedCount }: { applications:
           </div>
         </div>
       </div>
+
+      <JobPreviewModal
+        job={preview ? { title: preview.title, company: preview.company, logoUrl: preview.logoUrl, employmentType: preview.employmentType, location: preview.location, slug: preview.slug } : null}
+        onClose={() => setPreview(null)}
+      />
     </>
   );
 }
