@@ -6,7 +6,7 @@ import { CompanyEditForm } from "./CompanyEditForm";
 
 export default async function CompanyEditPage() {
   const me = await getCurrentUser();
-  if (!me || me.role !== "EMPLOYER") redirect("/login");
+  if (!me || me.role !== "EMPLOYER") redirect("/employers/login");
 
   const company = await prisma.company.findFirst({
     where: { ownerId: me.id },

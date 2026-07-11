@@ -9,7 +9,7 @@ import { JobRowActions } from "./JobRowActions";
 
 export default async function EmployerJobsPage() {
   const me = await getCurrentUser();
-  if (!me || me.role !== "EMPLOYER") redirect("/login");
+  if (!me || me.role !== "EMPLOYER") redirect("/employers/login");
 
   const jobs = await prisma.job.findMany({
     where: { postedById: me.id },

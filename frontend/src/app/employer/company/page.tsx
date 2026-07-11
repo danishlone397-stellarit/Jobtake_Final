@@ -11,7 +11,7 @@ import {
 
 export default async function CompanyProfilePage() {
   const me = await getCurrentUser();
-  if (!me || me.role !== "EMPLOYER") redirect("/login");
+  if (!me || me.role !== "EMPLOYER") redirect("/employers/login");
 
   const company = await prisma.company.findFirst({
     where: { ownerId: me.id },

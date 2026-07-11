@@ -22,7 +22,7 @@ const SENIORITY_LABEL: Record<string, string> = {
 
 export default async function JobPreviewPage({ params }: { params: Promise<{ id: string }> }) {
   const me = await getCurrentUser();
-  if (!me || me.role !== "EMPLOYER") redirect("/login");
+  if (!me || me.role !== "EMPLOYER") redirect("/employers/login");
 
   const { id } = await params;
   const job = await prisma.job.findUnique({

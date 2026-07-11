@@ -28,10 +28,10 @@ const Row = ({ icon, title, desc }: { icon: React.ReactNode; title: string; desc
 
 export default async function EmployerSettingsPage() {
   const me = await getCurrentUser();
-  if (!me || me.role !== "EMPLOYER") redirect("/login");
+  if (!me || me.role !== "EMPLOYER") redirect("/employers/login");
 
   const user = await prisma.user.findUnique({ where: { id: me.id } });
-  if (!user) redirect("/login");
+  if (!user) redirect("/employers/login");
 
   return (
     <DashboardShell role="EMPLOYER" current="/employer/settings">

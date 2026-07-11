@@ -8,7 +8,7 @@ import { ArrowLeft, ExternalLink, MapPin, Briefcase, Calendar } from "lucide-rea
 
 export default async function ApplicantsPage({ params }: { params: Promise<{ id: string }> }) {
   const me = await getCurrentUser();
-  if (!me) redirect("/login");
+  if (!me) redirect("/employers/login");
   const { id } = await params;
 
   const job = await prisma.job.findUnique({

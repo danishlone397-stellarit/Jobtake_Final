@@ -12,7 +12,7 @@ import { JobRowActions } from "./jobs/JobRowActions";
 
 export default async function EmployerHome() {
   const me = await getCurrentUser();
-  if (!me) redirect("/login");
+  if (!me) redirect("/employers/login");
   if (me.role !== "EMPLOYER") redirect(me.role === "ADMIN" ? "/admin" : "/dashboard");
 
   const [jobs, applicationsCount, totalViews] = await Promise.all([

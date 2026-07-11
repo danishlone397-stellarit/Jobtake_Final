@@ -7,7 +7,7 @@ import { EditJobClient } from "./EditJobClient";
 export default async function EditJobPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const me = await getCurrentUser();
-  if (!me || (me.role !== "EMPLOYER" && me.role !== "ADMIN")) redirect("/login");
+  if (!me || (me.role !== "EMPLOYER" && me.role !== "ADMIN")) redirect("/employers/login");
 
   const job = await prisma.job.findUnique({
     where: { id },
