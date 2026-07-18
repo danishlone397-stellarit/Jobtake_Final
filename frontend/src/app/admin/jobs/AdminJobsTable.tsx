@@ -182,9 +182,9 @@ export function AdminJobsTable({ jobs }: { jobs: Row[] }) {
   }
 
   return (
-    <section className="space-y-5" data-testid="admin-jobs-table">
+    <section className="min-w-0 space-y-5" data-testid="admin-jobs-table">
       <div className="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm">
-        <div className="grid gap-3 md:grid-cols-[1.1fr_180px_180px_180px_auto_auto] md:items-end">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(240px,1fr)_150px_150px_160px_auto_auto] xl:items-end">
           <label className="block">
             <span className="text-xs font-semibold text-zinc-500">Search</span>
             <div className="mt-1.5 flex h-11 items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3">
@@ -276,20 +276,30 @@ export function AdminJobsTable({ jobs }: { jobs: Row[] }) {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-zinc-100 bg-white shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[1050px] text-sm">
+      <div className="min-w-0 overflow-hidden rounded-2xl border border-zinc-100 bg-white shadow-sm">
+        <div className="min-w-0 overflow-hidden">
+          <table className="w-full table-fixed text-sm">
+            <colgroup>
+              <col className="w-12" />
+              <col className="w-[22%]" />
+              <col className="w-[18%]" />
+              <col className="w-[12%]" />
+              <col className="w-[13%]" />
+              <col className="w-[10%]" />
+              <col className="w-[10%]" />
+              <col className="w-[15%]" />
+            </colgroup>
             <thead>
               <tr className="border-b border-zinc-100 text-left text-[11px] font-bold uppercase tracking-[0.12em] text-zinc-500">
-                <th className="w-12 px-4 py-4">
+                <th className="px-4 py-4">
                   <input type="checkbox" className="h-4 w-4 rounded border-zinc-300" aria-label="Select all jobs" />
                 </th>
                 <th className="px-4 py-4">Job Title</th>
                 <th className="px-4 py-4">Company</th>
                 <th className="px-4 py-4">Job Type</th>
                 <th className="px-4 py-4">Status</th>
-                <th className="px-4 py-4">Applicants</th>
-                <th className="px-4 py-4">Posted On</th>
+                <th className="px-3 py-4">Applicants</th>
+                <th className="px-3 py-4">Posted On</th>
                 <th className="px-4 py-4 text-right">Actions</th>
               </tr>
             </thead>
@@ -300,89 +310,88 @@ export function AdminJobsTable({ jobs }: { jobs: Row[] }) {
 
                 return (
                   <tr key={job.id} className="hover:bg-zinc-50/70" data-testid={`admin-job-${job.id}`}>
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-4 align-middle">
                       <input type="checkbox" className="h-4 w-4 rounded border-zinc-300" aria-label={`Select ${job.title}`} />
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-4 align-middle">
                       <div className="flex items-start gap-3">
                         <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-blue-600" />
                         <div className="min-w-0">
-                          <div className="font-bold text-zinc-950">{job.title}</div>
-                          <div className="mt-0.5 text-xs text-zinc-500">{job.location}</div>
+                          <div className="truncate font-bold text-zinc-950">{job.title}</div>
+                          <div className="mt-0.5 truncate text-xs text-zinc-500">{job.location}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-4 align-middle">
                       <div className="flex items-center gap-3">
                         <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-xs font-bold text-white ${COMPANY_COLORS[index % COMPANY_COLORS.length]}`}>
                           {companyInitial}
                         </span>
-                        <span className="font-medium text-zinc-700">{job.company}</span>
+                        <span className="min-w-0 truncate font-medium text-zinc-700">{job.company}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-4">
-                      <span className={`rounded-full px-3 py-1 text-xs font-semibold ${TYPE_STYLES[type] ?? TYPE_STYLES.TEMPORARY}`}>
+                    <td className="px-3 py-4 align-middle">
+                      <span className={`inline-flex max-w-full truncate rounded-full px-2.5 py-1 text-xs font-semibold ${TYPE_STYLES[type] ?? TYPE_STYLES.TEMPORARY}`}>
                         {humanize(type)}
                       </span>
                     </td>
-                    <td className="px-4 py-4">
-                      <span className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_STYLES[job.status] ?? STATUS_STYLES.DRAFT}`}>
+                    <td className="px-3 py-4 align-middle">
+                      <span className={`inline-flex max-w-full truncate rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_STYLES[job.status] ?? STATUS_STYLES.DRAFT}`}>
                         {STATUS_LABELS[job.status] ?? humanize(job.status)}
                       </span>
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="px-3 py-4 align-middle">
                       <div className="flex items-center gap-2 text-zinc-700">
                         <Users className="h-4 w-4 text-zinc-500" />
                         <span className="font-semibold">{job.applicants}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-4 text-zinc-600">{formatDate(job.createdAt)}</td>
-                    <td className="px-4 py-4">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className="px-3 py-4 align-middle text-zinc-600">{formatDate(job.createdAt)}</td>
+                    <td className="px-4 py-4 align-middle">
+                      <div className="flex items-center justify-end gap-1.5">
                         {busy === job.id && <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />}
                         <button
                           type="button"
                           onClick={() => patch(job.id, { status: "PUBLISHED" })}
-                          className="flex h-8 items-center gap-1.5 rounded-lg border border-blue-100 px-3 text-xs font-semibold text-blue-700 transition hover:bg-blue-50"
+                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-blue-100 text-blue-700 transition hover:bg-blue-50"
                           data-testid={`approve-${job.id}`}
+                          title="Publish"
+                          aria-label={`Publish ${job.title}`}
                         >
-                          <Send className="h-3.5 w-3.5" />
-                          Publish
+                          <Send className="h-4 w-4" />
                         </button>
                         <button
                           type="button"
                           onClick={() => remove(job.id)}
-                          className="flex h-8 items-center gap-1.5 rounded-lg border border-rose-100 px-3 text-xs font-semibold text-rose-600 transition hover:bg-rose-50"
+                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-rose-100 text-rose-600 transition hover:bg-rose-50"
+                          title="Remove"
+                          aria-label={`Remove ${job.title}`}
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
-                          Remove
+                          <Trash2 className="h-4 w-4" />
                         </button>
                         <button
                           type="button"
                           onClick={() => share(job)}
-                          className="flex h-8 items-center gap-1.5 rounded-lg border border-blue-100 px-3 text-xs font-semibold text-blue-700 transition hover:bg-blue-50"
+                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-blue-100 text-blue-700 transition hover:bg-blue-50"
+                          title="Share"
+                          aria-label={`Share ${job.title}`}
                         >
-                          <Share2 className="h-3.5 w-3.5" />
-                          Share
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => patch(job.id, { featured: !job.featured })}
-                          className={`flex h-8 items-center gap-1.5 rounded-lg border px-3 text-xs font-semibold transition ${
-                            job.featured
-                              ? "border-orange-100 bg-orange-50 text-orange-700"
-                              : "border-zinc-200 text-zinc-500 hover:bg-zinc-50"
-                          }`}
-                          data-testid={`feature-${job.id}`}
-                        >
-                          <Flame className="h-3.5 w-3.5" />
-                          Hot Job
+                          <Share2 className="h-4 w-4" />
                         </button>
                         <details className="relative">
-                          <summary className="flex h-8 w-8 cursor-pointer list-none items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100">
+                          <summary className="flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100">
                             <MoreHorizontal className="h-4 w-4" />
                           </summary>
                           <div className="absolute right-0 z-10 mt-2 w-36 overflow-hidden rounded-xl border border-zinc-100 bg-white p-1 shadow-xl">
+                            <button
+                              type="button"
+                              onClick={() => patch(job.id, { featured: !job.featured })}
+                              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-zinc-700 hover:bg-zinc-50"
+                              data-testid={`feature-${job.id}`}
+                            >
+                              <Flame className="h-3.5 w-3.5" />
+                              {job.featured ? "Remove Hot" : "Hot Job"}
+                            </button>
                             <button
                               type="button"
                               onClick={() => patch(job.id, { status: "DRAFT" })}
