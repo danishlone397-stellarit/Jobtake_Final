@@ -8,8 +8,7 @@ const COLS = [
       ["Browse Jobs",       "/jobs"],
       ["Browse Companies",  "/companies"],
       ["Post a Job",        "/employer/post-job"],
-      ["For Employers",     "/employers"],
-      ["AI Match",          "/ai-match"],
+      ["For Employers",     "/employer"],
     ],
   },
   {

@@ -6,7 +6,7 @@ import { PostJobForm } from "./PostJobForm";
 
 export default async function PostJobPage() {
   const me = await getCurrentUser();
-  if (!me) redirect("/login?redirect=/employer/post-job");
+  if (!me) redirect("/employers/login");
   if (me.role !== "EMPLOYER" && me.role !== "ADMIN") redirect("/dashboard");
   const cats = await prisma.category.findMany({ where: { active: true }, orderBy: { sortOrder: "asc" } });
   return (
