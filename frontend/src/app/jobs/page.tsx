@@ -65,6 +65,8 @@ export default async function JobsPage({ searchParams }: { searchParams: SP }) {
             location: j.location,
             workMode: j.workMode,
             seniority: j.seniority,
+            experienceMin: j.experienceMin,
+            experienceMax: j.experienceMax,
             salaryMin: j.salaryMin,
             salaryMax: j.salaryMax,
             salaryCurrency: j.salaryCurrency,

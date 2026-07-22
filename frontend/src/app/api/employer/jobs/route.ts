@@ -14,6 +14,8 @@ const Body = z.object({
   workMode: z.enum(["REMOTE", "HYBRID", "ONSITE"]).default("REMOTE"),
   employmentType: z.enum(["FULL_TIME", "PART_TIME", "CONTRACT", "INTERNSHIP", "TEMPORARY"]).default("FULL_TIME"),
   seniority: z.enum(["INTERN", "ENTRY", "MID", "SENIOR", "STAFF", "PRINCIPAL", "DIRECTOR", "EXECUTIVE"]).default("MID"),
+  experienceMin: z.number().int().min(0).max(60).optional(),
+  experienceMax: z.number().int().min(0).max(60).optional(),
   salaryMin: z.number().int().optional(),
   salaryMax: z.number().int().optional(),
   salaryCurrency: z.string().default("INR"),
@@ -37,6 +39,13 @@ export async function POST(req: NextRequest) {
     const first = Object.entries(fields).find(([, v]) => v?.length);
     const msg = first ? `${first[0]}: ${first[1]?.[0]}` : "Invalid form data";
     return NextResponse.json({ error: msg }, { status: 400 });
+  }
+  if (
+    data.data.experienceMin !== undefined &&
+    data.data.experienceMax !== undefined &&
+    data.data.experienceMin > data.data.experienceMax
+  ) {
+    return NextResponse.json({ error: "experienceMin cannot be greater than experienceMax" }, { status: 400 });
   }
 
   // pick company: provided, or first owned, or auto-create
@@ -82,6 +91,8 @@ export async function POST(req: NextRequest) {
       workMode: data.data.workMode,
       employmentType: data.data.employmentType,
       seniority: data.data.seniority,
+      experienceMin: data.data.experienceMin,
+      experienceMax: data.data.experienceMax,
       salaryMin: data.data.salaryMin,
       salaryMax: data.data.salaryMax,
       salaryCurrency: data.data.salaryCurrency,

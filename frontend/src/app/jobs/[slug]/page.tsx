@@ -14,6 +14,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+function formatExperienceRange(min: number | null, max: number | null, fallback: string) {
+  if (min !== null && max !== null) return `${min}-${max} yrs`;
+  if (min !== null) return `${min}+ yrs`;
+  if (max !== null) return `Up to ${max} yrs`;
+  return fallback;
+}
 
 export default async function JobDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -39,6 +45,11 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
   }
 
   const companyInitial = job.company.name[0].toUpperCase();
+  const experienceLabel = formatExperienceRange(
+    job.experienceMin,
+    job.experienceMax,
+    job.seniority === "INTERN" ? "0-1 yrs" : job.seniority === "ENTRY" ? "1-2 yrs" : job.seniority === "MID" ? "2-5 yrs" : job.seniority === "SENIOR" ? "5-8 yrs" : job.seniority === "STAFF" ? "8-12 yrs" : job.seniority === "PRINCIPAL" ? "12-15 yrs" : job.seniority === "DIRECTOR" ? "15-20 yrs" : job.seniority === "EXECUTIVE" ? "20+ yrs" : job.seniority
+  );
 
   return (
     <main className="min-h-screen bg-white">
@@ -127,7 +138,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                       <TrendingUp className="h-3 w-3" /> Experience
                     </div>
                     <div className="text-sm font-bold text-zinc-900">
-                      {job.seniority === "INTERN" ? "0-1 yrs" : job.seniority === "ENTRY" ? "1-2 yrs" : job.seniority === "MID" ? "2-5 yrs" : job.seniority === "SENIOR" ? "5-8 yrs" : job.seniority === "STAFF" ? "8-12 yrs" : job.seniority === "PRINCIPAL" ? "12-15 yrs" : job.seniority === "DIRECTOR" ? "15-20 yrs" : job.seniority === "EXECUTIVE" ? "20+ yrs" : job.seniority}
+                      {experienceLabel}
                     </div>
                   </div>
                 )}

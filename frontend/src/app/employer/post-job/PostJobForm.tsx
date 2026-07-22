@@ -21,17 +21,6 @@ const EMPLOYMENT_TYPES = [
   { value: "TEMPORARY", label: "Temporary" },
 ];
 
-const SENIORITY_OPTIONS = [
-  { value: "INTERN",    label: "Intern / Fresher (0 yrs)" },
-  { value: "ENTRY",     label: "Entry Level (0-2 yrs)" },
-  { value: "MID",       label: "Mid Level (2-5 yrs)" },
-  { value: "SENIOR",    label: "Senior (5-8 yrs)" },
-  { value: "STAFF",     label: "Staff (8-12 yrs)" },
-  { value: "PRINCIPAL", label: "Principal (12-15 yrs)" },
-  { value: "DIRECTOR",  label: "Director (15-20 yrs)" },
-  { value: "EXECUTIVE", label: "Executive (20+ yrs)" },
-];
-
 const MIN_EDU_OPTIONS = ["Any", "10th Pass", "12th Pass", "Diploma", "Graduate", "Post Graduate", "Doctorate"];
 const DEGREE_OPTIONS  = ["Any", "B.Tech / B.E.", "B.Sc", "B.Com", "BA", "BBA / BBM", "MBA / PGDM", "M.Tech", "M.Sc", "MCA", "B.C.A", "B.Ed", "Other"];
 
@@ -45,6 +34,32 @@ const SectionHeader = ({ num, title }: { num: number; title: string }) => (
 const inputCls = "w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white";
 const selectCls = inputCls;
 
+function formatExperienceRange(min: string, max: string) {
+  if (!min && !max) return undefined;
+  if (min && max) return `${min}-${max} yrs`;
+  if (min) return `${min}+ yrs`;
+  return `Up to ${max} yrs`;
+}
+
+function getSeniorityFromExperience(min: string, max: string) {
+  const n = parseInt(min || max || "", 10);
+  if (Number.isNaN(n) || n <= 0) return "INTERN";
+  if (n <= 2) return "ENTRY";
+  if (n <= 5) return "MID";
+  if (n <= 8) return "SENIOR";
+  if (n <= 12) return "STAFF";
+  if (n <= 15) return "PRINCIPAL";
+  if (n <= 20) return "DIRECTOR";
+  return "EXECUTIVE";
+}
+
+function normalizeExperienceInput(value: string) {
+  if (value === "") return "";
+  const n = parseInt(value, 10);
+  if (Number.isNaN(n) || n < 0) return "";
+  return String(Math.min(n, 60));
+}
+
 export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmin: boolean }) {
   const router = useRouter();
 
@@ -53,7 +68,8 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
   const [title, setTitle]                 = useState("");
   const [categoryName, setCategoryName]   = useState("");
   const [employmentType, setEmploymentType] = useState("");
-  const [seniority, setSeniority]         = useState("");
+  const [experienceMin, setExperienceMin] = useState("");
+  const [experienceMax, setExperienceMax] = useState("");
   const [workMode, setWorkMode]           = useState("ONSITE");
   const [location, setLocation]           = useState("");
   const [remoteJob, setRemoteJob]         = useState(false);
@@ -101,11 +117,6 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
     else if (e.key === "Backspace" && !skillInput && skills.length) setSkills(s => s.slice(0, -1));
   }
 
-  const SENIORITY_LABEL: Record<string, string> = {
-    INTERN: "Fresher", ENTRY: "0-2 yrs", MID: "2-5 yrs", SENIOR: "5-8 yrs",
-    STAFF: "8-12 yrs", PRINCIPAL: "12-15 yrs", DIRECTOR: "15-20 yrs", EXECUTIVE: "20+ yrs",
-  };
-
   async function submit(status: "DRAFT" | "PENDING") {
     setError(null);
 
@@ -116,15 +127,21 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
     if (!remoteJob && !location.trim()) {
       setError("Location is required. Or check 'Remote Job'."); return;
     }
+    if (experienceMin && experienceMax && parseInt(experienceMin, 10) > parseInt(experienceMax, 10)) {
+      setError("Minimum experience cannot be greater than maximum experience."); return;
+    }
 
     setLoading(true);
+    const seniority = getSeniorityFromExperience(experienceMin, experienceMax);
     const body = {
       title, description, responsibilities, requirements, benefits,
       location: remoteJob ? "Remote" : location,
       industry: categoryName,
       workMode: remoteJob ? "REMOTE" : workMode,
       employmentType: employmentType || jobType || "FULL_TIME",
-      seniority: seniority || "MID",
+      seniority,
+      experienceMin: experienceMin ? parseInt(experienceMin, 10) : undefined,
+      experienceMax: experienceMax ? parseInt(experienceMax, 10) : undefined,
       salaryMin: salaryMin ? parseInt(salaryMin) : undefined,
       salaryMax: salaryMax ? parseInt(salaryMax) : undefined,
       salaryCurrency: "INR",
@@ -154,7 +171,7 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
     { label: "Category",        value: categoryName },
     { label: "Location",        value: remoteJob ? "Remote" : location },
     { label: "Employment Type", value: EMPLOYMENT_TYPES.find(e => e.value === (employmentType || jobType))?.label },
-    { label: "Experience Level",value: SENIORITY_LABEL[seniority] },
+    { label: "Experience",      value: formatExperienceRange(experienceMin, experienceMax) },
     { label: "Work Mode",       value: remoteJob ? "Remote" : workMode.charAt(0) + workMode.slice(1).toLowerCase() },
     { label: "Education",       value: minEdu || undefined },
     { label: "CTC Range", value: salaryMinDisplay || salaryMaxDisplay ? `${salaryMinDisplay || "?"} – ${salaryMaxDisplay || "?"}` : undefined },
@@ -217,11 +234,31 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Experience Level <span className="text-red-500">*</span></label>
-                <select className={selectCls} value={seniority} onChange={e => setSeniority(e.target.value)}>
-                  <option value="">Select experience</option>
-                  {SENIORITY_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                </select>
+                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Experience <span className="text-red-500">*</span></label>
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+                  <input
+                    type="number"
+                    min="0"
+                    max="60"
+                    step="1"
+                    className={inputCls}
+                    value={experienceMin}
+                    onChange={e => setExperienceMin(normalizeExperienceInput(e.target.value))}
+                    placeholder="Min"
+                  />
+                  <span className="text-xs font-semibold text-zinc-400">to</span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="60"
+                    step="1"
+                    className={inputCls}
+                    value={experienceMax}
+                    onChange={e => setExperienceMax(normalizeExperienceInput(e.target.value))}
+                    placeholder="Max"
+                  />
+                </div>
+                <p className="mt-1 text-xs text-zinc-400">Enter years, e.g. 2 to 5.</p>
               </div>
               <div>
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Work Mode <span className="text-red-500">*</span></label>

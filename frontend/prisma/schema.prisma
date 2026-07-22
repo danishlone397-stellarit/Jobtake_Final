@@ -237,6 +237,8 @@ model Job {
   workMode         WorkMode       @default(REMOTE)
   employmentType   EmploymentType @default(FULL_TIME)
   seniority        SeniorityLevel @default(MID)
+  experienceMin    Int?
+  experienceMax    Int?
   salaryMin        Int?
   salaryMax        Int?
   salaryCurrency   String         @default("USD")
@@ -265,6 +267,7 @@ model Job {
   @@index([categoryId])
   @@index([workMode])
   @@index([seniority])
+  @@index([experienceMin, experienceMax])
 }
 
 model Application {

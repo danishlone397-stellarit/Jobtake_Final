@@ -20,6 +20,13 @@ const SENIORITY_LABEL: Record<string, string> = {
   STAFF: "8-12 Years", PRINCIPAL: "12-15 Years", DIRECTOR: "15-20 Years", EXECUTIVE: "20+ Years",
 };
 
+function formatExperienceRange(min: number | null, max: number | null, fallback: string) {
+  if (min !== null && max !== null) return `${min}-${max} Years`;
+  if (min !== null) return `${min}+ Years`;
+  if (max !== null) return `Up to ${max} Years`;
+  return fallback;
+}
+
 export default async function JobPreviewPage({ params }: { params: Promise<{ id: string }> }) {
   const me = await getCurrentUser();
   if (!me || me.role !== "EMPLOYER") redirect("/employers/login");
@@ -42,6 +49,7 @@ export default async function JobPreviewPage({ params }: { params: Promise<{ id:
   const empTypeLabel = job.employmentType === "FULL_TIME" ? "Full-time" : job.employmentType === "PART_TIME" ? "Part-time" : job.employmentType === "CONTRACT" ? "Contract" : job.employmentType === "INTERNSHIP" ? "Internship" : "Temporary";
   const workModeLabel = job.workMode === "REMOTE" ? "Remote" : job.workMode === "HYBRID" ? "Hybrid" : "On-site";
   const dept = job.collarType === "WHITE" ? "Corporate & Professional" : job.collarType === "BLUE" ? "Operations & Trades" : job.collarType === "PINK" ? "Service & Support" : job.collarType === "GREY" ? "Technical & Supervisory" : "MSME & Entrepreneurship";
+  const experienceLabel = formatExperienceRange(job.experienceMin, job.experienceMax, SENIORITY_LABEL[job.seniority] ?? job.seniority);
 
   return (
     <DashboardShell role="EMPLOYER" current="/employer/jobs">
@@ -127,7 +135,7 @@ export default async function JobPreviewPage({ params }: { params: Promise<{ id:
             {/* Stats row */}
             <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { icon: <TrendingUp className="h-4 w-4 text-blue-500" />, label: "Experience",       value: SENIORITY_LABEL[job.seniority] ?? job.seniority },
+                { icon: <TrendingUp className="h-4 w-4 text-blue-500" />, label: "Experience",       value: experienceLabel },
                 { icon: <Briefcase className="h-4 w-4 text-blue-500" />,  label: "Employment Type", value: empTypeLabel },
                 { icon: <Wifi className="h-4 w-4 text-blue-500" />,       label: "Work Mode",       value: workModeLabel },
                 { icon: <Tag className="h-4 w-4 text-blue-500" />,        label: "Department",      value: job.category?.name ?? dept },
@@ -200,7 +208,7 @@ export default async function JobPreviewPage({ params }: { params: Promise<{ id:
                 { icon: <Tag className="h-4 w-4 text-blue-500" />,         label: "Department",         value: dept },
                 { icon: <Wifi className="h-4 w-4 text-blue-500" />,        label: "Remote Job",         value: job.workMode === "REMOTE" ? "Available" : "Not Available" },
                 { icon: <Calendar className="h-4 w-4 text-blue-500" />,    label: "Posted On",          value: job.publishedAt ? new Date(job.publishedAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—" },
-                { icon: <TrendingUp className="h-4 w-4 text-blue-500" />,  label: "Experience Level",   value: SENIORITY_LABEL[job.seniority] ?? job.seniority },
+                { icon: <TrendingUp className="h-4 w-4 text-blue-500" />,  label: "Experience Level",   value: experienceLabel },
                 { icon: <Calendar className="h-4 w-4 text-blue-500" />,    label: "Application Deadline",value: "Not Specified" },
                 { icon: <Briefcase className="h-4 w-4 text-blue-500" />,   label: "Employment Type",    value: empTypeLabel },
                 { icon: <Briefcase className="h-4 w-4 text-blue-500" />,   label: "Job Type",           value: empTypeLabel },
@@ -291,7 +299,7 @@ export default async function JobPreviewPage({ params }: { params: Promise<{ id:
                 { label: "Job Category",     value: job.category?.name },
                 { label: "Location",         value: job.location },
                 { label: "Employment Type",  value: empTypeLabel },
-                { label: "Experience Level", value: SENIORITY_LABEL[job.seniority] ?? job.seniority },
+                { label: "Experience Level", value: experienceLabel },
                 { label: "Work Mode",        value: workModeLabel },
                 { label: "Education",        value: job.seniority === "INTERN" || job.seniority === "ENTRY" ? "12th / Graduate" : "Graduate" },
                 { label: "Salary",           value: salaryLabel || "Not specified" },

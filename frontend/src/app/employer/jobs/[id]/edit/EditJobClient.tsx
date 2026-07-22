@@ -20,19 +20,40 @@ const EMPLOYMENT_TYPES = [
   { value: "TEMPORARY", label: "Temporary" },
 ];
 
-const SENIORITY_OPTIONS = [
-  { value: "INTERN", label: "Intern / Fresher" }, { value: "ENTRY", label: "Entry Level (0-2 yrs)" },
-  { value: "MID",    label: "Mid Level (2-5 yrs)" }, { value: "SENIOR", label: "Senior (5-8 yrs)" },
-  { value: "STAFF",  label: "Staff (8-12 yrs)" }, { value: "PRINCIPAL", label: "Principal (12+ yrs)" },
-  { value: "DIRECTOR", label: "Director" }, { value: "EXECUTIVE", label: "Executive" },
-];
-
 const inputCls = "w-full px-4 py-3 border border-zinc-200 rounded-xl text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white";
+
+function formatExperienceRange(min: string, max: string) {
+  if (!min && !max) return undefined;
+  if (min && max) return `${min}-${max} yrs`;
+  if (min) return `${min}+ yrs`;
+  return `Up to ${max} yrs`;
+}
+
+function getSeniorityFromExperience(min: string, max: string, fallback: string) {
+  const n = parseInt(min || max || "", 10);
+  if (Number.isNaN(n)) return fallback || "MID";
+  if (n <= 0) return "INTERN";
+  if (n <= 2) return "ENTRY";
+  if (n <= 5) return "MID";
+  if (n <= 8) return "SENIOR";
+  if (n <= 12) return "STAFF";
+  if (n <= 15) return "PRINCIPAL";
+  if (n <= 20) return "DIRECTOR";
+  return "EXECUTIVE";
+}
+
+function normalizeExperienceInput(value: string) {
+  if (value === "") return "";
+  const n = parseInt(value, 10);
+  if (Number.isNaN(n) || n < 0) return "";
+  return String(Math.min(n, 60));
+}
 
 type JobData = {
   id: string; title: string; description: string; responsibilities: string;
   requirements: string; benefits: string; location: string; workMode: string;
   employmentType: string; seniority: string; collarType: string;
+  experienceMin: number | null; experienceMax: number | null;
   salaryMin: number | null; salaryMax: number | null; skills: string[]; categoryName: string;
 };
 
@@ -50,7 +71,9 @@ export function EditJobClient({ job, categories }: { job: JobData; categories: C
   const [title, setTitle]                   = useState(job.title);
   const [categoryName, setCategoryName]     = useState(job.categoryName);
   const [employmentType, setEmploymentType] = useState(job.employmentType);
-  const [seniority, setSeniority]           = useState(job.seniority);
+  const [seniority]                         = useState(job.seniority);
+  const [experienceMin, setExperienceMin]   = useState(job.experienceMin !== null ? String(job.experienceMin) : "");
+  const [experienceMax, setExperienceMax]   = useState(job.experienceMax !== null ? String(job.experienceMax) : "");
   const [workMode, setWorkMode]             = useState(job.workMode);
   const [location, setLocation]             = useState(job.location);
   const [description, setDescription]       = useState(job.description);
@@ -85,14 +108,20 @@ export function EditJobClient({ job, categories }: { job: JobData; categories: C
     setError(null);
     if (!title.trim() || title.trim().length < 3) { setError("Job title is required (min 3 characters)."); return; }
     if (!location.trim()) { setError("Location is required."); return; }
+    if (experienceMin && experienceMax && parseInt(experienceMin, 10) > parseInt(experienceMax, 10)) {
+      setError("Minimum experience cannot be greater than maximum experience."); return;
+    }
 
     setLoading(true);
+    const nextSeniority = getSeniorityFromExperience(experienceMin, experienceMax, seniority);
     const res = await fetch(`/api/employer/jobs/${job.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title, description, responsibilities, requirements, benefits,
-        location, workMode, employmentType, seniority, collarType,
+        location, workMode, employmentType, seniority: nextSeniority, collarType,
+        experienceMin: experienceMin ? parseInt(experienceMin, 10) : null,
+        experienceMax: experienceMax ? parseInt(experienceMax, 10) : null,
         salaryMin: salaryMin ? parseInt(salaryMin) : undefined,
         salaryMax: salaryMax ? parseInt(salaryMax) : undefined,
         salaryCurrency: "INR", salaryPeriod: "year",
@@ -161,11 +190,31 @@ export function EditJobClient({ job, categories }: { job: JobData; categories: C
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Experience Level <span className="text-red-500">*</span></label>
-                <select value={seniority} onChange={e => setSeniority(e.target.value)} className={inputCls}>
-                  <option value="">Select experience</option>
-                  {SENIORITY_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
-                </select>
+                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Experience <span className="text-red-500">*</span></label>
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+                  <input
+                    type="number"
+                    min="0"
+                    max="60"
+                    step="1"
+                    value={experienceMin}
+                    onChange={e => setExperienceMin(normalizeExperienceInput(e.target.value))}
+                    className={inputCls}
+                    placeholder="Min"
+                  />
+                  <span className="text-xs font-semibold text-zinc-400">to</span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="60"
+                    step="1"
+                    value={experienceMax}
+                    onChange={e => setExperienceMax(normalizeExperienceInput(e.target.value))}
+                    className={inputCls}
+                    placeholder="Max"
+                  />
+                </div>
+                <p className="mt-1 text-xs text-zinc-400">Enter years, e.g. 2 to 5.</p>
               </div>
               <div>
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Work Mode <span className="text-red-500">*</span></label>
@@ -269,6 +318,7 @@ export function EditJobClient({ job, categories }: { job: JobData; categories: C
               { label: "Job Title",       value: title },
               { label: "Location",        value: location },
               { label: "Employment Type", value: EMPLOYMENT_TYPES.find(e => e.value === employmentType)?.label },
+              { label: "Experience",      value: formatExperienceRange(experienceMin, experienceMax) },
               { label: "Work Mode",       value: workMode.charAt(0) + workMode.slice(1).toLowerCase() },
               { label: "CTC Range",       value: salaryMinDisplay || salaryMaxDisplay ? `${salaryMinDisplay || "?"} – ${salaryMaxDisplay || "?"}` : undefined },
             ].map(({ label, value }) => (

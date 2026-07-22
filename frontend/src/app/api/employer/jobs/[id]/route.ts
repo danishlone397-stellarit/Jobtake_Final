@@ -14,6 +14,8 @@ const PatchBody = z.object({
   workMode:        z.enum(["REMOTE", "HYBRID", "ONSITE"]).optional(),
   employmentType:  z.enum(["FULL_TIME", "PART_TIME", "CONTRACT", "INTERNSHIP", "TEMPORARY"]).optional(),
   seniority:       z.enum(["INTERN", "ENTRY", "MID", "SENIOR", "STAFF", "PRINCIPAL", "DIRECTOR", "EXECUTIVE"]).optional(),
+  experienceMin:   z.number().int().min(0).max(60).nullable().optional(),
+  experienceMax:   z.number().int().min(0).max(60).nullable().optional(),
   salaryMin:       z.number().int().optional(),
   salaryMax:       z.number().int().optional(),
   salaryCurrency:  z.string().optional(),
@@ -36,6 +38,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const body = PatchBody.safeParse(await req.json().catch(() => ({})));
   if (!body.success) return NextResponse.json({ error: "Invalid data" }, { status: 400 });
+  if (
+    body.data.experienceMin !== undefined &&
+    body.data.experienceMax !== undefined &&
+    body.data.experienceMin !== null &&
+    body.data.experienceMax !== null &&
+    body.data.experienceMin > body.data.experienceMax
+  ) {
+    return NextResponse.json({ error: "experienceMin cannot be greater than experienceMax" }, { status: 400 });
+  }
 
   const { skills, categoryName, status, ...rest } = body.data;
 

@@ -8,7 +8,8 @@ import { timeAgo } from "@/lib/utils";
 type Job = {
   id: string; slug: string; title: string; location: string;
   workMode: "REMOTE" | "HYBRID" | "ONSITE";
-  seniority: string; salaryMin: number | null; salaryMax: number | null;
+  seniority: string; experienceMin: number | null; experienceMax: number | null;
+  salaryMin: number | null; salaryMax: number | null;
   salaryCurrency: string; salaryPeriod: string;
   collarType: string | null;
   featured: boolean; publishedAt: string | null;
@@ -35,6 +36,13 @@ function formatSalaryINR(min: number | null, max: number | null) {
   if (min) return `${fmt(min)}+`;
   if (max) return `Up to ${fmt(max)}`;
   return null;
+}
+
+function formatExperience(min: number | null, max: number | null, fallback: string) {
+  if (min !== null && max !== null) return `${min}-${max} yrs`;
+  if (min !== null) return `${min}+ yrs`;
+  if (max !== null) return `Up to ${max} yrs`;
+  return fallback.charAt(0) + fallback.slice(1).toLowerCase();
 }
 
 export function JobsListClient({
@@ -310,7 +318,7 @@ export function JobsListClient({
                               <span className="h-1 w-1 rounded-full bg-zinc-300" />
                               <span className="capitalize">{j.workMode.toLowerCase()}</span>
                               <span className="h-1 w-1 rounded-full bg-zinc-300" />
-                              <span className="capitalize">{j.seniority.charAt(0) + j.seniority.slice(1).toLowerCase()}</span>
+                              <span>{formatExperience(j.experienceMin, j.experienceMax, j.seniority)}</span>
                             </div>
 
                             {/* Skills */}

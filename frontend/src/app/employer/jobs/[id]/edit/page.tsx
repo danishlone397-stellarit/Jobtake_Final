@@ -11,7 +11,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
 
   const job = await prisma.job.findUnique({
     where: { id },
-    include: { jobSkills: { include: { skill: true } } },
+    include: { category: true, jobSkills: { include: { skill: true } } },
   });
 
   if (!job) notFound();
@@ -34,11 +34,13 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
           workMode: job.workMode ?? "ONSITE",
           employmentType: job.employmentType ?? "FULL_TIME",
           seniority: job.seniority ?? "MID",
+          experienceMin: job.experienceMin ?? null,
+          experienceMax: job.experienceMax ?? null,
           collarType: job.collarType ?? "WHITE",
           salaryMin: job.salaryMin ?? null,
           salaryMax: job.salaryMax ?? null,
           skills: job.jobSkills.map(s => s.skill.name),
-          categoryName: "",
+          categoryName: job.category?.name ?? "",
         }}
         categories={categories.map(c => ({ id: c.id, name: c.name }))}
       />
