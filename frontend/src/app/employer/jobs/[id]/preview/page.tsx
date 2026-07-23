@@ -56,7 +56,7 @@ export default async function JobPreviewPage({ params }: { params: Promise<{ id:
     <DashboardShell role="EMPLOYER" current="/employer/jobs">
 
       {/* Top bar */}
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+      <div className="mb-6">
         <div>
           <Link href="/employer/jobs" className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-800 transition mb-1">
             <ArrowLeft className="h-4 w-4" /> Back to Edit Job
@@ -64,17 +64,10 @@ export default async function JobPreviewPage({ params }: { params: Promise<{ id:
           <h1 className="text-2xl font-black text-zinc-900">Preview Your Job</h1>
           <p className="text-sm text-zinc-400 mt-0.5">This is how your job post will appear to candidates.</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Link href={`/employer/jobs/${id}/edit`}
-            className="inline-flex items-center gap-2 border border-zinc-200 text-zinc-700 font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-zinc-50 transition-colors">
-            <Pencil className="h-4 w-4" /> Edit Job
-          </Link>
-          <PostJobButton jobId={id} posted={job.status === "PUBLISHED"} />
-        </div>
       </div>
 
       {/* Main grid */}
-      <div className="grid lg:grid-cols-[1fr_280px] gap-5">
+      <div className="grid gap-5 pb-24 lg:grid-cols-[1fr_280px]">
 
         {/* ── LEFT: Job Card Preview ── */}
         <div className="space-y-4">
@@ -323,6 +316,16 @@ export default async function JobPreviewPage({ params }: { params: Promise<{ id:
               ))}
             </ul>
           </div>
+        </div>
+      </div>
+
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-zinc-200 bg-white px-6 py-4 shadow-[0_-8px_24px_rgba(15,23,42,0.06)]">
+        <div className="mx-auto flex max-w-[1400px] items-center justify-end gap-3">
+          <Link href={`/employer/jobs/${id}/edit`}
+            className="inline-flex h-12 items-center gap-2 rounded-xl border border-zinc-200 px-5 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-50">
+            <Pencil className="h-4 w-4" /> Edit Job
+          </Link>
+          <PostJobButton jobId={id} posted={job.status === "PUBLISHED"} />
         </div>
       </div>
     </DashboardShell>
