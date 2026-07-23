@@ -193,11 +193,11 @@ export function EditJobClient({ job, categories, options }: { job: JobData; cate
             </div>
             <div>
               <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Job Category</label>
-              <input value={categoryName} onChange={e => setCategoryName(e.target.value)} list="cats" className={inputCls} placeholder="e.g. Engineering, Finance" />
-              <datalist id="cats">
-                {categories.map(c => <option key={c.id} value={c.name} />)}
+              <select value={categoryName} onChange={e => setCategoryName(e.target.value)} className={inputCls}>
+                <option value="">Select job category</option>
+                {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
                 {industryOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}
-              </datalist>
+              </select>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>

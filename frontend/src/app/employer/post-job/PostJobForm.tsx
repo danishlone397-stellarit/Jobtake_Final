@@ -236,11 +236,11 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
             </div>
             <div>
               <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Job Category <span className="text-red-500">*</span></label>
-              <input className={inputCls} value={categoryName} onChange={e => setCategoryName(e.target.value)} placeholder="e.g. Engineering, Finance, Marketing" list="cat-list" />
-              <datalist id="cat-list">
-                {categories.map(c => <option key={c.id} value={c.name} />)}
+              <select className={selectCls} value={categoryName} onChange={e => setCategoryName(e.target.value)}>
+                <option value="">Select job category</option>
+                {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
                 {industryOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}
-              </datalist>
+              </select>
             </div>
             <div className="grid md:grid-cols-3 gap-4">
               <div>

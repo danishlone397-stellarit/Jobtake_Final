@@ -5,11 +5,12 @@ import { redirect, notFound } from "next/navigation";
 import { formatSalary, timeAgo } from "@/lib/utils";
 import Link from "next/link";
 import {
-  ArrowLeft, Pencil, Send, MapPin, Briefcase, BadgeDollarSign,
+  ArrowLeft, Pencil, MapPin, Briefcase, BadgeDollarSign,
   TrendingUp, BadgeCheck, Users, GraduationCap, Lightbulb,
-  CheckCircle2, Building2, Clock, Calendar, Bookmark, Share2,
+  CheckCircle2, Building2, Clock, Calendar,
   Wifi, Monitor, Tag, Star, Linkedin, Facebook, Twitter, Mail, Link2,
 } from "lucide-react";
+import { PostJobButton } from "./PostJobButton";
 
 const SENIORITY_YRS: Record<string, string> = {
   INTERN: "0-1 yrs", ENTRY: "1-2 yrs", MID: "2-5 yrs", SENIOR: "5-8 yrs",
@@ -68,15 +69,7 @@ export default async function JobPreviewPage({ params }: { params: Promise<{ id:
             className="inline-flex items-center gap-2 border border-zinc-200 text-zinc-700 font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-zinc-50 transition-colors">
             <Pencil className="h-4 w-4" /> Edit Job
           </Link>
-          {job.status === "PUBLISHED" ? (
-            <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-sm font-semibold px-4 py-2.5 rounded-xl">
-              <CheckCircle2 className="h-4 w-4" /> Published
-            </span>
-          ) : (
-            <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors">
-              <Send className="h-4 w-4" /> Publish Job
-            </button>
-          )}
+          <PostJobButton jobId={id} posted={job.status === "PUBLISHED"} />
         </div>
       </div>
 
@@ -88,19 +81,11 @@ export default async function JobPreviewPage({ params }: { params: Promise<{ id:
 
           {/* Job Header Card */}
           <div className="bg-white border border-zinc-100 rounded-2xl p-6 shadow-sm">
-            {/* Badge + actions */}
-            <div className="flex items-start justify-between gap-3 mb-4">
+            {/* Badge */}
+            <div className="flex items-start gap-3 mb-4">
               <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-100">
                 {empTypeLabel}
               </span>
-              <div className="flex items-center gap-2">
-                <button className="flex items-center gap-1.5 border border-zinc-200 text-zinc-600 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-zinc-50 transition">
-                  <Bookmark className="h-4 w-4" /> Save
-                </button>
-                <button className="flex items-center gap-1.5 bg-blue-600 text-white text-sm font-semibold px-4 py-1.5 rounded-lg hover:bg-blue-700 transition">
-                  Apply Now
-                </button>
-              </div>
             </div>
 
             <h2 className="text-2xl font-black text-zinc-900">{job.title}</h2>
