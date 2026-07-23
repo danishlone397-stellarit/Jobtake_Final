@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, KeyboardEvent } from "react";
+import { useMemo, useState, useRef, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, MapPin, X, Check, Eye } from "lucide-react";
 import { ManagedOptions } from "@/lib/job-option-types";
@@ -73,6 +73,7 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
   const [experienceMax, setExperienceMax] = useState("");
   const [workMode, setWorkMode]           = useState("ONSITE");
   const [location, setLocation]           = useState("");
+  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [remoteJob, setRemoteJob]         = useState(false);
   const [jobType, setJobType]             = useState("FULL_TIME");
   const [minEdu, setMinEdu]               = useState("");
@@ -89,6 +90,13 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
   const locationOptions = options.LOCATION;
   const industryOptions = options.INDUSTRY;
   const roleOptions = options.ROLE;
+  const visibleLocationOptions = useMemo(() => {
+    const query = location.trim().toLowerCase();
+    const rows = query
+      ? locationOptions.filter((option) => `${option.label} ${option.value}`.toLowerCase().includes(query))
+      : locationOptions;
+    return rows.slice(0, 30);
+  }, [location, locationOptions]);
 
   function formatLPA(val: string): string {
     const n = parseFloat(val);
@@ -290,12 +298,38 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
               <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Job Location <span className="text-red-500">*</span></label>
               <div className="flex items-center gap-3">
                 <div className="relative flex-1">
-                  <input className={inputCls} value={location} onChange={e => setLocation(e.target.value)}
-                    placeholder="e.g. Mumbai, India" disabled={remoteJob} list="location-list" />
-                  <datalist id="location-list">
-                    {locationOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}
-                  </datalist>
+                  <input
+                    className={inputCls}
+                    value={location}
+                    onChange={e => { setLocation(e.target.value); setShowLocationDropdown(true); }}
+                    onFocus={() => !remoteJob && setShowLocationDropdown(true)}
+                    onBlur={() => window.setTimeout(() => setShowLocationDropdown(false), 120)}
+                    placeholder="e.g. Mumbai, India"
+                    disabled={remoteJob}
+                  />
                   <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 pointer-events-none" />
+                  {showLocationDropdown && !remoteJob && (
+                    <div className="absolute left-0 right-0 top-full z-50 mt-2 max-h-72 overflow-y-auto rounded-xl border border-zinc-200 bg-white py-2 shadow-xl">
+                      {visibleLocationOptions.map((option) => (
+                        <button
+                          key={option.id}
+                          type="button"
+                          onMouseDown={(event) => {
+                            event.preventDefault();
+                            setLocation(option.value);
+                            setShowLocationDropdown(false);
+                          }}
+                          className="block w-full px-4 py-2.5 text-left transition hover:bg-blue-50"
+                        >
+                          <span className="block text-sm font-bold text-zinc-950">{option.value}</span>
+                          {option.label !== option.value && <span className="mt-0.5 block text-xs font-medium text-zinc-600">{option.label}</span>}
+                        </button>
+                      ))}
+                      {!visibleLocationOptions.length && (
+                        <div className="px-4 py-3 text-sm font-medium text-zinc-500">No matching location. You can type a custom city.</div>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <label className="flex items-center gap-2 text-sm font-medium text-zinc-700 whitespace-nowrap cursor-pointer">
                   <input type="checkbox" checked={remoteJob} onChange={e => setRemoteJob(e.target.checked)}
@@ -417,28 +451,28 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
               <div className="flex items-center gap-3">
                 <div className="relative flex-1">
                   <input
-                    type="number" step="0.1" min="0"
-                    className={inputCls + " pr-14"}
+                    type="text"
+                    inputMode="decimal"
+                    className={inputCls}
                     value={salaryMinDisplay}
                     onChange={e => handleSalaryMin(e.target.value)}
                     onBlur={e => { if (e.target.value) setSalaryMinDisplay(formatLPA(e.target.value)); }}
                     onFocus={e => { const raw = parseFloat(salaryMin) / 100000; setSalaryMinDisplay(isNaN(raw) ? "" : String(raw)); }}
                     placeholder="Min CTC"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-zinc-400">LPA</span>
                 </div>
                 <span className="text-zinc-400 text-sm font-medium shrink-0">to</span>
                 <div className="relative flex-1">
                   <input
-                    type="number" step="0.1" min="0"
-                    className={inputCls + " pr-14"}
+                    type="text"
+                    inputMode="decimal"
+                    className={inputCls}
                     value={salaryMaxDisplay}
                     onChange={e => handleSalaryMax(e.target.value)}
                     onBlur={e => { if (e.target.value) setSalaryMaxDisplay(formatLPA(e.target.value)); }}
                     onFocus={e => { const raw = parseFloat(salaryMax) / 100000; setSalaryMaxDisplay(isNaN(raw) ? "" : String(raw)); }}
                     placeholder="Max CTC"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-zinc-400">LPA</span>
                 </div>
               </div>
               {(salaryMinDisplay || salaryMaxDisplay) && (

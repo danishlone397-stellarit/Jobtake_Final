@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, KeyboardEvent } from "react";
+import { useMemo, useState, useRef, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, X, ArrowLeft, Eye } from "lucide-react";
 import Link from "next/link";
@@ -77,12 +77,13 @@ export function EditJobClient({ job, categories, options }: { job: JobData; cate
   const [experienceMax, setExperienceMax]   = useState(job.experienceMax !== null ? String(job.experienceMax) : "");
   const [workMode, setWorkMode]             = useState(job.workMode);
   const [location, setLocation]             = useState(job.location);
+  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [description, setDescription]       = useState(job.description);
   const [responsibilities, setResponsibilities] = useState(job.responsibilities);
   const [requirements, setRequirements]     = useState(job.requirements);
   const [benefits, setBenefits]             = useState(job.benefits);
-  const [salaryMinDisplay, setSalaryMinDisplay] = useState(job.salaryMin ? String(job.salaryMin / 100000) : "");
-  const [salaryMaxDisplay, setSalaryMaxDisplay] = useState(job.salaryMax ? String(job.salaryMax / 100000) : "");
+  const [salaryMinDisplay, setSalaryMinDisplay] = useState(job.salaryMin ? `${job.salaryMin / 100000} LPA` : "");
+  const [salaryMaxDisplay, setSalaryMaxDisplay] = useState(job.salaryMax ? `${job.salaryMax / 100000} LPA` : "");
   const [salaryMin, setSalaryMin]           = useState(job.salaryMin ? String(job.salaryMin) : "");
   const [salaryMax, setSalaryMax]           = useState(job.salaryMax ? String(job.salaryMax) : "");
   const [skills, setSkills]                 = useState<string[]>(job.skills);
@@ -94,6 +95,13 @@ export function EditJobClient({ job, categories, options }: { job: JobData; cate
   const locationOptions = options.LOCATION;
   const industryOptions = options.INDUSTRY;
   const roleOptions = options.ROLE;
+  const visibleLocationOptions = useMemo(() => {
+    const query = location.trim().toLowerCase();
+    const rows = query
+      ? locationOptions.filter((option) => `${option.label} ${option.value}`.toLowerCase().includes(query))
+      : locationOptions;
+    return rows.slice(0, 30);
+  }, [location, locationOptions]);
 
   function addSkill(val: string) {
     const t = val.trim();
@@ -240,8 +248,38 @@ export function EditJobClient({ job, categories, options }: { job: JobData; cate
         {/* 3. Location */}
         <div className="bg-white border border-zinc-200 rounded-2xl p-6">
           <SectionHeader num={3} title="Location" />
-          <input value={location} onChange={e => setLocation(e.target.value)} className={inputCls} placeholder="e.g. Mumbai, Maharashtra" list="edit-location-list" />
-          <datalist id="edit-location-list">{locationOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}</datalist>
+          <div className="relative">
+            <input
+              value={location}
+              onChange={e => { setLocation(e.target.value); setShowLocationDropdown(true); }}
+              onFocus={() => setShowLocationDropdown(true)}
+              onBlur={() => window.setTimeout(() => setShowLocationDropdown(false), 120)}
+              className={inputCls}
+              placeholder="e.g. Mumbai, Maharashtra"
+            />
+            {showLocationDropdown && (
+              <div className="absolute left-0 right-0 top-full z-50 mt-2 max-h-72 overflow-y-auto rounded-xl border border-zinc-200 bg-white py-2 shadow-xl">
+                {visibleLocationOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onMouseDown={(event) => {
+                      event.preventDefault();
+                      setLocation(option.value);
+                      setShowLocationDropdown(false);
+                    }}
+                    className="block w-full px-4 py-2.5 text-left transition hover:bg-blue-50"
+                  >
+                    <span className="block text-sm font-bold text-zinc-950">{option.value}</span>
+                    {option.label !== option.value && <span className="mt-0.5 block text-xs font-medium text-zinc-600">{option.label}</span>}
+                  </button>
+                ))}
+                {!visibleLocationOptions.length && (
+                  <div className="px-4 py-3 text-sm font-medium text-zinc-500">No matching location. You can type a custom city.</div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* 4. Job Description */}
@@ -290,21 +328,19 @@ export function EditJobClient({ job, categories, options }: { job: JobData; cate
               </label>
               <div className="flex items-center gap-3">
                 <div className="relative flex-1">
-                  <input type="number" step="0.1" min="0" value={salaryMinDisplay}
+                  <input type="text" inputMode="decimal" value={salaryMinDisplay}
                     onChange={e => handleSalaryMin(e.target.value)}
                     onBlur={e => { if (e.target.value) setSalaryMinDisplay(formatLPA(e.target.value)); }}
                     onFocus={e => { const raw = parseFloat(salaryMin) / 100000; setSalaryMinDisplay(isNaN(raw) ? "" : String(raw)); }}
-                    className={inputCls + " pr-14"} placeholder="Min CTC" />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-zinc-400">LPA</span>
+                    className={inputCls} placeholder="Min CTC" />
                 </div>
                 <span className="text-zinc-400 text-sm font-medium shrink-0">to</span>
                 <div className="relative flex-1">
-                  <input type="number" step="0.1" min="0" value={salaryMaxDisplay}
+                  <input type="text" inputMode="decimal" value={salaryMaxDisplay}
                     onChange={e => handleSalaryMax(e.target.value)}
                     onBlur={e => { if (e.target.value) setSalaryMaxDisplay(formatLPA(e.target.value)); }}
                     onFocus={e => { const raw = parseFloat(salaryMax) / 100000; setSalaryMaxDisplay(isNaN(raw) ? "" : String(raw)); }}
-                    className={inputCls + " pr-14"} placeholder="Max CTC" />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-zinc-400">LPA</span>
+                    className={inputCls} placeholder="Max CTC" />
                 </div>
               </div>
             </div>
