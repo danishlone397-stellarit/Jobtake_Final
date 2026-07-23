@@ -19,7 +19,7 @@ export default async function AdminOptionsPage() {
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-zinc-900">Master Data</h1>
-          <p className="mt-2 text-sm text-zinc-500">Manage all dropdowns and values used across the Jobtake platform.</p>
+          <p className="mt-2 text-[15px] font-medium text-zinc-800">Manage all dropdowns and values used across the Jobtake platform.</p>
         </div>
         <div className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 text-sm font-semibold text-blue-700 shadow-sm">
           <Database className="h-4 w-4" />

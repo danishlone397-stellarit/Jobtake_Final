@@ -183,11 +183,11 @@ body {
 .input::placeholder { color: #a1a1aa; }
 
 .label {
-  font-size: 11.5px;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: #71717a;
-  font-weight: 600;
+  color: #09090b;
+  font-weight: 700;
   margin-bottom: 6px;
   display: block;
 }
@@ -195,3 +195,18 @@ body {
 select.input { appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
 
 textarea.input { min-height: 110px; resize: vertical; }
+
+/* Make small muted copy readable across the app. */
+:where(.text-xs, .text-sm):where(.text-zinc-400, .text-zinc-500, .text-zinc-600, .text-zinc-700, .text-slate-400, .text-slate-500, .text-slate-600, .text-gray-400, .text-gray-500, .text-gray-600) {
+  color: #09090b;
+}
+
+.text-xs {
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+}
+
+.text-sm {
+  font-size: 0.9375rem;
+  line-height: 1.375rem;
+}

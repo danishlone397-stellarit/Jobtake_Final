@@ -122,8 +122,8 @@ function statCard(
         </div>
         <div className="min-w-0">
           <div className="text-xl font-black text-zinc-950">{value}</div>
-          <div className="mt-1 text-sm font-bold text-zinc-700">{label}</div>
-          <div className="mt-1 text-xs font-medium text-zinc-400">{note}</div>
+          <div className="mt-1 text-[15px] font-bold text-zinc-900">{label}</div>
+          <div className="mt-1 text-sm font-medium text-zinc-800">{note}</div>
         </div>
       </div>
     </div>
@@ -217,7 +217,7 @@ export function OptionsEditor({ options }: { options: ManagedOptions }) {
         <aside className="rounded-2xl border border-zinc-100 bg-white shadow-sm">
           <div className="border-b border-zinc-100 p-5">
             <h2 className="text-base font-black text-zinc-900">Master Categories</h2>
-            <p className="mt-2 text-sm text-zinc-500">Select a category to manage its values.</p>
+            <p className="mt-2 text-[15px] font-medium text-zinc-800">Select a category to manage its values.</p>
           </div>
           <div className="p-3">
             {TYPES.map(({ type, icon: Icon }) => {
@@ -231,13 +231,13 @@ export function OptionsEditor({ options }: { options: ManagedOptions }) {
                     setSearch("");
                     setStatusFilter("ALL");
                   }}
-                  className={`flex h-12 w-full items-center gap-3 rounded-xl px-3 text-left text-sm transition ${
-                    selected ? "bg-blue-50 text-blue-700 ring-1 ring-blue-100" : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
+                  className={`flex h-12 w-full items-center gap-3 rounded-xl px-3 text-left text-[15px] transition ${
+                    selected ? "bg-blue-50 text-blue-700 ring-1 ring-blue-100" : "text-zinc-900 hover:bg-zinc-50"
                   }`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
                   <span className="min-w-0 flex-1 truncate font-semibold">{OPTION_TYPE_LABELS[type]}</span>
-                  <span className="rounded-full bg-white px-2 py-0.5 text-xs font-bold text-zinc-500 shadow-sm">
+                  <span className="rounded-full bg-white px-2 py-0.5 text-sm font-bold text-zinc-900 shadow-sm">
                     {options[type]?.length ?? 0}
                   </span>
                   <ChevronRight className="h-4 w-4 text-zinc-300" />
@@ -256,7 +256,7 @@ export function OptionsEditor({ options }: { options: ManagedOptions }) {
                 </div>
                 <div>
                   <h2 className="text-lg font-black text-zinc-900">{OPTION_TYPE_LABELS[activeType]}</h2>
-                  <p className="mt-1 text-sm text-zinc-500">{activeMeta.hint}</p>
+                  <p className="mt-1 text-[15px] font-medium text-zinc-800">{activeMeta.hint}</p>
                 </div>
               </div>
 
@@ -273,7 +273,7 @@ export function OptionsEditor({ options }: { options: ManagedOptions }) {
 
             <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(180px,1fr)_minmax(160px,240px)_auto] lg:items-end">
               <label className="block">
-                <span className="label">{activeMeta.singular} name</span>
+                <span className="mb-1.5 block text-sm font-bold uppercase tracking-[0.14em] text-zinc-900">{activeMeta.singular} name</span>
                 <input
                   className="input"
                   value={drafts[activeType].label}
@@ -282,7 +282,7 @@ export function OptionsEditor({ options }: { options: ManagedOptions }) {
                 />
               </label>
               <label className="block">
-                <span className="label">Stored value</span>
+                <span className="mb-1.5 block text-sm font-bold uppercase tracking-[0.14em] text-zinc-900">Stored value</span>
                 <input
                   className="input"
                   value={drafts[activeType].value}
@@ -297,7 +297,7 @@ export function OptionsEditor({ options }: { options: ManagedOptions }) {
                   <input
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
-                    className="h-11 w-full rounded-xl border border-zinc-200 bg-white pl-9 pr-3 text-sm outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                    className="h-11 w-full rounded-xl border border-zinc-200 bg-white pl-9 pr-3 text-[15px] text-zinc-900 outline-none transition placeholder:text-zinc-700 focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
                     placeholder={`Search ${OPTION_TYPE_LABELS[activeType].toLowerCase()}...`}
                   />
                 </label>
@@ -307,7 +307,7 @@ export function OptionsEditor({ options }: { options: ManagedOptions }) {
                   <select
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value as StatusFilter)}
-                    className="h-11 w-full rounded-xl border border-zinc-200 bg-white pl-9 pr-8 text-sm font-semibold text-zinc-700 outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                    className="h-11 w-full rounded-xl border border-zinc-200 bg-white pl-9 pr-8 text-[15px] font-semibold text-zinc-900 outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
                   >
                     <option value="ALL">All</option>
                     <option value="ACTIVE">Active</option>
@@ -319,9 +319,9 @@ export function OptionsEditor({ options }: { options: ManagedOptions }) {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] text-sm">
+            <table className="w-full min-w-[760px] text-[15px]">
               <thead>
-                <tr className="border-b border-zinc-100 bg-zinc-50 text-left text-[11px] uppercase tracking-[0.16em] text-zinc-500">
+                <tr className="border-b border-zinc-100 bg-zinc-50 text-left text-xs uppercase tracking-[0.16em] text-zinc-900">
                   <th className="px-5 py-3">{activeMeta.singular} Name</th>
                   <th className="px-5 py-3">{activeType === "LOCATION" ? "State / Region" : "Stored Value"}</th>
                   <th className="px-5 py-3">{activeType === "LOCATION" ? "Country" : "Order"}</th>
@@ -357,12 +357,12 @@ export function OptionsEditor({ options }: { options: ManagedOptions }) {
                               patch(row.id, { value });
                             }
                           }}
-                          className="h-10 w-full rounded-lg border border-transparent bg-transparent px-2 text-zinc-600 outline-none transition focus:border-blue-200 focus:bg-blue-50/40"
+                          className="h-10 w-full rounded-lg border border-transparent bg-transparent px-2 text-zinc-900 outline-none transition focus:border-blue-200 focus:bg-blue-50/40"
                         />
                       </td>
                       <td className="px-5 py-3">
                         {activeType === "LOCATION" ? (
-                          <span className="font-medium text-zinc-600">{location.country}</span>
+                          <span className="font-semibold text-zinc-900">{location.country}</span>
                         ) : (
                           <input
                             type="number"
@@ -371,7 +371,7 @@ export function OptionsEditor({ options }: { options: ManagedOptions }) {
                               const value = Number(event.target.value);
                               if (Number.isInteger(value) && value !== row.sortOrder) patch(row.id, { sortOrder: value });
                             }}
-                            className="h-10 w-24 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-700 outline-none transition focus:border-blue-300"
+                            className="h-10 w-24 rounded-lg border border-zinc-200 bg-white px-3 text-[15px] text-zinc-900 outline-none transition focus:border-blue-300"
                           />
                         )}
                       </td>
@@ -379,8 +379,8 @@ export function OptionsEditor({ options }: { options: ManagedOptions }) {
                         <button
                           type="button"
                           onClick={() => patch(row.id, { active: !row.active })}
-                          className={`rounded-lg px-3 py-1.5 text-xs font-bold ${
-                            row.active ? "bg-emerald-50 text-emerald-700" : "bg-zinc-100 text-zinc-500"
+                          className={`rounded-lg px-3 py-1.5 text-sm font-bold ${
+                            row.active ? "bg-emerald-50 text-emerald-800" : "bg-zinc-100 text-zinc-900"
                           }`}
                         >
                           {row.active ? "Active" : "Disabled"}
@@ -414,7 +414,7 @@ export function OptionsEditor({ options }: { options: ManagedOptions }) {
                 })}
                 {!filteredRows.length && (
                   <tr>
-                    <td colSpan={5} className="px-5 py-12 text-center text-sm font-medium text-zinc-400">
+                    <td colSpan={5} className="px-5 py-12 text-center text-[15px] font-medium text-zinc-900">
                       No values match this category and filter.
                     </td>
                   </tr>
@@ -423,11 +423,11 @@ export function OptionsEditor({ options }: { options: ManagedOptions }) {
             </table>
           </div>
 
-          <div className="flex flex-col gap-3 border-t border-zinc-100 px-5 py-4 text-sm text-zinc-500 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-3 border-t border-zinc-100 px-5 py-4 text-[15px] font-medium text-zinc-900 md:flex-row md:items-center md:justify-between">
             <span>
               Showing {filteredRows.length ? 1 : 0} to {filteredRows.length} of {allRows.length} {OPTION_TYPE_LABELS[activeType].toLowerCase()}
             </span>
-            <span className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs font-bold text-zinc-600">10 / page</span>
+            <span className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-bold text-zinc-900">10 / page</span>
           </div>
         </section>
       </div>
