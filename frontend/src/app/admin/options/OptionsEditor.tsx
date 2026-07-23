@@ -9,7 +9,6 @@ import {
   Database,
   EyeOff,
   Filter,
-  IndianRupee,
   ListChecks,
   Loader2,
   MapPin,
@@ -18,7 +17,6 @@ import {
   Search,
   Trash2,
   UserRound,
-  Wand2,
 } from "lucide-react";
 import { ManagedOption, ManagedOptions, ManagedOptionType, OPTION_TYPE_LABELS } from "@/lib/job-option-types";
 
@@ -59,24 +57,6 @@ const TYPES: OptionMeta[] = [
     valuePlaceholder: "Sales Executive",
     swatch: "bg-violet-50 text-violet-600",
     icon: UserRound,
-  },
-  {
-    type: "EXPERIENCE",
-    singular: "Experience",
-    hint: "Manage experience ranges in years.",
-    placeholder: "e.g. 1 - 3 years",
-    valuePlaceholder: "1-3",
-    swatch: "bg-cyan-50 text-cyan-600",
-    icon: Wand2,
-  },
-  {
-    type: "CTC",
-    singular: "Salary Range",
-    hint: "Manage CTC ranges in LPA.",
-    placeholder: "e.g. 3 - 6 LPA",
-    valuePlaceholder: "3-6",
-    swatch: "bg-orange-50 text-orange-500",
-    icon: IndianRupee,
   },
 ];
 
