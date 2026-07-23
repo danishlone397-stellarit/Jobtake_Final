@@ -3,6 +3,7 @@ import { useState, useRef, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, X, ArrowLeft, Eye } from "lucide-react";
 import Link from "next/link";
+import { ManagedOptions, parseRange } from "@/lib/job-option-types";
 
 type Cat = { id: string; name: string };
 
@@ -64,7 +65,7 @@ const SectionHeader = ({ num, title }: { num: number; title: string }) => (
   </div>
 );
 
-export function EditJobClient({ job, categories }: { job: JobData; categories: Cat[] }) {
+export function EditJobClient({ job, categories, options }: { job: JobData; categories: Cat[]; options: ManagedOptions }) {
   const router = useRouter();
 
   const [collarType, setCollarType]         = useState(job.collarType);
@@ -74,6 +75,7 @@ export function EditJobClient({ job, categories }: { job: JobData; categories: C
   const [seniority]                         = useState(job.seniority);
   const [experienceMin, setExperienceMin]   = useState(job.experienceMin !== null ? String(job.experienceMin) : "");
   const [experienceMax, setExperienceMax]   = useState(job.experienceMax !== null ? String(job.experienceMax) : "");
+  const [experienceBand, setExperienceBand] = useState("");
   const [workMode, setWorkMode]             = useState(job.workMode);
   const [location, setLocation]             = useState(job.location);
   const [description, setDescription]       = useState(job.description);
@@ -84,11 +86,18 @@ export function EditJobClient({ job, categories }: { job: JobData; categories: C
   const [salaryMaxDisplay, setSalaryMaxDisplay] = useState(job.salaryMax ? String(job.salaryMax / 100000) : "");
   const [salaryMin, setSalaryMin]           = useState(job.salaryMin ? String(job.salaryMin) : "");
   const [salaryMax, setSalaryMax]           = useState(job.salaryMax ? String(job.salaryMax) : "");
+  const [ctcBand, setCtcBand]               = useState("");
   const [skills, setSkills]                 = useState<string[]>(job.skills);
   const [skillInput, setSkillInput]         = useState("");
   const [loading, setLoading]               = useState(false);
   const [error, setError]                   = useState<string | null>(null);
   const skillRef = useRef<HTMLInputElement>(null);
+
+  const locationOptions = options.LOCATION;
+  const industryOptions = options.INDUSTRY;
+  const roleOptions = options.ROLE;
+  const ctcOptions = options.CTC;
+  const experienceOptions = options.EXPERIENCE;
 
   function addSkill(val: string) {
     const t = val.trim();
@@ -103,6 +112,22 @@ export function EditJobClient({ job, categories }: { job: JobData; categories: C
   function handleSalaryMin(val: string) { setSalaryMinDisplay(val); const n = parseFloat(val); setSalaryMin(isNaN(n) ? "" : String(Math.round(n * 100000))); }
   function handleSalaryMax(val: string) { setSalaryMaxDisplay(val); const n = parseFloat(val); setSalaryMax(isNaN(n) ? "" : String(Math.round(n * 100000))); }
   function formatLPA(val: string) { const n = parseFloat(val); return isNaN(n) ? val : `${n} LPA`; }
+  function applyExperienceBand(value: string) {
+    setExperienceBand(value);
+    const range = parseRange(value);
+    setExperienceMin(range.min === null ? "" : String(range.min));
+    setExperienceMax(range.max === null ? "" : String(range.max));
+  }
+  function applyCtcBand(value: string) {
+    setCtcBand(value);
+    const range = parseRange(value);
+    const min = range.min === null ? "" : String(range.min);
+    const max = range.max === null ? "" : String(range.max);
+    setSalaryMinDisplay(min);
+    setSalaryMaxDisplay(max);
+    setSalaryMin(range.min === null ? "" : String(Math.round(range.min * 100000)));
+    setSalaryMax(range.max === null ? "" : String(Math.round(range.max * 100000)));
+  }
 
   async function save() {
     setError(null);
@@ -175,12 +200,16 @@ export function EditJobClient({ job, categories }: { job: JobData; categories: C
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Job Title <span className="text-red-500">*</span></label>
-              <input value={title} onChange={e => setTitle(e.target.value)} className={inputCls} placeholder="e.g. Senior Software Engineer" />
+              <input value={title} onChange={e => setTitle(e.target.value)} className={inputCls} placeholder="e.g. Senior Software Engineer" list="edit-role-list" />
+              <datalist id="edit-role-list">{roleOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}</datalist>
             </div>
             <div>
               <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Job Category</label>
               <input value={categoryName} onChange={e => setCategoryName(e.target.value)} list="cats" className={inputCls} placeholder="e.g. Engineering, Finance" />
-              <datalist id="cats">{categories.map(c => <option key={c.id} value={c.name} />)}</datalist>
+              <datalist id="cats">
+                {categories.map(c => <option key={c.id} value={c.name} />)}
+                {industryOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}
+              </datalist>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
@@ -191,6 +220,10 @@ export function EditJobClient({ job, categories }: { job: JobData; categories: C
               </div>
               <div>
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Experience <span className="text-red-500">*</span></label>
+                <select value={experienceBand} onChange={e => applyExperienceBand(e.target.value)} className={inputCls + " mb-2"}>
+                  <option value="">Select experience band</option>
+                  {experienceOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}
+                </select>
                 <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
                   <input
                     type="number"
@@ -198,7 +231,7 @@ export function EditJobClient({ job, categories }: { job: JobData; categories: C
                     max="60"
                     step="1"
                     value={experienceMin}
-                    onChange={e => setExperienceMin(normalizeExperienceInput(e.target.value))}
+                    onChange={e => { setExperienceBand(""); setExperienceMin(normalizeExperienceInput(e.target.value)); }}
                     className={inputCls}
                     placeholder="Min"
                   />
@@ -209,7 +242,7 @@ export function EditJobClient({ job, categories }: { job: JobData; categories: C
                     max="60"
                     step="1"
                     value={experienceMax}
-                    onChange={e => setExperienceMax(normalizeExperienceInput(e.target.value))}
+                    onChange={e => { setExperienceBand(""); setExperienceMax(normalizeExperienceInput(e.target.value)); }}
                     className={inputCls}
                     placeholder="Max"
                   />
@@ -231,7 +264,8 @@ export function EditJobClient({ job, categories }: { job: JobData; categories: C
         {/* 3. Location */}
         <div className="bg-white border border-zinc-200 rounded-2xl p-6">
           <SectionHeader num={3} title="Location" />
-          <input value={location} onChange={e => setLocation(e.target.value)} className={inputCls} placeholder="e.g. Mumbai, Maharashtra" />
+          <input value={location} onChange={e => setLocation(e.target.value)} className={inputCls} placeholder="e.g. Mumbai, Maharashtra" list="edit-location-list" />
+          <datalist id="edit-location-list">{locationOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}</datalist>
         </div>
 
         {/* 4. Job Description */}
@@ -278,10 +312,14 @@ export function EditJobClient({ job, categories }: { job: JobData; categories: C
               <label className="block text-sm font-semibold text-zinc-700 mb-1.5">
                 CTC Range <span className="text-xs font-normal text-zinc-400 ml-2">Enter in LPA (e.g. 5.5 = 5.5 LPA)</span>
               </label>
+              <select value={ctcBand} onChange={e => applyCtcBand(e.target.value)} className={inputCls + " mb-3"}>
+                <option value="">Select CTC band</option>
+                {ctcOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}
+              </select>
               <div className="flex items-center gap-3">
                 <div className="relative flex-1">
                   <input type="number" step="0.1" min="0" value={salaryMinDisplay}
-                    onChange={e => handleSalaryMin(e.target.value)}
+                    onChange={e => { setCtcBand(""); handleSalaryMin(e.target.value); }}
                     onBlur={e => { if (e.target.value) setSalaryMinDisplay(formatLPA(e.target.value)); }}
                     onFocus={e => { const raw = parseFloat(salaryMin) / 100000; setSalaryMinDisplay(isNaN(raw) ? "" : String(raw)); }}
                     className={inputCls + " pr-14"} placeholder="Min CTC" />
@@ -290,7 +328,7 @@ export function EditJobClient({ job, categories }: { job: JobData; categories: C
                 <span className="text-zinc-400 text-sm font-medium shrink-0">to</span>
                 <div className="relative flex-1">
                   <input type="number" step="0.1" min="0" value={salaryMaxDisplay}
-                    onChange={e => handleSalaryMax(e.target.value)}
+                    onChange={e => { setCtcBand(""); handleSalaryMax(e.target.value); }}
                     onBlur={e => { if (e.target.value) setSalaryMaxDisplay(formatLPA(e.target.value)); }}
                     onFocus={e => { const raw = parseFloat(salaryMax) / 100000; setSalaryMaxDisplay(isNaN(raw) ? "" : String(raw)); }}
                     className={inputCls + " pr-14"} placeholder="Max CTC" />

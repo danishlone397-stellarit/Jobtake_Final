@@ -1,6 +1,7 @@
 import { DashboardShell } from "@/components/DashboardShell";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getManagedOptions } from "@/lib/job-options";
 import { redirect, notFound } from "next/navigation";
 import { EditJobClient } from "./EditJobClient";
 
@@ -18,7 +19,10 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
   if (me.role !== "ADMIN" && job.postedById !== me.id) redirect("/employer/jobs");
 
 
-  const categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
+  const [categories, options] = await Promise.all([
+    prisma.category.findMany({ orderBy: { name: "asc" } }),
+    getManagedOptions(true, true),
+  ]);
 
   return (
     <DashboardShell role={me.role} current="/employer/jobs">
@@ -43,6 +47,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
           categoryName: job.category?.name ?? "",
         }}
         categories={categories.map(c => ({ id: c.id, name: c.name }))}
+        options={options}
       />
     </DashboardShell>
   );

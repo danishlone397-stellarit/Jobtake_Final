@@ -2,6 +2,7 @@
 import { useState, useRef, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, MapPin, X, Check, Eye } from "lucide-react";
+import { ManagedOptions, parseRange } from "@/lib/job-option-types";
 
 type Cat = { id: string; name: string };
 
@@ -60,7 +61,7 @@ function normalizeExperienceInput(value: string) {
   return String(Math.min(n, 60));
 }
 
-export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmin: boolean }) {
+export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[]; options: ManagedOptions; isAdmin: boolean }) {
   const router = useRouter();
 
   const [collarTypes, setCollarTypes]     = useState<string[]>(["WHITE"]);
@@ -70,6 +71,7 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
   const [employmentType, setEmploymentType] = useState("");
   const [experienceMin, setExperienceMin] = useState("");
   const [experienceMax, setExperienceMax] = useState("");
+  const [experienceBand, setExperienceBand] = useState("");
   const [workMode, setWorkMode]           = useState("ONSITE");
   const [location, setLocation]           = useState("");
   const [remoteJob, setRemoteJob]         = useState(false);
@@ -84,6 +86,13 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
   const [salaryMax, setSalaryMax]         = useState("");
   const [salaryMinDisplay, setSalaryMinDisplay] = useState("");
   const [salaryMaxDisplay, setSalaryMaxDisplay] = useState("");
+  const [ctcBand, setCtcBand] = useState("");
+
+  const locationOptions = options.LOCATION;
+  const industryOptions = options.INDUSTRY;
+  const roleOptions = options.ROLE;
+  const ctcOptions = options.CTC;
+  const experienceOptions = options.EXPERIENCE;
 
   function formatLPA(val: string): string {
     const n = parseFloat(val);
@@ -99,6 +108,22 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
     setSalaryMaxDisplay(val);
     const n = parseFloat(val);
     setSalaryMax(isNaN(n) ? "" : String(Math.round(n * 100000)));
+  }
+  function applyExperienceBand(value: string) {
+    setExperienceBand(value);
+    const range = parseRange(value);
+    setExperienceMin(range.min === null ? "" : String(range.min));
+    setExperienceMax(range.max === null ? "" : String(range.max));
+  }
+  function applyCtcBand(value: string) {
+    setCtcBand(value);
+    const range = parseRange(value);
+    const min = range.min === null ? "" : String(range.min);
+    const max = range.max === null ? "" : String(range.max);
+    setSalaryMinDisplay(min);
+    setSalaryMaxDisplay(max);
+    setSalaryMin(range.min === null ? "" : String(Math.round(range.min * 100000)));
+    setSalaryMax(range.max === null ? "" : String(Math.round(range.max * 100000)));
   }
   const [benefits, setBenefits]           = useState("");
   const [skills, setSkills]               = useState<string[]>([]);
@@ -216,13 +241,17 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Job Title <span className="text-red-500">*</span></label>
-              <input className={inputCls} value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Senior Software Engineer" data-testid="job-title" />
+              <input className={inputCls} value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Senior Software Engineer" data-testid="job-title" list="role-list" />
+              <datalist id="role-list">
+                {roleOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}
+              </datalist>
             </div>
             <div>
               <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Job Category <span className="text-red-500">*</span></label>
               <input className={inputCls} value={categoryName} onChange={e => setCategoryName(e.target.value)} placeholder="e.g. Engineering, Finance, Marketing" list="cat-list" />
               <datalist id="cat-list">
                 {categories.map(c => <option key={c.id} value={c.name} />)}
+                {industryOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}
               </datalist>
             </div>
             <div className="grid md:grid-cols-3 gap-4">
@@ -235,6 +264,10 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
               </div>
               <div>
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Experience <span className="text-red-500">*</span></label>
+                <select className={selectCls + " mb-2"} value={experienceBand} onChange={e => applyExperienceBand(e.target.value)}>
+                  <option value="">Select experience band</option>
+                  {experienceOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}
+                </select>
                 <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
                   <input
                     type="number"
@@ -243,7 +276,7 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
                     step="1"
                     className={inputCls}
                     value={experienceMin}
-                    onChange={e => setExperienceMin(normalizeExperienceInput(e.target.value))}
+                    onChange={e => { setExperienceBand(""); setExperienceMin(normalizeExperienceInput(e.target.value)); }}
                     placeholder="Min"
                   />
                   <span className="text-xs font-semibold text-zinc-400">to</span>
@@ -254,7 +287,7 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
                     step="1"
                     className={inputCls}
                     value={experienceMax}
-                    onChange={e => setExperienceMax(normalizeExperienceInput(e.target.value))}
+                    onChange={e => { setExperienceBand(""); setExperienceMax(normalizeExperienceInput(e.target.value)); }}
                     placeholder="Max"
                   />
                 </div>
@@ -282,7 +315,10 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
               <div className="flex items-center gap-3">
                 <div className="relative flex-1">
                   <input className={inputCls} value={location} onChange={e => setLocation(e.target.value)}
-                    placeholder="e.g. Mumbai, India" disabled={remoteJob} />
+                    placeholder="e.g. Mumbai, India" disabled={remoteJob} list="location-list" />
+                  <datalist id="location-list">
+                    {locationOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}
+                  </datalist>
                   <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 pointer-events-none" />
                 </div>
                 <label className="flex items-center gap-2 text-sm font-medium text-zinc-700 whitespace-nowrap cursor-pointer">
@@ -402,13 +438,17 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
                 CTC Range <span className="text-red-500">*</span>
                 <span className="ml-2 text-xs font-normal text-zinc-400">Enter in LPA (e.g. 5.5 = 5.5 LPA)</span>
               </label>
+              <select className={selectCls + " mb-3"} value={ctcBand} onChange={e => applyCtcBand(e.target.value)}>
+                <option value="">Select CTC band</option>
+                {ctcOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}
+              </select>
               <div className="flex items-center gap-3">
                 <div className="relative flex-1">
                   <input
                     type="number" step="0.1" min="0"
                     className={inputCls + " pr-14"}
                     value={salaryMinDisplay}
-                    onChange={e => handleSalaryMin(e.target.value)}
+                    onChange={e => { setCtcBand(""); handleSalaryMin(e.target.value); }}
                     onBlur={e => { if (e.target.value) setSalaryMinDisplay(formatLPA(e.target.value)); }}
                     onFocus={e => { const raw = parseFloat(salaryMin) / 100000; setSalaryMinDisplay(isNaN(raw) ? "" : String(raw)); }}
                     placeholder="Min CTC"
@@ -421,7 +461,7 @@ export function PostJobForm({ categories, isAdmin }: { categories: Cat[]; isAdmi
                     type="number" step="0.1" min="0"
                     className={inputCls + " pr-14"}
                     value={salaryMaxDisplay}
-                    onChange={e => handleSalaryMax(e.target.value)}
+                    onChange={e => { setCtcBand(""); handleSalaryMax(e.target.value); }}
                     onBlur={e => { if (e.target.value) setSalaryMaxDisplay(formatLPA(e.target.value)); }}
                     onFocus={e => { const raw = parseFloat(salaryMax) / 100000; setSalaryMaxDisplay(isNaN(raw) ? "" : String(raw)); }}
                     placeholder="Max CTC"

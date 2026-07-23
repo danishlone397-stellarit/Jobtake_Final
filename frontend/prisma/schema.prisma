@@ -363,6 +363,21 @@ model HomepageStat {
   active    Boolean @default(true)
 }
 
+model JobOption {
+  id          String        @id @default(cuid())
+  type        JobOptionType
+  label       String
+  value       String
+  description String?
+  sortOrder   Int           @default(0)
+  active      Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([type, value])
+  @@index([type, active, sortOrder])
+}
+
 model Testimonial {
   id        String   @id @default(cuid())
   name      String
@@ -473,4 +488,12 @@ enum NotificationKind {
   COMPANY_APPROVED
   NEW_MATCH
   SYSTEM
+}
+
+enum JobOptionType {
+  LOCATION
+  INDUSTRY
+  ROLE
+  CTC
+  EXPERIENCE
 }
