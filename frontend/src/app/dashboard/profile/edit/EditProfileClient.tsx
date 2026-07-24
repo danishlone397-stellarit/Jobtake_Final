@@ -89,8 +89,7 @@ export function EditProfileClient({ initialName, initialHeadline, initialBio, in
             <div>
               <label className="block text-xs font-semibold text-zinc-500 mb-1.5 uppercase tracking-wide">About Me</label>
               <textarea value={bio} onChange={e => setBio(e.target.value)} rows={4}
-                className={inputCls + " resize-none"} placeholder="Write a short bio about yourself..." maxLength={500} />
-              <div className="text-right text-xs text-zinc-400 mt-1">{bio.length} / 500</div>
+                className={inputCls + " resize-none"} placeholder="Write a short bio about yourself..." />
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, X, ArrowLeft, Eye } from "lucide-react";
 import Link from "next/link";
 import { ManagedOptions } from "@/lib/job-option-types";
+import { JobDescriptionEditor } from "@/components/JobDescriptionEditor";
 
 type Cat = { id: string; name: string };
 
@@ -285,18 +286,45 @@ export function EditJobClient({ job, categories, options }: { job: JobData; cate
         {/* 4. Job Description */}
         <div className="bg-white border border-zinc-200 rounded-2xl p-6">
           <SectionHeader num={4} title="Job Description" />
-          <div className="space-y-4">
+          <p className="mb-8 text-sm font-medium text-zinc-500">
+            Provide a clear and complete job description to attract the right candidates.
+          </p>
+          <div className="space-y-5">
             {([
-              { label: "About Role", value: description, set: setDescription, placeholder: "Describe the role and what the candidate will do..." },
-              { label: "Roles & Responsibilities", value: responsibilities, set: setResponsibilities, placeholder: "List the key responsibilities..." },
-              { label: "Job Requirements", value: requirements, set: setRequirements, placeholder: "List required skills, experience, qualifications..." },
-            ] as const).map(({ label, value, set, placeholder }) => (
-              <div key={label}>
-                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{label}</label>
-                <textarea value={value} onChange={e => set(e.target.value)} rows={4} maxLength={5000}
-                  className={inputCls + " resize-none"} placeholder={placeholder} />
-                <div className="text-right text-xs text-zinc-400 mt-1">{value.length} / 5000</div>
-              </div>
+              {
+                number: 1,
+                label: "About the Role",
+                helper: "Share an overview of the role, key responsibilities and expectations.",
+                value: description,
+                set: setDescription,
+                placeholder: "Write a complete description about the role, responsibilities and expectations...",
+              },
+              {
+                number: 2,
+                label: "Roles & Responsibilities",
+                helper: "Provide a detailed explanation of the key tasks and responsibilities for this position.",
+                value: responsibilities,
+                set: setResponsibilities,
+                placeholder: "Describe the key tasks, daily activities, responsibilities and deliverables...",
+              },
+              {
+                number: 3,
+                label: "Job Requirements",
+                helper: "Describe the skills, experience, knowledge and other requirements for candidates.",
+                value: requirements,
+                set: setRequirements,
+                placeholder: "Mention the required skills, experience, knowledge, qualifications and any other criteria...",
+              },
+            ] as const).map(({ number, label, helper, value, set, placeholder }) => (
+              <JobDescriptionEditor
+                key={label}
+                number={number}
+                title={label}
+                helper={helper}
+                value={value}
+                onChange={set}
+                placeholder={placeholder}
+              />
             ))}
           </div>
         </div>
@@ -346,9 +374,9 @@ export function EditJobClient({ job, categories, options }: { job: JobData; cate
             </div>
             <div>
               <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Additional Benefits</label>
-              <textarea value={benefits} onChange={e => setBenefits(e.target.value)} rows={2} maxLength={200}
+              <textarea value={benefits} onChange={e => setBenefits(e.target.value)} rows={2}
                 className={inputCls + " resize-none"} placeholder="e.g. Health Insurance, Flexible Hours, Bonus, etc." />
-              <div className="text-right text-xs text-zinc-400 mt-1">{benefits.length} / 200</div>
+              <p className="mt-1 text-xs text-zinc-400">Separate benefits with commas.</p>
             </div>
           </div>
         </div>

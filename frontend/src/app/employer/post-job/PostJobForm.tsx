@@ -1,8 +1,9 @@
 "use client";
 import { useMemo, useState, useRef, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, MapPin, X, Check, Eye } from "lucide-react";
+import { FileText, GraduationCap, Info, Loader2, MapPin, Wrench, X, Check, Eye } from "lucide-react";
 import { ManagedOptions } from "@/lib/job-option-types";
+import { JobDescriptionEditor } from "@/components/JobDescriptionEditor";
 
 type Cat = { id: string; name: string };
 
@@ -22,8 +23,44 @@ const EMPLOYMENT_TYPES = [
   { value: "TEMPORARY", label: "Temporary" },
 ];
 
-const MIN_EDU_OPTIONS = ["Any", "10th Pass", "12th Pass", "Diploma", "Graduate", "Post Graduate", "Doctorate"];
-const DEGREE_OPTIONS  = ["Any", "B.Tech / B.E.", "B.Sc", "B.Com", "BA", "BBA / BBM", "MBA / PGDM", "M.Tech", "M.Sc", "MCA", "B.C.A", "B.Ed", "Other"];
+const EDUCATION_OPTIONS = [
+  {
+    value: "Post Graduate (PG)",
+    title: "Post Graduate (PG)",
+    desc: "e.g. M.Tech, MBA, MCA, MSc, etc.",
+    icon: GraduationCap,
+  },
+  {
+    value: "Under Graduate (UG)",
+    title: "Under Graduate (UG)",
+    desc: "e.g. B.Tech, B.Sc, B.Com, BA, etc.",
+    icon: GraduationCap,
+  },
+  {
+    value: "Diploma",
+    title: "Diploma",
+    desc: "e.g. Diploma in Mechanical, Electrical, etc.",
+    icon: FileText,
+  },
+  {
+    value: "12th Pass",
+    title: "12th Pass",
+    desc: "HSC / Intermediate / 12th Pass",
+    badge: "12",
+  },
+  {
+    value: "10th Pass",
+    title: "10th Pass",
+    desc: "SSC / Matriculation / 10th Pass",
+    badge: "10",
+  },
+  {
+    value: "ITI Pass",
+    title: "ITI Pass",
+    desc: "Industrial Training Institute (ITI)",
+    icon: Wrench,
+  },
+] as const;
 
 const SectionHeader = ({ num, title }: { num: number; title: string }) => (
   <div className="flex items-center gap-3 mb-5">
@@ -77,8 +114,6 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
   const [remoteJob, setRemoteJob]         = useState(false);
   const [jobType, setJobType]             = useState("FULL_TIME");
   const [minEdu, setMinEdu]               = useState("");
-  const [degree, setDegree]               = useState("");
-  const [passingYear, setPassingYear]     = useState("");
   const [description, setDescription]     = useState("");
   const [responsibilities, setResponsibilities] = useState("");
   const [requirements, setRequirements]   = useState("");
@@ -369,25 +404,54 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
 
         {/* 4. Education Details */}
         <div className="bg-white border border-zinc-200 rounded-2xl p-6">
-          <SectionHeader num={4} title="Education Details" />
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Minimum Education <span className="text-red-500">*</span></label>
-              <select className={selectCls} value={minEdu} onChange={e => setMinEdu(e.target.value)}>
-                <option value="">Select minimum education</option>
-                {MIN_EDU_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Degree / Diploma <span className="text-red-500">*</span></label>
-              <select className={selectCls} value={degree} onChange={e => setDegree(e.target.value)}>
-                <option value="">Select degree or diploma</option>
-                {DEGREE_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
-              </select>
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Passing Year <span className="text-xs font-normal text-zinc-400">(Optional)</span></label>
-              <input className={inputCls} value={passingYear} onChange={e => setPassingYear(e.target.value)} placeholder="e.g. 2020 or Later" />
+          <h2 className="text-xl font-bold text-zinc-950">Education Details</h2>
+          <p className="mt-3 text-sm font-medium text-zinc-500">
+            Set the minimum education required for candidates.
+          </p>
+
+          <div className="mt-8 flex items-center gap-3 rounded-sm bg-blue-50 px-4 py-4 text-sm font-medium text-blue-700">
+            <Info className="h-5 w-5 shrink-0" />
+            <p>You can select academic qualifications such as 10th, 12th, ITI, Diploma, UG &amp; PG as minimum requirements.</p>
+          </div>
+
+          <div className="mt-8">
+            <p className="text-base font-bold text-zinc-950">
+              Minimum Education <span className="font-medium text-zinc-900">(Select any one level)</span>
+            </p>
+
+            <div className="mt-5 grid gap-5 md:grid-cols-2">
+              {EDUCATION_OPTIONS.map((option) => {
+                const Icon = "icon" in option ? option.icon : null;
+                const badge = "badge" in option ? option.badge : null;
+                const selected = minEdu === option.value;
+
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => setMinEdu(option.value)}
+                    className={`flex min-h-[88px] w-full items-center gap-5 rounded-xl border bg-white px-5 py-4 text-left transition hover:border-blue-200 hover:bg-blue-50/30 focus:outline-none focus:ring-2 focus:ring-blue-100 ${
+                      selected ? "border-blue-400 ring-2 ring-blue-100" : "border-zinc-200"
+                    }`}
+                  >
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+                      {Icon ? <Icon className="h-6 w-6" /> : <span className="text-lg font-bold leading-none">{badge}</span>}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-base font-bold text-zinc-950">{option.title}</span>
+                      <span className="mt-1 block text-sm font-medium leading-5 text-zinc-500">{option.desc}</span>
+                    </span>
+                    <span
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
+                        selected ? "border-blue-600" : "border-zinc-400"
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {selected && <span className="h-2.5 w-2.5 rounded-full bg-blue-600" />}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -395,19 +459,45 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
         {/* 5. Job Description */}
         <div className="bg-white border border-zinc-200 rounded-2xl p-6">
           <SectionHeader num={5} title="Job Description" />
+          <p className="mb-8 text-sm font-medium text-zinc-500">
+            Provide a clear and complete job description to attract the right candidates.
+          </p>
           <div className="space-y-5">
             {[
-              { label: "About the Role", value: description, set: setDescription, placeholder: "Describe the role, key responsibilities and expectations..." },
-              { label: "Roles & Responsibilities", value: responsibilities, set: setResponsibilities, placeholder: "Add key tasks and responsibilities..." },
-              { label: "Job Requirements", value: requirements, set: setRequirements, placeholder: "Skills, experience and qualifications required..." },
-            ].map(({ label, value, set, placeholder }) => (
-              <div key={label}>
-                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{label} <span className="text-red-500">*</span></label>
-                <textarea
-                  className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition min-h-[120px] resize-none"
-                  value={value} onChange={e => set(e.target.value)} placeholder={placeholder} maxLength={5000} />
-                <div className="text-xs text-right text-zinc-400 mt-1">{value.length} / 5000</div>
-              </div>
+              {
+                number: 1,
+                label: "About the Role",
+                helper: "Share an overview of the role, key responsibilities and expectations.",
+                value: description,
+                set: setDescription,
+                placeholder: "Write a complete description about the role, responsibilities and expectations...",
+              },
+              {
+                number: 2,
+                label: "Roles & Responsibilities",
+                helper: "Provide a detailed explanation of the key tasks and responsibilities for this position.",
+                value: responsibilities,
+                set: setResponsibilities,
+                placeholder: "Describe the key tasks, daily activities, responsibilities and deliverables...",
+              },
+              {
+                number: 3,
+                label: "Job Requirements",
+                helper: "Describe the skills, experience, knowledge and other requirements for candidates.",
+                value: requirements,
+                set: setRequirements,
+                placeholder: "Mention the required skills, experience, knowledge, qualifications and any other criteria...",
+              },
+            ].map(({ number, label, helper, value, set, placeholder }) => (
+              <JobDescriptionEditor
+                key={label}
+                number={number}
+                title={label}
+                helper={helper}
+                value={value}
+                onChange={set}
+                placeholder={placeholder}
+              />
             ))}
 
             {/* Skills */}
@@ -487,11 +577,8 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
                 className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition resize-none"
                 value={benefits} onChange={e => setBenefits(e.target.value)}
                 placeholder="e.g. Health Insurance, Flexible Hours, Bonus, etc."
-                maxLength={200} rows={2} />
-              <div className="flex items-center justify-between mt-1">
-                <p className="text-xs text-zinc-400">Enter up to 5 benefits (comma separated)</p>
-                <p className="text-xs text-zinc-400">{benefits.length} / 200</p>
-              </div>
+                rows={2} />
+              <p className="mt-1 text-xs text-zinc-400">Separate benefits with commas.</p>
             </div>
           </div>
         </div>
