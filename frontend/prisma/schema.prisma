@@ -166,9 +166,19 @@ model Company {
   size         String?
   founded      Int?
   headquarters       String?
+  branchOffices      String[]         @default([])
   gstNumber          String?
   registrationAs     String?
   contactDesignation String?
+  missionVision      String?
+  whyJoinUs          String?
+  workCulture        String?
+  teamSize           String?
+  galleryUrls        String[]         @default([])
+  linkedinUrl        String?
+  facebookUrl        String?
+  instagramUrl       String?
+  twitterUrl         String?
   status             CompanyStatus    @default(PENDING)
   verified     Boolean          @default(false)
   featured     Boolean          @default(false)

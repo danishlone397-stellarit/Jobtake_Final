@@ -22,12 +22,12 @@ export default async function CompanyProfilePage() {
   const checks = {
     "Company Information": !!(company?.name && company?.industry && company?.size && company?.founded && company?.website),
     "Branding":            !!(company?.logoUrl || company?.bannerUrl),
-    "About Company":       !!(company?.description),
+    "About Company":       !!(company?.description && company?.missionVision && company?.whyJoinUs && company?.workCulture),
     "Locations":           !!(company?.headquarters),
     "Benefits & Perks":    !!(company?.benefits?.length),
-    "Team & Culture":      false,
-    "Gallery":             false,
-    "Social Presence":     false,
+    "Team & Culture":      !!(company?.teamSize && company?.workCulture),
+    "Gallery":             !!(company?.galleryUrls?.length),
+    "Social Presence":     !!(company?.linkedinUrl || company?.facebookUrl || company?.instagramUrl || company?.twitterUrl),
   };
 
   const completedCount = Object.values(checks).filter(Boolean).length;
@@ -87,7 +87,7 @@ export default async function CompanyProfilePage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/employer/company/edit" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
+              <Link href="/employer/company/edit#info" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
                 Edit Details <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
@@ -130,7 +130,7 @@ export default async function CompanyProfilePage() {
                   </div>
                 </div>
               </div>
-              <Link href="/employer/company/edit" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
+              <Link href="/employer/company/edit#branding" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
                 Edit Branding <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
@@ -152,14 +152,19 @@ export default async function CompanyProfilePage() {
                 </span>
               </div>
               <ul className="space-y-1.5 text-sm mb-4">
-                {["Company Overview", "Mission & Vision", "Why Join Us", "Work Culture"].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-zinc-600">
-                    <Circle className="h-3.5 w-3.5 shrink-0 text-zinc-300" />
+                {[
+                  ["Company Overview", !!company?.description],
+                  ["Mission & Vision", !!company?.missionVision],
+                  ["Why Join Us", !!company?.whyJoinUs],
+                  ["Work Culture", !!company?.workCulture],
+                ].map(([item, done]) => (
+                  <li key={item as string} className="flex items-center gap-2 text-zinc-600">
+                    {done ? <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> : <Circle className="h-3.5 w-3.5 shrink-0 text-zinc-300" />}
                     {item}
                   </li>
                 ))}
               </ul>
-              <Link href="/employer/company/edit" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
+              <Link href="/employer/company/edit#about" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
                 Add Details <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
@@ -181,14 +186,17 @@ export default async function CompanyProfilePage() {
                 </span>
               </div>
               <ul className="space-y-1.5 text-sm mb-4">
-                {["Head Office", "Branch Offices", "Work Locations", "Remote / Hybrid"].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-zinc-600">
-                    <CheckCircle2 className={`h-3.5 w-3.5 shrink-0 ${checks["Locations"] ? "text-emerald-500" : "text-zinc-300"}`} />
+                {[
+                  ["Head Office", !!company?.headquarters],
+                  ["Branch Offices", !!company?.branchOffices?.length],
+                ].map(([item, done]) => (
+                  <li key={item as string} className="flex items-center gap-2 text-zinc-600">
+                    {done ? <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> : <Circle className="h-3.5 w-3.5 shrink-0 text-zinc-300" />}
                     {item}
                   </li>
                 ))}
               </ul>
-              <Link href="/employer/company/edit" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
+              <Link href="/employer/company/edit#locations" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
                 Manage Locations <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
@@ -205,18 +213,18 @@ export default async function CompanyProfilePage() {
                     <div className="text-xs text-zinc-400">Highlight what makes you great</div>
                   </div>
                 </div>
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${checks["Benefits & Perks"] ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"}`}>
-                  {checks["Benefits & Perks"] ? "Completed" : "60% Completed"}
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${checks["Benefits & Perks"] ? "bg-emerald-50 text-emerald-600" : "bg-zinc-100 text-zinc-400"}`}>
+                  {checks["Benefits & Perks"] ? "Completed" : "Incomplete"}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-1.5 mb-4">
-                {(company?.benefits?.length ? company.benefits.slice(0, 4).map(b => b.label) : ["Health Insurance", "PF / ESIC", "Flexible Hours", "Bonus", "Paid Leaves"]).map(b => (
-                  <div key={b} className="flex items-center gap-1.5 text-xs text-zinc-600">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> {b}
+                {company?.benefits?.length ? company.benefits.slice(0, 4).map(b => (
+                  <div key={b.id} className="flex items-center gap-1.5 text-xs text-zinc-600">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> {b.label}
                   </div>
-                ))}
+                )) : <div className="text-xs text-zinc-400">No benefits added yet.</div>}
               </div>
-              <Link href="/employer/company/edit" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
+              <Link href="/employer/company/edit#benefits" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
                 Manage Benefits <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
@@ -233,17 +241,23 @@ export default async function CompanyProfilePage() {
                     <div className="text-xs text-zinc-400">Showcase your amazing team</div>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-400">Incomplete</span>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${checks["Team & Culture"] ? "bg-emerald-50 text-emerald-600" : "bg-zinc-100 text-zinc-400"}`}>
+                  {checks["Team & Culture"] ? "Completed" : "Incomplete"}
+                </span>
               </div>
               <ul className="space-y-1.5 text-sm mb-4">
-                {["Team Size", "Culture", "Office Photos", "Team Photos"].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-zinc-600">
-                    <Circle className="h-3.5 w-3.5 shrink-0 text-zinc-300" />
+                {[
+                  ["Team Size", !!company?.teamSize],
+                  ["Culture", !!company?.workCulture],
+                  ["Office / Team Photos", !!company?.galleryUrls?.length],
+                ].map(([item, done]) => (
+                  <li key={item as string} className="flex items-center gap-2 text-zinc-600">
+                    {done ? <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> : <Circle className="h-3.5 w-3.5 shrink-0 text-zinc-300" />}
                     {item}
                   </li>
                 ))}
               </ul>
-              <Link href="/employer/company/edit" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
+              <Link href="/employer/company/edit#team" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
                 Add Photos <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
@@ -264,15 +278,15 @@ export default async function CompanyProfilePage() {
               </div>
               <ul className="space-y-2 text-sm mb-4">
                 {[
-                  { icon: Linkedin, label: "LinkedIn" },
-                  { icon: Facebook, label: "Facebook" },
-                  { icon: Instagram, label: "Instagram" },
-                  { icon: Twitter, label: "Twitter / X" },
-                  { icon: Globe, label: "Website" },
-                ].map(({ icon: Icon, label }) => (
+                  { icon: Linkedin, label: "LinkedIn", value: company?.linkedinUrl },
+                  { icon: Facebook, label: "Facebook", value: company?.facebookUrl },
+                  { icon: Instagram, label: "Instagram", value: company?.instagramUrl },
+                  { icon: Twitter, label: "Twitter / X", value: company?.twitterUrl },
+                  { icon: Globe, label: "Website", value: company?.website },
+                ].map(({ icon: Icon, label, value }) => (
                   <li key={label} className="flex items-center justify-between">
                     <span className="flex items-center gap-2 text-zinc-600"><Icon className="h-3.5 w-3.5 text-zinc-400" /> {label}</span>
-                    <Link href="/employer/company/edit" className="text-xs font-semibold text-blue-600 hover:underline">Add link</Link>
+                    <Link href="/employer/company/edit#social" className="text-xs font-semibold text-blue-600 hover:underline">{value ? "Edit link" : "Add link"}</Link>
                   </li>
                 ))}
               </ul>
@@ -292,13 +306,16 @@ export default async function CompanyProfilePage() {
                 </div>
               </div>
               <div className="grid grid-cols-4 gap-2 mb-3">
-                {[1, 2, 3, 4].map(n => (
-                  <div key={n} className="aspect-square rounded-xl bg-zinc-100 flex items-center justify-center">
-                    <ImageIcon className="h-5 w-5 text-zinc-300" />
-                  </div>
-                ))}
+                {Array.from({ length: 4 }).map((_, i) => {
+                  const url = company?.galleryUrls?.[i];
+                  return (
+                    <div key={i} className="aspect-square rounded-xl bg-zinc-100 flex items-center justify-center overflow-hidden">
+                      {url ? <img src={url} alt="" className="h-full w-full object-cover" /> : <ImageIcon className="h-5 w-5 text-zinc-300" />}
+                    </div>
+                  );
+                })}
               </div>
-              <Link href="/employer/company/edit" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
+              <Link href="/employer/company/edit#gallery" className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1">
                 Upload More Images <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>

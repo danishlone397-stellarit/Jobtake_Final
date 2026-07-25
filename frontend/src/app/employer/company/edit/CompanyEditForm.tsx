@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Save, ArrowLeft } from "lucide-react";
+import { Loader2, Save, ArrowLeft, X, Plus } from "lucide-react";
 import Link from "next/link";
 
 type Company = {
@@ -15,10 +15,22 @@ type Company = {
   size: string | null;
   founded: number | null;
   headquarters: string | null;
+  branchOffices: string[];
   logoUrl: string | null;
   bannerUrl: string | null;
+  missionVision: string | null;
+  whyJoinUs: string | null;
+  workCulture: string | null;
+  teamSize: string | null;
+  galleryUrls: string[];
+  linkedinUrl: string | null;
+  facebookUrl: string | null;
+  instagramUrl: string | null;
+  twitterUrl: string | null;
   benefits: { id: string; label: string }[];
 } | null;
+
+const inputCls = "w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white";
 
 export function CompanyEditForm({ company }: { company: Company }) {
   const router = useRouter();
@@ -27,20 +39,53 @@ export function CompanyEditForm({ company }: { company: Company }) {
   const [error, setError] = useState<string | null>(null);
 
   const [form, setForm] = useState({
-    name:         company?.name         ?? "",
-    tagline:      company?.tagline      ?? "",
-    description:  company?.description  ?? "",
-    website:      company?.website      ?? "",
-    industry:     company?.industry     ?? "",
-    size:         company?.size         ?? "",
-    founded:      company?.founded?.toString() ?? "",
-    headquarters: company?.headquarters ?? "",
-    logoUrl:      company?.logoUrl      ?? "",
-    bannerUrl:    company?.bannerUrl    ?? "",
+    name:          company?.name          ?? "",
+    tagline:       company?.tagline       ?? "",
+    description:   company?.description   ?? "",
+    website:       company?.website       ?? "",
+    industry:      company?.industry      ?? "",
+    size:          company?.size          ?? "",
+    founded:       company?.founded?.toString() ?? "",
+    headquarters:  company?.headquarters  ?? "",
+    logoUrl:       company?.logoUrl       ?? "",
+    bannerUrl:     company?.bannerUrl     ?? "",
+    missionVision: company?.missionVision ?? "",
+    whyJoinUs:     company?.whyJoinUs     ?? "",
+    workCulture:   company?.workCulture   ?? "",
+    teamSize:      company?.teamSize      ?? "",
+    linkedinUrl:   company?.linkedinUrl   ?? "",
+    facebookUrl:   company?.facebookUrl   ?? "",
+    instagramUrl:  company?.instagramUrl  ?? "",
+    twitterUrl:    company?.twitterUrl    ?? "",
   });
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+  const [branchOffices, setBranchOffices] = useState<string[]>(company?.branchOffices ?? []);
+  const [branchInput, setBranchInput] = useState("");
+
+  const [galleryUrls, setGalleryUrls] = useState<string[]>(company?.galleryUrls ?? []);
+  const [galleryInput, setGalleryInput] = useState("");
+
+  const [benefits, setBenefits] = useState<string[]>(company?.benefits?.map(b => b.label) ?? []);
+  const [benefitInput, setBenefitInput] = useState("");
+  const benefitRef = useRef<HTMLInputElement>(null);
+
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm(f => ({ ...f, [k]: e.target.value }));
+
+  function addTo(list: string[], setList: (v: string[]) => void, value: string, clear: () => void) {
+    const v = value.trim();
+    if (v && !list.includes(v)) setList([...list, v]);
+    clear();
+  }
+
+  function onBenefitKey(e: KeyboardEvent<HTMLInputElement>) {
+    if (["Enter", ","].includes(e.key)) {
+      e.preventDefault();
+      addTo(benefits, setBenefits, benefitInput, () => setBenefitInput(""));
+    } else if (e.key === "Backspace" && !benefitInput && benefits.length) {
+      setBenefits(benefits.slice(0, -1));
+    }
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -49,7 +94,13 @@ export function CompanyEditForm({ company }: { company: Company }) {
       const res = await fetch("/api/employer/company", {
         method: company ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, founded: form.founded ? parseInt(form.founded) : null }),
+        body: JSON.stringify({
+          ...form,
+          founded: form.founded ? parseInt(form.founded) : null,
+          branchOffices,
+          galleryUrls,
+          benefits,
+        }),
       });
       if (!res.ok) { const d = await res.json(); setError(d.error ?? "Failed to save"); setLoading(false); return; }
       setSaved(true);
@@ -60,18 +111,37 @@ export function CompanyEditForm({ company }: { company: Company }) {
   const Field = ({ label, name, type = "text", placeholder = "" }: { label: string; name: keyof typeof form; type?: string; placeholder?: string }) => (
     <div>
       <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{label}</label>
-      <input
-        type={type} value={form[name]} onChange={set(name)} placeholder={placeholder}
-        className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white"
-      />
+      <input type={type} value={form[name]} onChange={set(name)} placeholder={placeholder} className={inputCls} />
     </div>
+  );
+
+  const TextArea = ({ label, name, placeholder = "", rows = 4 }: { label: string; name: keyof typeof form; placeholder?: string; rows?: number }) => (
+    <div>
+      <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{label}</label>
+      <textarea value={form[name]} onChange={set(name)} rows={rows} placeholder={placeholder} className={`${inputCls} resize-none`} />
+    </div>
+  );
+
+  const TagList = ({ items, onRemove, colorCls }: { items: string[]; onRemove: (v: string) => void; colorCls: string }) => (
+    items.length > 0 ? (
+      <div className="flex flex-wrap gap-2 mb-3">
+        {items.map(v => (
+          <span key={v} className={`inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border font-medium ${colorCls}`}>
+            {v}
+            <button type="button" onClick={() => onRemove(v)} className="hover:text-red-500 transition-colors">
+              <X className="h-3 w-3" />
+            </button>
+          </span>
+        ))}
+      </div>
+    ) : null
   );
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
 
-      {/* Basic Info */}
-      <div className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6">
+      {/* Company Information */}
+      <div id="info" className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 scroll-mt-6">
         <h2 className="font-bold text-zinc-900 mb-4">Company Information</h2>
         <div className="grid md:grid-cols-2 gap-4">
           <Field label="Company Name *" name="name" placeholder="Acme Technologies" />
@@ -79,28 +149,14 @@ export function CompanyEditForm({ company }: { company: Company }) {
           <Field label="Company Size" name="size" placeholder="201-500" />
           <Field label="Founded Year" name="founded" type="number" placeholder="2010" />
           <Field label="Website" name="website" placeholder="https://yourcompany.com" />
-          <Field label="Headquarters" name="headquarters" placeholder="Mumbai, Maharashtra, India" />
         </div>
         <div className="mt-4">
-          <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Tagline</label>
-          <input
-            type="text" value={form.tagline} onChange={set("tagline")}
-            placeholder="Where teams build the future"
-            className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white"
-          />
-        </div>
-        <div className="mt-4">
-          <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Company Description</label>
-          <textarea
-            value={form.description} onChange={set("description")} rows={4}
-            placeholder="Tell candidates about your company, culture, and mission..."
-            className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white resize-none"
-          />
+          <Field label="Tagline" name="tagline" placeholder="Where teams build the future" />
         </div>
       </div>
 
       {/* Branding */}
-      <div className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6">
+      <div id="branding" className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 scroll-mt-6">
         <h2 className="font-bold text-zinc-900 mb-4">Branding</h2>
         <div className="grid md:grid-cols-2 gap-4">
           <Field label="Logo URL" name="logoUrl" placeholder="https://..." />
@@ -124,12 +180,122 @@ export function CompanyEditForm({ company }: { company: Company }) {
         )}
       </div>
 
+      {/* About Company */}
+      <div id="about" className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 scroll-mt-6">
+        <h2 className="font-bold text-zinc-900 mb-4">About Company</h2>
+        <div className="space-y-4">
+          <TextArea label="Company Overview" name="description" placeholder="Tell candidates about your company, culture, and mission..." />
+          <TextArea label="Mission & Vision" name="missionVision" placeholder="What is your company's mission and long-term vision?" rows={3} />
+          <TextArea label="Why Join Us" name="whyJoinUs" placeholder="What makes your company a great place to work?" rows={3} />
+          <TextArea label="Work Culture" name="workCulture" placeholder="Describe your team's day-to-day work culture..." rows={3} />
+        </div>
+      </div>
+
+      {/* Locations */}
+      <div id="locations" className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 scroll-mt-6">
+        <h2 className="font-bold text-zinc-900 mb-4">Locations</h2>
+        <Field label="Head Office" name="headquarters" placeholder="Mumbai, Maharashtra, India" />
+        <div className="mt-4">
+          <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Branch Offices</label>
+          <TagList items={branchOffices} onRemove={v => setBranchOffices(branchOffices.filter(x => x !== v))} colorCls="bg-teal-50 text-teal-700 border-teal-100" />
+          <div className="flex gap-2">
+            <input
+              className={inputCls} value={branchInput} onChange={e => setBranchInput(e.target.value)}
+              onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addTo(branchOffices, setBranchOffices, branchInput, () => setBranchInput("")); } }}
+              placeholder="e.g. Bengaluru, Karnataka, India"
+            />
+            <button type="button" onClick={() => addTo(branchOffices, setBranchOffices, branchInput, () => setBranchInput(""))} className="shrink-0 h-[42px] w-[42px] rounded-xl border border-zinc-200 flex items-center justify-center hover:bg-zinc-50">
+              <Plus className="h-4 w-4 text-zinc-500" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Benefits & Perks */}
+      <div id="benefits" className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 scroll-mt-6">
+        <h2 className="font-bold text-zinc-900 mb-4">Benefits &amp; Perks</h2>
+        <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Add benefits <span className="text-xs font-normal text-zinc-400">(type &amp; press Enter or comma)</span></label>
+        <div
+          className="min-h-[48px] w-full px-3 py-2 border border-zinc-200 rounded-xl focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition flex flex-wrap gap-2 cursor-text bg-white"
+          onClick={() => benefitRef.current?.focus()}
+        >
+          {benefits.map(b => (
+            <span key={b} className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-100 font-medium">
+              {b}
+              <button type="button" onClick={() => setBenefits(benefits.filter(x => x !== b))} className="hover:text-red-500 transition-colors">
+                <X className="h-3 w-3" />
+              </button>
+            </span>
+          ))}
+          <input
+            ref={benefitRef}
+            className="flex-1 min-w-[140px] text-sm outline-none bg-transparent placeholder:text-zinc-400"
+            value={benefitInput} onChange={e => setBenefitInput(e.target.value)}
+            onKeyDown={onBenefitKey}
+            onBlur={() => benefitInput.trim() && addTo(benefits, setBenefits, benefitInput, () => setBenefitInput(""))}
+            placeholder={benefits.length === 0 ? "Health Insurance, Flexible Hours, Bonus..." : "Add more..."}
+          />
+        </div>
+      </div>
+
+      {/* Team & Culture */}
+      <div id="team" className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 scroll-mt-6">
+        <h2 className="font-bold text-zinc-900 mb-4">Team &amp; Culture</h2>
+        <div className="grid md:grid-cols-2 gap-4">
+          <Field label="Team Size" name="teamSize" placeholder="e.g. 50-100 people" />
+        </div>
+        <p className="mt-3 text-xs text-zinc-400">Culture description is shared with &quot;Work Culture&quot; in the About Company section above.</p>
+      </div>
+
+      {/* Gallery */}
+      <div id="gallery" className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 scroll-mt-6">
+        <h2 className="font-bold text-zinc-900 mb-4">Gallery</h2>
+        <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Office / Team Photo URLs</label>
+        {galleryUrls.length > 0 && (
+          <div className="grid grid-cols-4 gap-2 mb-3">
+            {galleryUrls.map(url => (
+              <div key={url} className="relative aspect-square rounded-xl overflow-hidden border border-zinc-200 bg-zinc-100 group">
+                <img src={url} alt="" className="h-full w-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => setGalleryUrls(galleryUrls.filter(u => u !== url))}
+                  className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="flex gap-2">
+          <input
+            className={inputCls} value={galleryInput} onChange={e => setGalleryInput(e.target.value)}
+            onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addTo(galleryUrls, setGalleryUrls, galleryInput, () => setGalleryInput("")); } }}
+            placeholder="https://... image URL"
+          />
+          <button type="button" onClick={() => addTo(galleryUrls, setGalleryUrls, galleryInput, () => setGalleryInput(""))} className="shrink-0 h-[42px] w-[42px] rounded-xl border border-zinc-200 flex items-center justify-center hover:bg-zinc-50">
+            <Plus className="h-4 w-4 text-zinc-500" />
+          </button>
+        </div>
+      </div>
+
+      {/* Social Presence */}
+      <div id="social" className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 scroll-mt-6">
+        <h2 className="font-bold text-zinc-900 mb-4">Social Presence</h2>
+        <div className="grid md:grid-cols-2 gap-4">
+          <Field label="LinkedIn" name="linkedinUrl" placeholder="https://linkedin.com/company/..." />
+          <Field label="Facebook" name="facebookUrl" placeholder="https://facebook.com/..." />
+          <Field label="Instagram" name="instagramUrl" placeholder="https://instagram.com/..." />
+          <Field label="Twitter / X" name="twitterUrl" placeholder="https://x.com/..." />
+        </div>
+      </div>
+
       {/* Error / Success */}
       {error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">{error}</div>}
       {saved && <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3">✓ Saved! Redirecting...</div>}
 
       {/* Actions */}
-      <div className="flex items-center gap-3">
+      <div className="sticky bottom-0 flex items-center gap-3 bg-gradient-to-t from-zinc-50 via-zinc-50 to-transparent pt-4 pb-2">
         <button
           type="submit" disabled={loading}
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-6 py-2.5 rounded-xl transition-colors disabled:opacity-60"
