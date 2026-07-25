@@ -32,6 +32,40 @@ type Company = {
 
 const inputCls = "w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white";
 
+function Field({ label, value, onChange, type = "text", placeholder = "" }: { label: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; type?: string; placeholder?: string }) {
+  return (
+    <div>
+      <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{label}</label>
+      <input type={type} value={value} onChange={onChange} placeholder={placeholder} className={inputCls} />
+    </div>
+  );
+}
+
+function TextArea({ label, value, onChange, placeholder = "", rows = 4 }: { label: string; value: string; onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void; placeholder?: string; rows?: number }) {
+  return (
+    <div>
+      <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{label}</label>
+      <textarea value={value} onChange={onChange} rows={rows} placeholder={placeholder} className={`${inputCls} resize-none`} />
+    </div>
+  );
+}
+
+function TagList({ items, onRemove, colorCls }: { items: string[]; onRemove: (v: string) => void; colorCls: string }) {
+  if (items.length === 0) return null;
+  return (
+    <div className="flex flex-wrap gap-2 mb-3">
+      {items.map(v => (
+        <span key={v} className={`inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border font-medium ${colorCls}`}>
+          {v}
+          <button type="button" onClick={() => onRemove(v)} className="hover:text-red-500 transition-colors">
+            <X className="h-3 w-3" />
+          </button>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export function CompanyEditForm({ company }: { company: Company }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -108,35 +142,6 @@ export function CompanyEditForm({ company }: { company: Company }) {
     } catch { setError("Network error"); setLoading(false); }
   }
 
-  const Field = ({ label, name, type = "text", placeholder = "" }: { label: string; name: keyof typeof form; type?: string; placeholder?: string }) => (
-    <div>
-      <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{label}</label>
-      <input type={type} value={form[name]} onChange={set(name)} placeholder={placeholder} className={inputCls} />
-    </div>
-  );
-
-  const TextArea = ({ label, name, placeholder = "", rows = 4 }: { label: string; name: keyof typeof form; placeholder?: string; rows?: number }) => (
-    <div>
-      <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{label}</label>
-      <textarea value={form[name]} onChange={set(name)} rows={rows} placeholder={placeholder} className={`${inputCls} resize-none`} />
-    </div>
-  );
-
-  const TagList = ({ items, onRemove, colorCls }: { items: string[]; onRemove: (v: string) => void; colorCls: string }) => (
-    items.length > 0 ? (
-      <div className="flex flex-wrap gap-2 mb-3">
-        {items.map(v => (
-          <span key={v} className={`inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border font-medium ${colorCls}`}>
-            {v}
-            <button type="button" onClick={() => onRemove(v)} className="hover:text-red-500 transition-colors">
-              <X className="h-3 w-3" />
-            </button>
-          </span>
-        ))}
-      </div>
-    ) : null
-  );
-
   return (
     <form onSubmit={onSubmit} className="space-y-6">
 
@@ -144,14 +149,14 @@ export function CompanyEditForm({ company }: { company: Company }) {
       <div id="info" className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 scroll-mt-6">
         <h2 className="font-bold text-zinc-900 mb-4">Company Information</h2>
         <div className="grid md:grid-cols-2 gap-4">
-          <Field label="Company Name *" name="name" placeholder="Acme Technologies" />
-          <Field label="Industry" name="industry" placeholder="IT Services & Consulting" />
-          <Field label="Company Size" name="size" placeholder="201-500" />
-          <Field label="Founded Year" name="founded" type="number" placeholder="2010" />
-          <Field label="Website" name="website" placeholder="https://yourcompany.com" />
+          <Field label="Company Name *" value={form.name} onChange={set("name")} placeholder="Acme Technologies" />
+          <Field label="Industry" value={form.industry} onChange={set("industry")} placeholder="IT Services & Consulting" />
+          <Field label="Company Size" value={form.size} onChange={set("size")} placeholder="201-500" />
+          <Field label="Founded Year" value={form.founded} onChange={set("founded")} type="number" placeholder="2010" />
+          <Field label="Website" value={form.website} onChange={set("website")} placeholder="https://yourcompany.com" />
         </div>
         <div className="mt-4">
-          <Field label="Tagline" name="tagline" placeholder="Where teams build the future" />
+          <Field label="Tagline" value={form.tagline} onChange={set("tagline")} placeholder="Where teams build the future" />
         </div>
       </div>
 
@@ -159,8 +164,8 @@ export function CompanyEditForm({ company }: { company: Company }) {
       <div id="branding" className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 scroll-mt-6">
         <h2 className="font-bold text-zinc-900 mb-4">Branding</h2>
         <div className="grid md:grid-cols-2 gap-4">
-          <Field label="Logo URL" name="logoUrl" placeholder="https://..." />
-          <Field label="Banner URL" name="bannerUrl" placeholder="https://..." />
+          <Field label="Logo URL" value={form.logoUrl} onChange={set("logoUrl")} placeholder="https://..." />
+          <Field label="Banner URL" value={form.bannerUrl} onChange={set("bannerUrl")} placeholder="https://..." />
         </div>
         {(form.logoUrl || form.bannerUrl) && (
           <div className="mt-4 flex gap-4">
@@ -184,17 +189,17 @@ export function CompanyEditForm({ company }: { company: Company }) {
       <div id="about" className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 scroll-mt-6">
         <h2 className="font-bold text-zinc-900 mb-4">About Company</h2>
         <div className="space-y-4">
-          <TextArea label="Company Overview" name="description" placeholder="Tell candidates about your company, culture, and mission..." />
-          <TextArea label="Mission & Vision" name="missionVision" placeholder="What is your company's mission and long-term vision?" rows={3} />
-          <TextArea label="Why Join Us" name="whyJoinUs" placeholder="What makes your company a great place to work?" rows={3} />
-          <TextArea label="Work Culture" name="workCulture" placeholder="Describe your team's day-to-day work culture..." rows={3} />
+          <TextArea label="Company Overview" value={form.description} onChange={set("description")} placeholder="Tell candidates about your company, culture, and mission..." />
+          <TextArea label="Mission & Vision" value={form.missionVision} onChange={set("missionVision")} placeholder="What is your company's mission and long-term vision?" rows={3} />
+          <TextArea label="Why Join Us" value={form.whyJoinUs} onChange={set("whyJoinUs")} placeholder="What makes your company a great place to work?" rows={3} />
+          <TextArea label="Work Culture" value={form.workCulture} onChange={set("workCulture")} placeholder="Describe your team's day-to-day work culture..." rows={3} />
         </div>
       </div>
 
       {/* Locations */}
       <div id="locations" className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 scroll-mt-6">
         <h2 className="font-bold text-zinc-900 mb-4">Locations</h2>
-        <Field label="Head Office" name="headquarters" placeholder="Mumbai, Maharashtra, India" />
+        <Field label="Head Office" value={form.headquarters} onChange={set("headquarters")} placeholder="Mumbai, Maharashtra, India" />
         <div className="mt-4">
           <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Branch Offices</label>
           <TagList items={branchOffices} onRemove={v => setBranchOffices(branchOffices.filter(x => x !== v))} colorCls="bg-teal-50 text-teal-700 border-teal-100" />
@@ -242,7 +247,7 @@ export function CompanyEditForm({ company }: { company: Company }) {
       <div id="team" className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 scroll-mt-6">
         <h2 className="font-bold text-zinc-900 mb-4">Team &amp; Culture</h2>
         <div className="grid md:grid-cols-2 gap-4">
-          <Field label="Team Size" name="teamSize" placeholder="e.g. 50-100 people" />
+          <Field label="Team Size" value={form.teamSize} onChange={set("teamSize")} placeholder="e.g. 50-100 people" />
         </div>
         <p className="mt-3 text-xs text-zinc-400">Culture description is shared with &quot;Work Culture&quot; in the About Company section above.</p>
       </div>
@@ -283,10 +288,10 @@ export function CompanyEditForm({ company }: { company: Company }) {
       <div id="social" className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 scroll-mt-6">
         <h2 className="font-bold text-zinc-900 mb-4">Social Presence</h2>
         <div className="grid md:grid-cols-2 gap-4">
-          <Field label="LinkedIn" name="linkedinUrl" placeholder="https://linkedin.com/company/..." />
-          <Field label="Facebook" name="facebookUrl" placeholder="https://facebook.com/..." />
-          <Field label="Instagram" name="instagramUrl" placeholder="https://instagram.com/..." />
-          <Field label="Twitter / X" name="twitterUrl" placeholder="https://x.com/..." />
+          <Field label="LinkedIn" value={form.linkedinUrl} onChange={set("linkedinUrl")} placeholder="https://linkedin.com/company/..." />
+          <Field label="Facebook" value={form.facebookUrl} onChange={set("facebookUrl")} placeholder="https://facebook.com/..." />
+          <Field label="Instagram" value={form.instagramUrl} onChange={set("instagramUrl")} placeholder="https://instagram.com/..." />
+          <Field label="Twitter / X" value={form.twitterUrl} onChange={set("twitterUrl")} placeholder="https://x.com/..." />
         </div>
       </div>
 
