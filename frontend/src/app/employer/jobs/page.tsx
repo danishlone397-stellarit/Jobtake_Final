@@ -108,9 +108,10 @@ export default async function EmployerJobsPage() {
           </div>
         ) : (
           jobs.map((j, i) => (
-            <div
+            <Link
               key={j.id}
-              className={`px-6 py-4 grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_80px] items-center gap-4 hover:bg-zinc-50 transition-colors ${i !== 0 ? "border-t border-zinc-100" : ""}`}
+              href={`/employer/jobs/${j.id}/preview`}
+              className={`px-6 py-4 grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_80px] items-center gap-4 hover:bg-zinc-50 transition-colors cursor-pointer ${i !== 0 ? "border-t border-zinc-100" : ""}`}
             >
               {/* Title */}
               <div>
@@ -145,8 +146,10 @@ export default async function EmployerJobsPage() {
               <div className="text-sm text-zinc-400">{timeAgo(j.createdAt)}</div>
 
               {/* Actions */}
-              <JobRowActions jobId={j.id} jobTitle={j.title} />
-            </div>
+              <div onClick={(e) => e.preventDefault()}>
+                <JobRowActions jobId={j.id} jobTitle={j.title} />
+              </div>
+            </Link>
           ))
         )}
 

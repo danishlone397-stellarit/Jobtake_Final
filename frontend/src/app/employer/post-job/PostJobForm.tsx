@@ -233,7 +233,7 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
 
         {/* 1. Job Type */}
         <div className="bg-white border border-zinc-200 rounded-2xl p-6">
-          <SectionHeader num={1} title="Job Type / Category (Select One) *" />
+          <SectionHeader num={1} title="Job Type / Category (Select up to 2) *" />
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             {COLLAR_OPTIONS.map(opt => {
               const active = collarTypes.includes(opt.value);
@@ -241,7 +241,7 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
                 <button key={opt.value} type="button" onClick={() => setCollarTypes(prev =>
                   prev.includes(opt.value)
                     ? prev.length === 1 ? prev : prev.filter(v => v !== opt.value)
-                    : [...prev, opt.value]
+                    : prev.length >= 2 ? prev : [...prev, opt.value]
                 )}
                   className={`relative flex flex-col items-center gap-2 rounded-xl border-2 p-3 text-center transition-all ${active ? `${opt.activeBg} ${opt.activeBorder} shadow-sm` : "bg-zinc-50 border-zinc-200 hover:border-zinc-300"}`}>
                   {active && (
