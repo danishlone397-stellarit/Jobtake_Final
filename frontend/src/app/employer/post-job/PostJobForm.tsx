@@ -62,6 +62,61 @@ const EDUCATION_OPTIONS = [
   },
 ] as const;
 
+const UG_SPECIALIZATIONS = [
+  "Any graduate",
+  "B.Tech/B.E.",
+  "B.Com",
+  "B.Sc",
+  "Bachelors of Arts",
+  "B.C.A.",
+  "M.B.B.S.",
+  "B.B.A. / B.M.S.",
+  "Bachelors of Dental Surgary",
+  "B.Pharma",
+  "LLB - Bachelors of Laws",
+  "B.Ed",
+  "B.Arch",
+];
+
+const PG_SPECIALIZATIONS = [
+  "Any postgraduate",
+  "MBA / PGDM",
+  "M.Tech",
+  "MS / M.Sc",
+  "MCA",
+  "M.COM",
+  "M.B.B.S.",
+  "PG Diploma",
+  "M.A.",
+  "CA",
+  "CS",
+  "ICWA (CMA)",
+  "Integrated PG",
+  "LLM",
+  "M.Ed",
+  "MDS",
+  "DM (Doctor of Medicine) Fellowship",
+  "Master of Human Resource Development",
+];
+
+const ITI_SPECIALIZATIONS = [
+  "Any Specialization",
+  "Attendant Operator (Chemical Plant)",
+  "Civil and Mechanical Draughtsman",
+  "Computer Operator and Programming Assistant",
+  "Cosmetology",
+  "Electrician",
+  "Fashion Design and Technology",
+  "Fitter",
+  "Horticulture",
+  "Information Communication Technology System Maintenance",
+  "Machinist",
+  "Mechanic",
+  "Plumber",
+  "Technician",
+  "Welder",
+];
+
 const SectionHeader = ({ num, title }: { num: number; title: string }) => (
   <div className="flex items-center gap-3 mb-5">
     <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold shrink-0">{num}</div>
@@ -113,7 +168,11 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [remoteJob, setRemoteJob]         = useState(false);
   const [jobType, setJobType]             = useState("FULL_TIME");
+  const [isMsme, setIsMsme]               = useState<"YES" | "NO" | null>(null);
   const [minEdu, setMinEdu]               = useState("");
+  const [ugSpecialization, setUgSpecialization]   = useState("");
+  const [pgSpecialization, setPgSpecialization]   = useState("");
+  const [itiSpecialization, setItiSpecialization] = useState("");
   const [description, setDescription]     = useState("");
   const [responsibilities, setResponsibilities] = useState("");
   const [requirements, setRequirements]   = useState("");
@@ -175,6 +234,9 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
     if (!remoteJob && !location.trim()) {
       setError("Location is required. Or check 'Remote Job'."); return;
     }
+    if (collarType === "MSME" && isMsme === null) {
+      setError("Please confirm whether your company is registered as MSME."); return;
+    }
     if (experienceMin && experienceMax && parseInt(experienceMin, 10) > parseInt(experienceMax, 10)) {
       setError("Minimum experience cannot be greater than maximum experience."); return;
     }
@@ -233,29 +295,46 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
 
         {/* 1. Job Type */}
         <div className="bg-white border border-zinc-200 rounded-2xl p-6">
-          <SectionHeader num={1} title="Job Type / Category (Select up to 2) *" />
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+          <SectionHeader num={1} title="Job Type / Category (Select One) *" />
+          <p className="-mt-3 mb-5 text-sm text-zinc-500">Choose the type of job you are hiring for.</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {COLLAR_OPTIONS.map(opt => {
               const active = collarTypes.includes(opt.value);
               return (
-                <button key={opt.value} type="button" onClick={() => setCollarTypes(prev =>
-                  prev.includes(opt.value)
-                    ? prev.length === 1 ? prev : prev.filter(v => v !== opt.value)
-                    : prev.length >= 2 ? prev : [...prev, opt.value]
-                )}
-                  className={`relative flex flex-col items-center gap-2 rounded-xl border-2 p-3 text-center transition-all ${active ? `${opt.activeBg} ${opt.activeBorder} shadow-sm` : "bg-zinc-50 border-zinc-200 hover:border-zinc-300"}`}>
-                  {active && (
-                    <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-green-500 flex items-center justify-center">
-                      <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />
-                    </span>
-                  )}
-                  <div className={`h-10 w-10 rounded-xl ${opt.iconBg} grid place-items-center text-xl shadow`}>{opt.emoji}</div>
-                  <span className={`text-xs font-semibold leading-tight ${active ? opt.activeText : "text-zinc-700"}`}>{opt.label}</span>
-                  <span className={`text-[10px] leading-tight ${active ? opt.activeText : "text-zinc-400"}`}>{opt.desc}</span>
+                <button key={opt.value} type="button" onClick={() => setCollarTypes([opt.value])}
+                  className={`relative flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-center transition-all ${active ? `${opt.activeBg} ${opt.activeBorder} shadow-sm` : "bg-white border-zinc-200 hover:border-zinc-300"}`}>
+                  <span className={`absolute top-2 right-2 h-4 w-4 rounded-full border flex items-center justify-center ${active ? "bg-blue-600 border-blue-600" : "border-zinc-300"}`}>
+                    {active && <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />}
+                  </span>
+                  <div className={`h-11 w-11 rounded-xl ${opt.iconBg} grid place-items-center text-xl shadow`}>{opt.emoji}</div>
+                  <span className={`text-sm font-bold leading-tight ${active ? opt.activeText : "text-zinc-900"}`}>{opt.label}</span>
+                  <span className={`text-[11px] leading-tight ${active ? opt.activeText : "text-zinc-400"}`}>{opt.desc}</span>
                 </button>
               );
             })}
           </div>
+
+          {collarType === "MSME" && (
+            <div className={`mt-6 rounded-xl border p-5 ${isMsme === null ? "border-red-200 bg-red-50/40" : "border-zinc-200"}`}>
+              <p className="text-sm font-bold text-zinc-900">Is your company registered as MSME? <span className="text-red-500">*</span></p>
+              <p className="mt-1 text-xs text-zinc-500">This helps us provide better visibility and support for MSME employers.</p>
+              <div className="mt-4 flex items-center gap-8">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="isMsme" checked={isMsme === "YES"} onChange={() => setIsMsme("YES")} className="h-4 w-4 accent-blue-600" />
+                  <span className="text-sm text-zinc-700">Yes, we are an MSME</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="isMsme" checked={isMsme === "NO"} onChange={() => setIsMsme("NO")} className="h-4 w-4 accent-blue-600" />
+                  <span className="text-sm text-zinc-700">No, we are not an MSME</span>
+                </label>
+              </div>
+              {isMsme === null && (
+                <p className="mt-3 flex items-center gap-1.5 text-xs font-medium text-red-500">
+                  <Info className="h-3.5 w-3.5" /> This field is mandatory.
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* 2. Job Information */}
@@ -453,6 +532,36 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
                 );
               })}
             </div>
+
+            {minEdu === "Under Graduate (UG)" && (
+              <div className="mt-5">
+                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">UG Education</label>
+                <select className={selectCls} value={ugSpecialization} onChange={e => setUgSpecialization(e.target.value)}>
+                  <option value="">Select UG specialization</option>
+                  {UG_SPECIALIZATIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                </select>
+              </div>
+            )}
+
+            {minEdu === "Post Graduate (PG)" && (
+              <div className="mt-5">
+                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">PG Education</label>
+                <select className={selectCls} value={pgSpecialization} onChange={e => setPgSpecialization(e.target.value)}>
+                  <option value="">Select PG specialization</option>
+                  {PG_SPECIALIZATIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                </select>
+              </div>
+            )}
+
+            {minEdu === "ITI Pass" && (
+              <div className="mt-5">
+                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">ITI Education</label>
+                <select className={selectCls} value={itiSpecialization} onChange={e => setItiSpecialization(e.target.value)}>
+                  <option value="">Select ITI specialization</option>
+                  {ITI_SPECIALIZATIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                </select>
+              </div>
+            )}
           </div>
         </div>
 
