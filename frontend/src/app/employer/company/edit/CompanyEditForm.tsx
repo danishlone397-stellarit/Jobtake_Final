@@ -32,11 +32,11 @@ type Company = {
 
 const inputCls = "w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white";
 
-function Field({ label, value, onChange, type = "text", placeholder = "" }: { label: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; type?: string; placeholder?: string }) {
+function Field({ label, value, onChange, type = "text", placeholder = "", min, max }: { label: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; type?: string; placeholder?: string; min?: number; max?: number }) {
   return (
     <div>
       <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{label}</label>
-      <input type={type} value={value} onChange={onChange} placeholder={placeholder} className={inputCls} />
+      <input type={type} value={value} onChange={onChange} placeholder={placeholder} min={min} max={max} className={inputCls} />
     </div>
   );
 }
@@ -152,7 +152,7 @@ export function CompanyEditForm({ company }: { company: Company }) {
           <Field label="Company Name *" value={form.name} onChange={set("name")} placeholder="Acme Technologies" />
           <Field label="Industry" value={form.industry} onChange={set("industry")} placeholder="IT Services & Consulting" />
           <Field label="Company Size" value={form.size} onChange={set("size")} placeholder="201-500" />
-          <Field label="Founded Year" value={form.founded} onChange={set("founded")} type="number" placeholder="2010" />
+          <Field label="Founded Year" value={form.founded} onChange={set("founded")} type="number" placeholder="2010" min={1900} max={new Date().getFullYear()} />
           <Field label="Website" value={form.website} onChange={set("website")} placeholder="https://yourcompany.com" />
         </div>
         <div className="mt-4">
