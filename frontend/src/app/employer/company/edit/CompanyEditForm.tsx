@@ -32,11 +32,11 @@ type Company = {
 
 const inputCls = "w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white";
 
-function Field({ label, value, onChange, type = "text", placeholder = "", min, max }: { label: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; type?: string; placeholder?: string; min?: number; max?: number }) {
+function Field({ label, value, onChange, onBlur, type = "text", placeholder = "", min, max }: { label: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; onBlur?: () => void; type?: string; placeholder?: string; min?: number; max?: number }) {
   return (
     <div>
       <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{label}</label>
-      <input type={type} value={value} onChange={onChange} placeholder={placeholder} min={min} max={max} className={inputCls} />
+      <input type={type} value={value} onChange={onChange} onBlur={onBlur} placeholder={placeholder} min={min} max={max} className={inputCls} />
     </div>
   );
 }
@@ -46,6 +46,17 @@ function TextArea({ label, value, onChange, placeholder = "", rows = 4 }: { labe
     <div>
       <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{label}</label>
       <textarea value={value} onChange={onChange} rows={rows} placeholder={placeholder} className={`${inputCls} resize-none`} />
+    </div>
+  );
+}
+
+function Select({ label, value, onChange, children }: { label: string; value: string; onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{label}</label>
+      <select value={value} onChange={onChange} className={inputCls}>
+        {children}
+      </select>
     </div>
   );
 }
@@ -66,7 +77,7 @@ function TagList({ items, onRemove, colorCls }: { items: string[]; onRemove: (v:
   );
 }
 
-export function CompanyEditForm({ company }: { company: Company }) {
+export function CompanyEditForm({ company, industryOptions }: { company: Company; industryOptions: { id: string; label: string; value: string }[] }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -103,7 +114,7 @@ export function CompanyEditForm({ company }: { company: Company }) {
   const [benefitInput, setBenefitInput] = useState("");
   const benefitRef = useRef<HTMLInputElement>(null);
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm(f => ({ ...f, [k]: e.target.value }));
 
   function addTo(list: string[], setList: (v: string[]) => void, value: string, clear: () => void) {
@@ -150,9 +161,21 @@ export function CompanyEditForm({ company }: { company: Company }) {
         <h2 className="font-bold text-zinc-900 mb-4">Company Information</h2>
         <div className="grid md:grid-cols-2 gap-4">
           <Field label="Company Name *" value={form.name} onChange={set("name")} placeholder="Acme Technologies" />
-          <Field label="Industry" value={form.industry} onChange={set("industry")} placeholder="IT Services & Consulting" />
+          <Select label="Industry" value={form.industry} onChange={set("industry")}>
+            <option value="">Select industry</option>
+            {industryOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}
+          </Select>
           <Field label="Company Size" value={form.size} onChange={set("size")} placeholder="201-500" />
-          <Field label="Founded Year" value={form.founded} onChange={set("founded")} type="number" placeholder="2010" min={1900} max={new Date().getFullYear()} />
+          <Field
+            label="Founded Year" value={form.founded} onChange={set("founded")} type="number" placeholder="2010"
+            min={1900} max={new Date().getFullYear()}
+            onBlur={() => {
+              const n = parseInt(form.founded, 10);
+              if (!form.founded) return;
+              const clamped = Number.isNaN(n) ? "" : String(Math.min(Math.max(n, 1900), new Date().getFullYear()));
+              setForm(f => ({ ...f, founded: clamped }));
+            }}
+          />
           <Field label="Website" value={form.website} onChange={set("website")} placeholder="https://yourcompany.com" />
         </div>
         <div className="mt-4">
