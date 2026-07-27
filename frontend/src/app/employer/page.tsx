@@ -109,9 +109,10 @@ export default async function EmployerHome() {
               </div>
             ) : (
               jobs.map((j, i) => (
-                <div
+                <Link
                   key={j.id}
-                  className={`px-6 py-4 grid grid-cols-[2fr_1.5fr_80px_90px_80px] gap-4 items-center hover:bg-zinc-50 transition-colors ${i !== 0 ? "border-t border-zinc-100" : ""}`}
+                  href={`/employer/jobs/${j.id}/preview`}
+                  className={`px-6 py-4 grid grid-cols-[2fr_1.5fr_80px_90px_80px] gap-4 items-center hover:bg-zinc-50 transition-colors cursor-pointer ${i !== 0 ? "border-t border-zinc-100" : ""}`}
                 >
                   <div>
                     <div className="font-semibold text-zinc-900 text-sm">{j.title}</div>
@@ -129,8 +130,10 @@ export default async function EmployerHome() {
                       {STATUS_LABEL[j.status] ?? j.status}
                     </span>
                   </div>
-                  <JobRowActions jobId={j.id} jobTitle={j.title} compact />
-                </div>
+                  <div onClick={(e) => e.preventDefault()}>
+                    <JobRowActions jobId={j.id} jobTitle={j.title} compact />
+                  </div>
+                </Link>
               ))
             )}
 
