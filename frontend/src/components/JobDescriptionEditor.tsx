@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AlignCenter,
   AlignLeft,
@@ -12,6 +12,7 @@ import {
   ListOrdered,
   Underline,
 } from "lucide-react";
+import { sanitizeHtml } from "@/lib/sanitizeHtml";
 
 type JobDescriptionEditorProps = {
   number: number;
@@ -35,41 +36,45 @@ export function JobDescriptionEditor({
   placeholder,
   required = true,
 }: JobDescriptionEditorProps) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
+  const initialValue = useRef(value);
+  const [charCount, setCharCount] = useState(0);
+  const [empty, setEmpty] = useState(!value);
 
-  function replaceSelection(nextText: string, nextStart: number, nextEnd: number) {
-    onChange(nextText);
-    window.requestAnimationFrame(() => {
-      textareaRef.current?.focus();
-      textareaRef.current?.setSelectionRange(nextStart, nextEnd);
-    });
+  useEffect(() => {
+    const el = editorRef.current;
+    if (!el) return;
+    el.innerHTML = initialValue.current;
+    setCharCount(el.textContent?.length ?? 0);
+    setEmpty(!(el.textContent?.trim()));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function emitChange() {
+    const el = editorRef.current;
+    if (!el) return;
+    const html = sanitizeHtml(el.innerHTML);
+    setCharCount(el.textContent?.length ?? 0);
+    setEmpty(!(el.textContent?.trim()));
+    onChange(html);
   }
 
-  function wrapSelection(prefix: string, suffix = prefix, fallback = "text") {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-    const { selectionStart, selectionEnd } = textarea;
-    const selected = value.slice(selectionStart, selectionEnd) || fallback;
-    const next = `${value.slice(0, selectionStart)}${prefix}${selected}${suffix}${value.slice(selectionEnd)}`;
-    replaceSelection(next, selectionStart + prefix.length, selectionStart + prefix.length + selected.length);
-  }
-
-  function prefixLines(prefix: string) {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-    const { selectionStart, selectionEnd } = textarea;
-    const selected = value.slice(selectionStart, selectionEnd) || "List item";
-    const formatted = selected
-      .split("\n")
-      .map((line, index) => `${prefix === "1. " ? `${index + 1}. ` : prefix}${line}`)
-      .join("\n");
-    const next = `${value.slice(0, selectionStart)}${formatted}${value.slice(selectionEnd)}`;
-    replaceSelection(next, selectionStart, selectionStart + formatted.length);
+  function exec(command: string, arg?: string) {
+    editorRef.current?.focus();
+    document.execCommand(command, false, arg);
+    emitChange();
   }
 
   function applyBlockFormat(format: string) {
-    if (format === "heading") prefixLines("## ");
-    if (format === "quote") prefixLines("> ");
+    if (format === "heading") exec("formatBlock", "h2");
+    else if (format === "quote") exec("formatBlock", "blockquote");
+    else exec("formatBlock", "p");
+  }
+
+  function insertLink() {
+    const url = window.prompt("Enter URL", "https://");
+    if (!url) return;
+    exec("createLink", url);
   }
 
   return (
@@ -84,7 +89,7 @@ export function JobDescriptionEditor({
           <select
             aria-label="Text style"
             className="h-9 rounded-md border-0 bg-transparent px-2 pr-8 text-sm font-medium text-zinc-600 outline-none transition hover:bg-zinc-100 focus:ring-2 focus:ring-blue-100"
-            value="paragraph"
+            defaultValue="paragraph"
             onChange={(event) => applyBlockFormat(event.target.value)}
           >
             <option value="paragraph">Paragraph</option>
@@ -94,34 +99,34 @@ export function JobDescriptionEditor({
 
           <span className="mx-1 h-6 w-px bg-zinc-200" />
 
-          <button type="button" className={buttonClass} title="Bold" aria-label="Bold" onClick={() => wrapSelection("**")}>
+          <button type="button" className={buttonClass} title="Bold" aria-label="Bold" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("bold")}>
             <Bold className="h-4 w-4" />
           </button>
-          <button type="button" className={buttonClass} title="Italic" aria-label="Italic" onClick={() => wrapSelection("*")}>
+          <button type="button" className={buttonClass} title="Italic" aria-label="Italic" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("italic")}>
             <Italic className="h-4 w-4" />
           </button>
-          <button type="button" className={buttonClass} title="Underline" aria-label="Underline" onClick={() => wrapSelection("__")}>
+          <button type="button" className={buttonClass} title="Underline" aria-label="Underline" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("underline")}>
             <Underline className="h-4 w-4" />
           </button>
 
           <span className="mx-1 h-6 w-px bg-zinc-200" />
 
-          <button type="button" className={buttonClass} title="Bullet list" aria-label="Bullet list" onClick={() => prefixLines("- ")}>
+          <button type="button" className={buttonClass} title="Bullet list" aria-label="Bullet list" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("insertUnorderedList")}>
             <List className="h-4 w-4" />
           </button>
-          <button type="button" className={buttonClass} title="Numbered list" aria-label="Numbered list" onClick={() => prefixLines("1. ")}>
+          <button type="button" className={buttonClass} title="Numbered list" aria-label="Numbered list" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("insertOrderedList")}>
             <ListOrdered className="h-4 w-4" />
           </button>
 
           <span className="mx-1 h-6 w-px bg-zinc-200" />
 
-          <button type="button" className={buttonClass} title="Align left" aria-label="Align left" onClick={() => textareaRef.current?.focus()}>
+          <button type="button" className={buttonClass} title="Align left" aria-label="Align left" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("justifyLeft")}>
             <AlignLeft className="h-4 w-4" />
           </button>
-          <button type="button" className={buttonClass} title="Align center" aria-label="Align center" onClick={() => textareaRef.current?.focus()}>
+          <button type="button" className={buttonClass} title="Align center" aria-label="Align center" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("justifyCenter")}>
             <AlignCenter className="h-4 w-4" />
           </button>
-          <button type="button" className={buttonClass} title="Align right" aria-label="Align right" onClick={() => textareaRef.current?.focus()}>
+          <button type="button" className={buttonClass} title="Align right" aria-label="Align right" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("justifyRight")}>
             <AlignRight className="h-4 w-4" />
           </button>
 
@@ -132,21 +137,27 @@ export function JobDescriptionEditor({
             className={buttonClass}
             title="Insert link"
             aria-label="Insert link"
-            onClick={() => wrapSelection("[", "](https://)", "link text")}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={insertLink}
           >
             <Link className="h-4 w-4" />
           </button>
         </div>
 
-        <textarea
-          ref={textareaRef}
-          className="min-h-[150px] w-full resize-y border-0 px-4 py-4 text-sm leading-6 text-zinc-800 outline-none placeholder:text-zinc-400"
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          placeholder={placeholder}
-          rows={6}
-        />
+        <div className="relative">
+          {empty && (
+            <p className="pointer-events-none absolute left-4 top-4 text-sm text-zinc-400">{placeholder}</p>
+          )}
+          <div
+            ref={editorRef}
+            contentEditable
+            suppressContentEditableWarning
+            onInput={emitChange}
+            className="min-h-[150px] w-full resize-y border-0 px-4 py-4 text-sm leading-6 text-zinc-800 outline-none [&_h2]:text-base [&_h2]:font-bold [&_blockquote]:border-l-2 [&_blockquote]:border-zinc-300 [&_blockquote]:pl-3 [&_blockquote]:text-zinc-500 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:text-blue-600 [&_a]:underline"
+          />
+        </div>
       </div>
+      <p className="mt-1 px-1 text-right text-xs text-zinc-400">{charCount} / 5000</p>
     </div>
   );
 }

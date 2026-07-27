@@ -11,6 +11,7 @@ import {
   Wifi, Monitor, Tag, Star, Linkedin, Facebook, Twitter, Mail, Link2,
 } from "lucide-react";
 import { PostJobButton } from "./PostJobButton";
+import { RichText } from "@/components/RichText";
 
 const SENIORITY_YRS: Record<string, string> = {
   INTERN: "0-1 yrs", ENTRY: "1-2 yrs", MID: "2-5 yrs", SENIOR: "5-8 yrs",
@@ -106,7 +107,7 @@ export default async function JobPreviewPage({ params }: { params: Promise<{ id:
             {job.description && (
               <div className="mt-5">
                 <h3 className="text-sm font-bold text-zinc-900 mb-2">About the Role</h3>
-                <p className="text-sm text-zinc-600 leading-relaxed whitespace-pre-wrap">{job.description}</p>
+                <RichText value={job.description} className="text-sm text-zinc-600 leading-relaxed" />
               </div>
             )}
 
@@ -133,7 +134,7 @@ export default async function JobPreviewPage({ params }: { params: Promise<{ id:
           {job.responsibilities && (
             <div className="bg-white border border-zinc-100 rounded-2xl p-6 shadow-sm">
               <h3 className="text-base font-bold text-zinc-900 mb-3">Roles &amp; Responsibilities</h3>
-              <div className="text-sm text-zinc-600 leading-relaxed whitespace-pre-wrap">{job.responsibilities}</div>
+              <RichText value={job.responsibilities} className="text-sm text-zinc-600 leading-relaxed" />
             </div>
           )}
 
@@ -141,7 +142,7 @@ export default async function JobPreviewPage({ params }: { params: Promise<{ id:
           {job.requirements && (
             <div className="bg-white border border-zinc-100 rounded-2xl p-6 shadow-sm">
               <h3 className="text-base font-bold text-zinc-900 mb-3">Job Requirements</h3>
-              <div className="text-sm text-zinc-600 leading-relaxed whitespace-pre-wrap">{job.requirements}</div>
+              <RichText value={job.requirements} className="text-sm text-zinc-600 leading-relaxed" />
             </div>
           )}
 

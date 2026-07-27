@@ -5,6 +5,7 @@ import { PublicFooter } from "@/components/PublicFooter";
 import { ApplyPanel } from "./ApplyPanel";
 import { StickyApplyBar } from "./StickyApplyBar";
 import { NavHider } from "@/components/NavHider";
+import { RichText } from "@/components/RichText";
 import { getCurrentUser } from "@/lib/auth";
 import { formatSalary, timeAgo } from "@/lib/utils";
 import {
@@ -152,7 +153,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                   <Users className="h-5 w-5 text-blue-600" />
                   <h2 className="text-lg font-bold text-zinc-900">About the role</h2>
                 </div>
-                <p className="text-zinc-700 text-sm leading-relaxed whitespace-pre-wrap">{job.description}</p>
+                <RichText value={job.description} className="text-zinc-700 text-sm leading-relaxed" />
               </section>
 
               {(job.responsibilities || job.requirements) && (
@@ -161,8 +162,8 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                     <Briefcase className="h-5 w-5 text-blue-600" />
                     <h2 className="text-lg font-bold text-zinc-900">Roles and Responsibilities</h2>
                   </div>
-                  {job.responsibilities && <div className="text-zinc-700 text-sm leading-relaxed whitespace-pre-wrap">{job.responsibilities}</div>}
-                  {job.requirements && <div className="text-zinc-700 text-sm leading-relaxed whitespace-pre-wrap mt-3">{job.requirements}</div>}
+                  {job.responsibilities && <RichText value={job.responsibilities} className="text-zinc-700 text-sm leading-relaxed" />}
+                  {job.requirements && <RichText value={job.requirements} className="text-zinc-700 text-sm leading-relaxed mt-3" />}
                 </section>
               )}
 
