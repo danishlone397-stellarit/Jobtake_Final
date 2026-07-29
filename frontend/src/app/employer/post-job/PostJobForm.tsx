@@ -8,11 +8,10 @@ import { JobDescriptionEditor } from "@/components/JobDescriptionEditor";
 type Cat = { id: string; name: string };
 
 const COLLAR_OPTIONS = [
-  { value: "WHITE", label: "White-Collar", emoji: "🏢", desc: "Corporate · Professional · Desk Jobs",  iconBg: "bg-blue-600",   activeBorder: "border-blue-500",   activeBg: "bg-blue-50",   activeText: "text-blue-700" },
-  { value: "BLUE",  label: "Blue-Collar",  emoji: "🔧", desc: "Skilled · Technical · Hands-on",        iconBg: "bg-teal-600",   activeBorder: "border-teal-500",   activeBg: "bg-teal-50",   activeText: "text-teal-700" },
-  { value: "MSME",  label: "MSME Job",     emoji: "🏭", desc: "Local · Enterprise · Growth",           iconBg: "bg-orange-500", activeBorder: "border-orange-500", activeBg: "bg-orange-50", activeText: "text-orange-700" },
-  { value: "PINK",  label: "Diversity Job",emoji: "🌸", desc: "Inclusive · Equal Opportunity",         iconBg: "bg-pink-500",   activeBorder: "border-pink-500",   activeBg: "bg-pink-50",   activeText: "text-pink-700" },
-  { value: "GREY",  label: "Others",       emoji: "⚙️", desc: "Other Job Categories",                  iconBg: "bg-zinc-500",   activeBorder: "border-zinc-500",   activeBg: "bg-zinc-100",  activeText: "text-zinc-700" },
+  { value: "WHITE", label: "White Collar", emoji: "🏢", desc: "Corporate · Professional · Office Based Jobs", iconBg: "bg-blue-600",   activeBorder: "border-blue-500",   activeBg: "bg-blue-50",   activeText: "text-blue-700" },
+  { value: "BLUE",  label: "Blue Collar",  emoji: "🔧", desc: "Skilled · Technical · Hands-on Jobs",           iconBg: "bg-teal-600",   activeBorder: "border-teal-500",   activeBg: "bg-teal-50",   activeText: "text-teal-700" },
+  { value: "PINK",  label: "Diversity Job",emoji: "🌸", desc: "Inclusive · Equal Opportunity Jobs",            iconBg: "bg-pink-500",   activeBorder: "border-pink-500",   activeBg: "bg-pink-50",   activeText: "text-pink-700" },
+  { value: "GREY",  label: "Others",       emoji: "⚙️", desc: "Other Job Categories",                          iconBg: "bg-zinc-500",   activeBorder: "border-zinc-500",   activeBg: "bg-zinc-100",  activeText: "text-zinc-700" },
 ];
 
 const EMPLOYMENT_TYPES = [
@@ -234,7 +233,7 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
     if (!remoteJob && !location.trim()) {
       setError("Location is required. Or check 'Remote Job'."); return;
     }
-    if (collarType === "MSME" && isMsme === null) {
+    if (isMsme === null) {
       setError("Please confirm whether your company is registered as MSME."); return;
     }
     if (experienceMin && experienceMax && parseInt(experienceMin, 10) > parseInt(experienceMax, 10)) {
@@ -295,13 +294,17 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
 
         {/* 1. Job Type */}
         <div className="bg-white border border-zinc-200 rounded-2xl p-6">
-          <SectionHeader num={1} title="Job Type / Category (Select One) *" />
-          <p className="-mt-3 mb-5 text-sm text-zinc-500">Choose the type of job you are hiring for.</p>
+          <SectionHeader num={1} title="Job Type / Category (Select up to 2) *" />
+          <p className="-mt-3 mb-5 text-sm text-zinc-500">Choose the type of job you are hiring for. You can select up to 2 options.</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {COLLAR_OPTIONS.map(opt => {
               const active = collarTypes.includes(opt.value);
               return (
-                <button key={opt.value} type="button" onClick={() => setCollarTypes([opt.value])}
+                <button key={opt.value} type="button" onClick={() => setCollarTypes(prev =>
+                  prev.includes(opt.value)
+                    ? prev.length === 1 ? prev : prev.filter(v => v !== opt.value)
+                    : prev.length >= 2 ? prev : [...prev, opt.value]
+                )}
                   className={`relative flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-center transition-all ${active ? `${opt.activeBg} ${opt.activeBorder} shadow-sm` : "bg-white border-zinc-200 hover:border-zinc-300"}`}>
                   <span className={`absolute top-2 right-2 h-4 w-4 rounded-full border flex items-center justify-center ${active ? "bg-blue-600 border-blue-600" : "border-zinc-300"}`}>
                     {active && <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />}
@@ -314,27 +317,25 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
             })}
           </div>
 
-          {collarType === "MSME" && (
-            <div className={`mt-6 rounded-xl border p-5 ${isMsme === null ? "border-red-200 bg-red-50/40" : "border-zinc-200"}`}>
-              <p className="text-sm font-bold text-zinc-900">Is your company registered as MSME? <span className="text-red-500">*</span></p>
-              <p className="mt-1 text-xs text-zinc-500">This helps us provide better visibility and support for MSME employers.</p>
-              <div className="mt-4 flex items-center gap-8">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" name="isMsme" checked={isMsme === "YES"} onChange={() => setIsMsme("YES")} className="h-4 w-4 accent-blue-600" />
-                  <span className="text-sm text-zinc-700">Yes, we are an MSME</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" name="isMsme" checked={isMsme === "NO"} onChange={() => setIsMsme("NO")} className="h-4 w-4 accent-blue-600" />
-                  <span className="text-sm text-zinc-700">No, we are not an MSME</span>
-                </label>
-              </div>
-              {isMsme === null && (
-                <p className="mt-3 flex items-center gap-1.5 text-xs font-medium text-red-500">
-                  <Info className="h-3.5 w-3.5" /> This field is mandatory.
-                </p>
-              )}
+          <div className={`mt-6 rounded-xl border p-5 ${isMsme === null ? "border-red-200 bg-red-50/40" : "border-zinc-200"}`}>
+            <p className="text-sm font-bold text-zinc-900">Is your company registered as MSME? <span className="text-red-500">*</span></p>
+            <p className="mt-1 text-xs text-zinc-500">This helps us provide better visibility and support for MSME employers.</p>
+            <div className="mt-4 flex items-center gap-8">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="isMsme" checked={isMsme === "YES"} onChange={() => setIsMsme("YES")} className="h-4 w-4 accent-blue-600" />
+                <span className="text-sm text-zinc-700">Yes, we are an MSME</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="isMsme" checked={isMsme === "NO"} onChange={() => setIsMsme("NO")} className="h-4 w-4 accent-blue-600" />
+                <span className="text-sm text-zinc-700">No, we are not an MSME</span>
+              </label>
             </div>
-          )}
+            {isMsme === null && (
+              <p className="mt-3 flex items-center gap-1.5 text-xs font-medium text-red-500">
+                <Info className="h-3.5 w-3.5" /> This field is mandatory.
+              </p>
+            )}
+          </div>
         </div>
 
         {/* 2. Job Information */}
