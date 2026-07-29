@@ -505,64 +505,51 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
                 const badge = "badge" in option ? option.badge : null;
                 const selected = minEdu === option.value;
 
+                const specialization =
+                  option.value === "Under Graduate (UG)" ? { label: "UG Education", options: UG_SPECIALIZATIONS, value: ugSpecialization, set: setUgSpecialization } :
+                  option.value === "Post Graduate (PG)"  ? { label: "PG Education", options: PG_SPECIALIZATIONS, value: pgSpecialization, set: setPgSpecialization } :
+                  option.value === "ITI Pass"             ? { label: "ITI Education", options: ITI_SPECIALIZATIONS, value: itiSpecialization, set: setItiSpecialization } :
+                  null;
+
                 return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => setMinEdu(option.value)}
-                    className={`flex min-h-[88px] w-full items-center gap-5 rounded-xl border bg-white px-5 py-4 text-left transition hover:border-blue-200 hover:bg-blue-50/30 focus:outline-none focus:ring-2 focus:ring-blue-100 ${
-                      selected ? "border-blue-400 ring-2 ring-blue-100" : "border-zinc-200"
-                    }`}
-                  >
-                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
-                      {Icon ? <Icon className="h-6 w-6" /> : <span className="text-lg font-bold leading-none">{badge}</span>}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-base font-bold text-zinc-950">{option.title}</span>
-                      <span className="mt-1 block text-sm font-medium leading-5 text-zinc-500">{option.desc}</span>
-                    </span>
-                    <span
-                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
-                        selected ? "border-blue-600" : "border-zinc-400"
+                  <div key={option.value} className="contents">
+                    <button
+                      type="button"
+                      onClick={() => setMinEdu(option.value)}
+                      className={`flex min-h-[88px] w-full items-center gap-5 rounded-xl border bg-white px-5 py-4 text-left transition hover:border-blue-200 hover:bg-blue-50/30 focus:outline-none focus:ring-2 focus:ring-blue-100 ${
+                        selected ? "border-blue-400 ring-2 ring-blue-100" : "border-zinc-200"
                       }`}
-                      aria-hidden="true"
                     >
-                      {selected && <span className="h-2.5 w-2.5 rounded-full bg-blue-600" />}
-                    </span>
-                  </button>
+                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+                        {Icon ? <Icon className="h-6 w-6" /> : <span className="text-lg font-bold leading-none">{badge}</span>}
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-base font-bold text-zinc-950">{option.title}</span>
+                        <span className="mt-1 block text-sm font-medium leading-5 text-zinc-500">{option.desc}</span>
+                      </span>
+                      <span
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
+                          selected ? "border-blue-600" : "border-zinc-400"
+                        }`}
+                        aria-hidden="true"
+                      >
+                        {selected && <span className="h-2.5 w-2.5 rounded-full bg-blue-600" />}
+                      </span>
+                    </button>
+
+                    {selected && specialization && (
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{specialization.label}</label>
+                        <select className={selectCls} value={specialization.value} onChange={e => specialization.set(e.target.value)}>
+                          <option value="">Select {specialization.label.split(" ")[0]} specialization</option>
+                          {specialization.options.map(o => <option key={o} value={o}>{o}</option>)}
+                        </select>
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>
-
-            {minEdu === "Under Graduate (UG)" && (
-              <div className="mt-5">
-                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">UG Education</label>
-                <select className={selectCls} value={ugSpecialization} onChange={e => setUgSpecialization(e.target.value)}>
-                  <option value="">Select UG specialization</option>
-                  {UG_SPECIALIZATIONS.map(o => <option key={o} value={o}>{o}</option>)}
-                </select>
-              </div>
-            )}
-
-            {minEdu === "Post Graduate (PG)" && (
-              <div className="mt-5">
-                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">PG Education</label>
-                <select className={selectCls} value={pgSpecialization} onChange={e => setPgSpecialization(e.target.value)}>
-                  <option value="">Select PG specialization</option>
-                  {PG_SPECIALIZATIONS.map(o => <option key={o} value={o}>{o}</option>)}
-                </select>
-              </div>
-            )}
-
-            {minEdu === "ITI Pass" && (
-              <div className="mt-5">
-                <label className="block text-sm font-semibold text-zinc-700 mb-1.5">ITI Education</label>
-                <select className={selectCls} value={itiSpecialization} onChange={e => setItiSpecialization(e.target.value)}>
-                  <option value="">Select ITI specialization</option>
-                  {ITI_SPECIALIZATIONS.map(o => <option key={o} value={o}>{o}</option>)}
-                </select>
-              </div>
-            )}
           </div>
         </div>
 
