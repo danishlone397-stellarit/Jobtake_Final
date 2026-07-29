@@ -6,6 +6,7 @@ import Link from "next/link";
 import { timeAgo } from "@/lib/utils";
 import { Briefcase, Send, Eye, Bookmark, MapPin, Globe } from "lucide-react";
 import { JobRowActions } from "./JobRowActions";
+import { StopPropagation } from "@/components/StopPropagation";
 
 export default async function EmployerJobsPage() {
   const me = await getCurrentUser();
@@ -146,9 +147,9 @@ export default async function EmployerJobsPage() {
               <div className="text-sm text-zinc-400">{timeAgo(j.createdAt)}</div>
 
               {/* Actions */}
-              <div onClick={(e) => e.preventDefault()}>
+              <StopPropagation>
                 <JobRowActions jobId={j.id} jobTitle={j.title} />
-              </div>
+              </StopPropagation>
             </Link>
           ))
         )}

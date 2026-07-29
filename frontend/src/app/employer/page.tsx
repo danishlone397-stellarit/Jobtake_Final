@@ -9,6 +9,7 @@ import {
   ArrowRight, Building2,
 } from "lucide-react";
 import { JobRowActions } from "./jobs/JobRowActions";
+import { StopPropagation } from "@/components/StopPropagation";
 
 export default async function EmployerHome() {
   const me = await getCurrentUser();
@@ -130,9 +131,9 @@ export default async function EmployerHome() {
                       {STATUS_LABEL[j.status] ?? j.status}
                     </span>
                   </div>
-                  <div onClick={(e) => e.preventDefault()}>
+                  <StopPropagation>
                     <JobRowActions jobId={j.id} jobTitle={j.title} compact />
-                  </div>
+                  </StopPropagation>
                 </Link>
               ))
             )}
