@@ -65,6 +65,43 @@ export function JobDescriptionEditor({
     emitChange();
   }
 
+  function toggleInline(tagName: "strong" | "em" | "u") {
+    const editor = editorRef.current;
+    if (!editor) return;
+    editor.focus();
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) {
+      // No text selected: fall back to the native toggle so subsequent typing is styled.
+      document.execCommand(tagName === "strong" ? "bold" : tagName === "em" ? "italic" : "underline");
+      emitChange();
+      return;
+    }
+    const range = sel.getRangeAt(0);
+    if (!editor.contains(range.commonAncestorContainer)) return;
+
+    // If the whole selection is already wrapped in this tag, unwrap it.
+    const ancestor = range.commonAncestorContainer;
+    const existing = (ancestor.nodeType === Node.ELEMENT_NODE ? (ancestor as Element) : ancestor.parentElement)?.closest(tagName);
+    if (existing && editor.contains(existing)) {
+      const parent = existing.parentNode;
+      while (existing.firstChild) parent?.insertBefore(existing.firstChild, existing);
+      parent?.removeChild(existing);
+      emitChange();
+      return;
+    }
+
+    const contents = range.extractContents();
+    const wrapper = document.createElement(tagName);
+    wrapper.appendChild(contents);
+    range.insertNode(wrapper);
+
+    const newRange = document.createRange();
+    newRange.selectNodeContents(wrapper);
+    sel.removeAllRanges();
+    sel.addRange(newRange);
+    emitChange();
+  }
+
   function applyBlockFormat(format: string) {
     if (format === "heading") exec("formatBlock", "h2");
     else if (format === "quote") exec("formatBlock", "blockquote");
@@ -99,13 +136,13 @@ export function JobDescriptionEditor({
 
           <span className="mx-1 h-6 w-px bg-zinc-200" />
 
-          <button type="button" className={buttonClass} title="Bold" aria-label="Bold" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("bold")}>
+          <button type="button" className={buttonClass} title="Bold" aria-label="Bold" onMouseDown={(e) => e.preventDefault()} onClick={() => toggleInline("strong")}>
             <Bold className="h-4 w-4" />
           </button>
-          <button type="button" className={buttonClass} title="Italic" aria-label="Italic" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("italic")}>
+          <button type="button" className={buttonClass} title="Italic" aria-label="Italic" onMouseDown={(e) => e.preventDefault()} onClick={() => toggleInline("em")}>
             <Italic className="h-4 w-4" />
           </button>
-          <button type="button" className={buttonClass} title="Underline" aria-label="Underline" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("underline")}>
+          <button type="button" className={buttonClass} title="Underline" aria-label="Underline" onMouseDown={(e) => e.preventDefault()} onClick={() => toggleInline("u")}>
             <Underline className="h-4 w-4" />
           </button>
 
