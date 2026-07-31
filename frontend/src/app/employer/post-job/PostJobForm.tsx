@@ -210,6 +210,13 @@ function getSeniorityFromExperience(min: string, max: string) {
   return "EXECUTIVE";
 }
 
+function isRichTextEmpty(html: string) {
+  if (typeof document === "undefined") return !html.trim();
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return !(div.textContent || "").trim();
+}
+
 function normalizeExperienceInput(value: string) {
   if (value === "") return "";
   const n = parseInt(value, 10);
@@ -304,6 +311,15 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
     if (!title.trim() || title.trim().length < 3) {
       setError("Job title is required (minimum 3 characters)."); return;
     }
+    if (!categoryName.trim()) {
+      setError("Job Category is required."); return;
+    }
+    if (!employmentType) {
+      setError("Employment Type is required."); return;
+    }
+    if (!experienceMin || !experienceMax) {
+      setError("Experience (Min and Max) is required."); return;
+    }
     if (!remoteJob && !location.trim()) {
       setError("Location is required. Or check 'Remote Job'."); return;
     }
@@ -312,6 +328,18 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
     }
     if (experienceMin && experienceMax && parseInt(experienceMin, 10) > parseInt(experienceMax, 10)) {
       setError("Minimum experience cannot be greater than maximum experience."); return;
+    }
+    if (isRichTextEmpty(description)) {
+      setError("About the Role is required."); return;
+    }
+    if (isRichTextEmpty(responsibilities)) {
+      setError("Roles & Responsibilities is required."); return;
+    }
+    if (isRichTextEmpty(requirements)) {
+      setError("Job Requirements is required."); return;
+    }
+    if (!salaryMin || !salaryMax) {
+      setError("CTC Range (Min and Max) is required."); return;
     }
     if (salaryMin && salaryMax && parseInt(salaryMin, 10) > parseInt(salaryMax, 10)) {
       setError("Minimum CTC cannot be greater than maximum CTC."); return;
