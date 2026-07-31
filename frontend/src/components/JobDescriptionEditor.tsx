@@ -137,7 +137,7 @@ export function JobDescriptionEditor({
           <span className="mx-1 h-6 w-px bg-zinc-200" />
 
           <button type="button" className={buttonClass} title="Bold" aria-label="Bold" onMouseDown={(e) => e.preventDefault()} onClick={() => toggleInline("strong")}>
-            <Bold className="h-4 w-4" />
+            <Bold className="h-4 w-4" strokeWidth={2.75} />
           </button>
           <button type="button" className={buttonClass} title="Italic" aria-label="Italic" onMouseDown={(e) => e.preventDefault()} onClick={() => toggleInline("em")}>
             <Italic className="h-4 w-4" />
