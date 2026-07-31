@@ -313,17 +313,13 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
 
         {/* 1. Job Type */}
         <div className="bg-white border border-zinc-200 rounded-2xl p-6">
-          <SectionHeader num={1} title="Job Type / Category (Select up to 2) *" />
-          <p className="-mt-3 mb-5 text-sm text-zinc-500">Choose the type of job you are hiring for. You can select up to 2 options.</p>
+          <SectionHeader num={1} title="Job Type / Category (Select One) *" />
+          <p className="-mt-3 mb-5 text-sm text-zinc-500">Choose the type of job you are hiring for.</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {COLLAR_OPTIONS.map(opt => {
               const active = collarTypes.includes(opt.value);
               return (
-                <button key={opt.value} type="button" onClick={() => setCollarTypes(prev =>
-                  prev.includes(opt.value)
-                    ? prev.length === 1 ? prev : prev.filter(v => v !== opt.value)
-                    : prev.length >= 2 ? prev : [...prev, opt.value]
-                )}
+                <button key={opt.value} type="button" onClick={() => setCollarTypes([opt.value])}
                   className={`relative flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-center transition-all ${active ? `${opt.activeBg} ${opt.activeBorder} shadow-sm` : "bg-white border-zinc-200 hover:border-zinc-300"}`}>
                   <span className={`absolute top-2 right-2 h-4 w-4 rounded-full border flex items-center justify-center ${active ? "bg-blue-600 border-blue-600" : "border-zinc-300"}`}>
                     {active && <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />}
