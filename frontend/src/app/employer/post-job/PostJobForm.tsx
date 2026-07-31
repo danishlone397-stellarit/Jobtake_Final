@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState, useRef, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
-import { FileText, GraduationCap, Info, Loader2, MapPin, Wrench, X, Check, Eye } from "lucide-react";
+import { FileText, GraduationCap, Info, Loader2, MapPin, Wrench, X, Check, Eye, ChevronDown } from "lucide-react";
 import { ManagedOptions } from "@/lib/job-option-types";
 import { JobDescriptionEditor } from "@/components/JobDescriptionEditor";
 
@@ -142,7 +142,53 @@ const SectionHeader = ({ num, title }: { num: number; title: string }) => (
 );
 
 const inputCls = "w-full px-4 py-3 border border-zinc-200 rounded-lg text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition bg-white";
-const selectCls = inputCls;
+
+type DropdownOption = { value: string; label: string; sub?: string };
+
+function SelectDropdown({
+  value, onChange, options, placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: DropdownOption[];
+  placeholder: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const selected = options.find(o => o.value === value);
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        className={`${inputCls} flex items-center justify-between gap-2 text-left`}
+        onClick={() => setOpen(v => !v)}
+        onBlur={() => window.setTimeout(() => setOpen(false), 120)}
+      >
+        <span className={`truncate ${selected ? "text-zinc-900" : "text-zinc-400"}`}>{selected ? selected.label : placeholder}</span>
+        <ChevronDown className={`h-4 w-4 text-zinc-400 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="absolute left-0 right-0 top-full z-50 mt-2 max-h-72 overflow-y-auto rounded-xl border border-zinc-200 bg-white py-2 shadow-xl">
+          {options.map(o => (
+            <button
+              key={o.value}
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => { onChange(o.value); setOpen(false); }}
+              className="block w-full px-4 py-2.5 text-left transition hover:bg-blue-50"
+            >
+              <span className="block text-sm font-bold text-zinc-950">{o.label}</span>
+              {o.sub && <span className="mt-0.5 block text-xs font-medium text-zinc-600">{o.sub}</span>}
+            </button>
+          ))}
+          {!options.length && (
+            <div className="px-4 py-3 text-sm font-medium text-zinc-500">No options available.</div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function formatExperienceRange(min: string, max: string) {
   if (!min && !max) return undefined;
@@ -366,19 +412,25 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
             </div>
             <div>
               <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Job Category <span className="text-red-500">*</span></label>
-              <select className={selectCls} value={categoryName} onChange={e => setCategoryName(e.target.value)}>
-                <option value="">Select job category</option>
-                {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
-                {industryOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}
-              </select>
+              <SelectDropdown
+                value={categoryName}
+                onChange={setCategoryName}
+                placeholder="Select job category"
+                options={[
+                  ...categories.map(c => ({ value: c.name, label: c.name })),
+                  ...industryOptions.map(o => ({ value: o.value, label: o.label })),
+                ]}
+              />
             </div>
             <div className="grid md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Employment Type <span className="text-red-500">*</span></label>
-                <select className={selectCls} value={employmentType} onChange={e => setEmploymentType(e.target.value)}>
-                  <option value="">Select type</option>
-                  {EMPLOYMENT_TYPES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                </select>
+                <SelectDropdown
+                  value={employmentType}
+                  onChange={setEmploymentType}
+                  placeholder="Select type"
+                  options={EMPLOYMENT_TYPES.map(o => ({ value: o.value, label: o.label }))}
+                />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Experience <span className="text-red-500">*</span></label>
@@ -409,12 +461,16 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
               </div>
               <div>
                 <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Work Mode <span className="text-red-500">*</span></label>
-                <select className={selectCls} value={workMode} onChange={e => setWorkMode(e.target.value)}>
-                  <option value="">Select work mode</option>
-                  <option value="ONSITE">On-site</option>
-                  <option value="REMOTE">Remote</option>
-                  <option value="HYBRID">Hybrid</option>
-                </select>
+                <SelectDropdown
+                  value={workMode}
+                  onChange={setWorkMode}
+                  placeholder="Select work mode"
+                  options={[
+                    { value: "ONSITE", label: "On-site" },
+                    { value: "REMOTE", label: "Remote" },
+                    { value: "HYBRID", label: "Hybrid" },
+                  ]}
+                />
               </div>
             </div>
           </div>
@@ -556,10 +612,12 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
                     {selected && specialization && (
                       <div className="md:col-span-2">
                         <label className="block text-sm font-semibold text-zinc-700 mb-1.5">{specialization.label}</label>
-                        <select className={selectCls} value={specialization.value} onChange={e => specialization.set(e.target.value)}>
-                          <option value="">Select {specialization.label.split(" ")[0]} specialization</option>
-                          {specialization.options.map(o => <option key={o} value={o}>{o}</option>)}
-                        </select>
+                        <SelectDropdown
+                          value={specialization.value}
+                          onChange={specialization.set}
+                          placeholder={`Select ${specialization.label.split(" ")[0]} specialization`}
+                          options={specialization.options.map(o => ({ value: o, label: o }))}
+                        />
                       </div>
                     )}
                   </div>
