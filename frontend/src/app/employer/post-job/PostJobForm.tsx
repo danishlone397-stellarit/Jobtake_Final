@@ -313,6 +313,9 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
     if (experienceMin && experienceMax && parseInt(experienceMin, 10) > parseInt(experienceMax, 10)) {
       setError("Minimum experience cannot be greater than maximum experience."); return;
     }
+    if (salaryMin && salaryMax && parseInt(salaryMin, 10) > parseInt(salaryMax, 10)) {
+      setError("Minimum CTC cannot be greater than maximum CTC."); return;
+    }
 
     setLoading(true);
     const seniority = getSeniorityFromExperience(experienceMin, experienceMax);
@@ -772,7 +775,11 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
                   />
                 </div>
               </div>
-              {(salaryMinDisplay || salaryMaxDisplay) && (
+              {salaryMin && salaryMax && parseInt(salaryMin, 10) > parseInt(salaryMax, 10) ? (
+                <p className="text-xs text-red-500 mt-1.5 font-medium">
+                  ✕ Minimum CTC cannot be greater than maximum CTC.
+                </p>
+              ) : (salaryMinDisplay || salaryMaxDisplay) && (
                 <p className="text-xs text-emerald-600 mt-1.5 font-medium">
                   ✓ CTC: {salaryMinDisplay ? formatLPA(salaryMinDisplay.replace(" LPA","")) : "?"} – {salaryMaxDisplay ? formatLPA(salaryMaxDisplay.replace(" LPA","")) : "?"}
                 </p>
