@@ -41,6 +41,12 @@ const EDUCATION_OPTIONS = [
     desc: "e.g. Diploma in Mechanical, Electrical, etc.",
     icon: FileText,
   },
+   {
+    value: "ITI Pass",
+    title: "ITI Pass",
+    desc: "Industrial Training Institute (ITI)",
+    icon: Wrench,
+  },
   {
     value: "12th Pass",
     title: "12th Pass",
@@ -53,12 +59,7 @@ const EDUCATION_OPTIONS = [
     desc: "SSC / Matriculation / 10th Pass",
     badge: "10",
   },
-  {
-    value: "ITI Pass",
-    title: "ITI Pass",
-    desc: "Industrial Training Institute (ITI)",
-    icon: Wrench,
-  },
+ 
 ] as const;
 
 const DIPLOMA_SPECIALIZATIONS = [
@@ -229,6 +230,7 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
   const [workMode, setWorkMode]           = useState("ONSITE");
   const [location, setLocation]           = useState("");
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+  const [showTitleDropdown, setShowTitleDropdown] = useState(false);
   const [remoteJob, setRemoteJob]         = useState(false);
   const [jobType, setJobType]             = useState("FULL_TIME");
   const [isMsme, setIsMsme]               = useState<"YES" | "NO" | null>(null);
@@ -255,6 +257,13 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
       : locationOptions;
     return rows.slice(0, 30);
   }, [location, locationOptions]);
+  const visibleRoleOptions = useMemo(() => {
+    const query = title.trim().toLowerCase();
+    const rows = query
+      ? roleOptions.filter((option) => `${option.label} ${option.value}`.toLowerCase().includes(query))
+      : roleOptions;
+    return rows.slice(0, 30);
+  }, [title, roleOptions]);
 
   function formatLPA(val: string): string {
     const n = parseFloat(val);
@@ -403,12 +412,39 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
         <div className="bg-white border border-zinc-200 rounded-2xl p-6">
           <SectionHeader num={2} title="Job Information" />
           <div className="space-y-4">
-            <div>
+            <div className="relative">
               <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Job Title <span className="text-red-500">*</span></label>
-              <input className={inputCls} value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Senior Software Engineer" data-testid="job-title" list="role-list" />
-              <datalist id="role-list">
-                {roleOptions.map(o => <option key={o.id} value={o.value}>{o.label}</option>)}
-              </datalist>
+              <input
+                className={inputCls}
+                value={title}
+                onChange={e => { setTitle(e.target.value); setShowTitleDropdown(true); }}
+                onFocus={() => setShowTitleDropdown(true)}
+                onBlur={() => window.setTimeout(() => setShowTitleDropdown(false), 120)}
+                placeholder="e.g. Senior Software Engineer"
+                data-testid="job-title"
+              />
+              {showTitleDropdown && (
+                <div className="absolute left-0 right-0 top-full z-50 mt-2 max-h-[220px] overflow-y-auto rounded-xl border border-zinc-200 bg-white py-2 shadow-xl">
+                  {visibleRoleOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        setTitle(option.value);
+                        setShowTitleDropdown(false);
+                      }}
+                      className="block w-full px-4 py-2.5 text-left transition hover:bg-blue-50"
+                    >
+                      <span className="block text-sm font-bold text-zinc-950">{option.value}</span>
+                      {option.label !== option.value && <span className="mt-0.5 block text-xs font-medium text-zinc-600">{option.label}</span>}
+                    </button>
+                  ))}
+                  {!visibleRoleOptions.length && (
+                    <div className="px-4 py-3 text-sm font-medium text-zinc-500">No matching role. You can type a custom title.</div>
+                  )}
+                </div>
+              )}
             </div>
             <div>
               <label className="block text-sm font-semibold text-zinc-700 mb-1.5">Job Category <span className="text-red-500">*</span></label>
