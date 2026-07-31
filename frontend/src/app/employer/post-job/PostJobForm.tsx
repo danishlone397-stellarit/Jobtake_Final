@@ -61,6 +61,24 @@ const EDUCATION_OPTIONS = [
   },
 ] as const;
 
+const DIPLOMA_SPECIALIZATIONS = [
+  "Any Specialization",
+  "Diploma in Mechanical Engineering",
+  "Diploma in Electrical Engineering",
+  "Diploma in Electronics Engineering",
+  "Diploma in Civil Engineering",
+  "Diploma in Computer Engineering",
+  "Diploma in Automobile Engineering",
+  "Diploma in Chemical Engineering",
+  "Diploma in Information Technology",
+  "Diploma in Pharmacy (D.Pharma)",
+  "Diploma in Hotel Management",
+  "Diploma in Fashion Designing",
+  "Diploma in Interior Designing",
+  "Diploma in Education (D.Ed)",
+  "Post Graduate Diploma",
+];
+
 const UG_SPECIALIZATIONS = [
   "Any graduate",
   "B.Tech/B.E.",
@@ -169,6 +187,7 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
   const [jobType, setJobType]             = useState("FULL_TIME");
   const [isMsme, setIsMsme]               = useState<"YES" | "NO" | null>(null);
   const [minEdu, setMinEdu]               = useState("");
+  const [diplomaSpecialization, setDiplomaSpecialization] = useState("");
   const [ugSpecialization, setUgSpecialization]   = useState("");
   const [pgSpecialization, setPgSpecialization]   = useState("");
   const [itiSpecialization, setItiSpecialization] = useState("");
@@ -508,6 +527,7 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
                 const specialization =
                   option.value === "Under Graduate (UG)" ? { label: "UG Education", options: UG_SPECIALIZATIONS, value: ugSpecialization, set: setUgSpecialization } :
                   option.value === "Post Graduate (PG)"  ? { label: "PG Education", options: PG_SPECIALIZATIONS, value: pgSpecialization, set: setPgSpecialization } :
+                  option.value === "Diploma"              ? { label: "Diploma Education", options: DIPLOMA_SPECIALIZATIONS, value: diplomaSpecialization, set: setDiplomaSpecialization } :
                   option.value === "ITI Pass"             ? { label: "ITI Education", options: ITI_SPECIALIZATIONS, value: itiSpecialization, set: setItiSpecialization } :
                   null;
 
