@@ -277,14 +277,22 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
     if (isNaN(n)) return val;
     return `${n} LPA`;
   }
+  function sanitizeDecimalInput(val: string) {
+    const cleaned = val.replace(/[^0-9.]/g, "");
+    const firstDot = cleaned.indexOf(".");
+    if (firstDot === -1) return cleaned;
+    return cleaned.slice(0, firstDot + 1) + cleaned.slice(firstDot + 1).replace(/\./g, "");
+  }
   function handleSalaryMin(val: string) {
-    setSalaryMinDisplay(val);
-    const n = parseFloat(val);
+    const clean = sanitizeDecimalInput(val);
+    setSalaryMinDisplay(clean);
+    const n = parseFloat(clean);
     setSalaryMin(isNaN(n) ? "" : String(Math.round(n * 100000)));
   }
   function handleSalaryMax(val: string) {
-    setSalaryMaxDisplay(val);
-    const n = parseFloat(val);
+    const clean = sanitizeDecimalInput(val);
+    setSalaryMaxDisplay(clean);
+    const n = parseFloat(clean);
     setSalaryMax(isNaN(n) ? "" : String(Math.round(n * 100000)));
   }
   const [benefits, setBenefits]           = useState("");
