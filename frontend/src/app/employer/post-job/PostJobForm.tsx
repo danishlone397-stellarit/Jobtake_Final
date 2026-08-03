@@ -241,7 +241,7 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
   const [remoteJob, setRemoteJob]         = useState(false);
   const [jobType, setJobType]             = useState("FULL_TIME");
   const [isMsme, setIsMsme]               = useState<"YES" | "NO" | null>(null);
-  const [minEdu, setMinEdu]               = useState("");
+  const [minEdus, setMinEdus]             = useState<string[]>([]);
   const [diplomaSpecialization, setDiplomaSpecialization] = useState("");
   const [ugSpecialization, setUgSpecialization]   = useState("");
   const [pgSpecialization, setPgSpecialization]   = useState("");
@@ -387,7 +387,7 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
     { label: "Employment Type", value: EMPLOYMENT_TYPES.find(e => e.value === (employmentType || jobType))?.label },
     { label: "Experience",      value: formatExperienceRange(experienceMin, experienceMax) },
     { label: "Work Mode",       value: remoteJob ? "Remote" : workMode.charAt(0) + workMode.slice(1).toLowerCase() },
-    { label: "Education",       value: minEdu || undefined },
+    { label: "Education",       value: minEdus.length ? minEdus.join(", ") : undefined },
     { label: "CTC Range", value: salaryMinDisplay || salaryMaxDisplay ? `${salaryMinDisplay || "?"} – ${salaryMaxDisplay || "?"}` : undefined },
   ];
 
@@ -634,14 +634,14 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
 
           <div className="mt-8">
             <p className="text-base font-bold text-zinc-950">
-              Minimum Education <span className="font-medium text-zinc-900">(Select any one level)</span>
+              Minimum Education <span className="font-medium text-zinc-900">(Select one or more levels)</span>
             </p>
 
             <div className="mt-5 grid gap-5 md:grid-cols-2">
               {EDUCATION_OPTIONS.map((option) => {
                 const Icon = "icon" in option ? option.icon : null;
                 const badge = "badge" in option ? option.badge : null;
-                const selected = minEdu === option.value;
+                const selected = minEdus.includes(option.value);
 
                 const specialization =
                   option.value === "Under Graduate (UG)" ? { label: "UG Education", options: UG_SPECIALIZATIONS, value: ugSpecialization, set: setUgSpecialization } :
@@ -654,7 +654,7 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
                   <div key={option.value} className="contents">
                     <button
                       type="button"
-                      onClick={() => setMinEdu(option.value)}
+                      onClick={() => setMinEdus(prev => prev.includes(option.value) ? prev.filter(v => v !== option.value) : [...prev, option.value])}
                       className={`flex min-h-[88px] w-full items-center gap-5 rounded-xl border bg-white px-5 py-4 text-left transition hover:border-blue-200 hover:bg-blue-50/30 focus:outline-none focus:ring-2 focus:ring-blue-100 ${
                         selected ? "border-blue-400 ring-2 ring-blue-100" : "border-zinc-200"
                       }`}
@@ -667,12 +667,12 @@ export function PostJobForm({ categories, options, isAdmin }: { categories: Cat[
                         <span className="mt-1 block text-sm font-medium leading-5 text-zinc-500">{option.desc}</span>
                       </span>
                       <span
-                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
-                          selected ? "border-blue-600" : "border-zinc-400"
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border ${
+                          selected ? "bg-blue-600 border-blue-600" : "border-zinc-400"
                         }`}
                         aria-hidden="true"
                       >
-                        {selected && <span className="h-2.5 w-2.5 rounded-full bg-blue-600" />}
+                        {selected && <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />}
                       </span>
                     </button>
 
